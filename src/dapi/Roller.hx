@@ -20,18 +20,6 @@ class Roller {
         var rolls = extractRolls(random, dice, extractor);
         var result = extractResult(rolls, extractor);
         RollGroup(DiceList(rolls), extractor, { result: result, meta: meta});
-      case RollAndDropLow(dice, drop, meta):
-        var rolls = groupToDice(dice).map.fn(_.roll(random));
-        var result = rolls.map.fn(_.meta.result).order(thx.Ints.compare).slice(drop).sum();
-        RollAndDropLow(DiceList(rolls), drop, { result: result, meta: meta});
-      case RollAndKeepHigh(dice, keep, meta):
-        var rolls = groupToDice(dice).map.fn(_.roll(random));
-        var result = rolls.map.fn(_.meta.result).order(thx.Ints.compare).reversed().slice(0, keep).sum();
-        RollAndKeepHigh(DiceList(rolls), keep, { result: result, meta: meta});
-      case RollAndExplode(dice, explodeOn, meta):
-        var rolls = explodeRolls(random, groupToDice(dice), explodeOn);
-        var result = rolls.reduce(function(acc, roll) return acc + roll.meta.result, 0);
-        RollAndExplode(DiceList(rolls), explodeOn, { result: result, meta: meta});
       case BinaryOp(op, a, b, meta):
         var ra = roll(a),
             rb = roll(b);
@@ -97,11 +85,11 @@ class Roller {
     return roll(RollOne(Die.withSides(sides)));
 
   public function rollDiceAndDropLow(dice: Int, sides: Int, drop: Int): DiceResult<Unit>
-    return roll(RollAndDropLow(RepeatDie(dice, new Die(sides, unit)), drop, unit));
+    return roll(RollGroup(RepeatDie(dice, new Die(sides, unit)), DropLow(drop), unit));
 
   public function rollDiceAndKeepHigh(dice: Int, sides: Int, keep: Int): DiceResult<Unit>
-    return roll(RollAndKeepHigh(RepeatDie(dice, new Die(sides, unit)), keep, unit));
+    return roll(RollGroup(RepeatDie(dice, new Die(sides, unit)), KeepHigh(keep), unit));
 
   public function rollDiceAndExplode(dice: Int, sides: Int, explodeOn: Int): DiceResult<Unit>
-    return roll(RollAndExplode(RepeatDie(dice, new Die(sides, unit)), explodeOn, unit));
+    return roll(RollGroup(RepeatDie(dice, new Die(sides, unit)), ExplodeOn(explodeOn), unit));
 }

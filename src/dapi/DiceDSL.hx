@@ -13,22 +13,22 @@ class DiceDSL {
     return RollOne(new Die(sides, meta));
 
   public static function dropLow<T>(dice: Int, die: Die<T>, drop: Int, meta: T): DiceExpression<T>
-    return RollAndDropLow(RepeatDie(dice, die), drop, meta);
+    return RollGroup(RepeatDie(dice, die), DropLow(drop), meta);
 
   public static function keepHigh<T>(dice: Int, die: Die<T>, keep: Int, meta: T): DiceExpression<T>
-    return RollAndKeepHigh(RepeatDie(dice, die), keep, meta);
+    return RollGroup(RepeatDie(dice, die), KeepHigh(keep), meta);
 
   public static function explosive<T>(dice: Int, die: Die<T>, explodeOn: Int, meta: T): DiceExpression<T>
-    return RollAndExplode(RepeatDie(dice, die), explodeOn, meta);
+    return RollGroup(RepeatDie(dice, die), ExplodeOn(explodeOn), meta);
 
   public static function diceDropLow<T>(dice: Array<Die<T>>, drop: Int, meta: T): DiceExpression<T>
-    return RollAndDropLow(DiceList(dice), drop, meta);
+    return RollGroup(DiceList(dice), DropLow(drop), meta);
 
   public static function diceKeepHigh<T>(dice: Array<Die<T>>, keep: Int, meta: T): DiceExpression<T>
-    return RollAndKeepHigh(DiceList(dice), keep, meta);
+    return RollGroup(DiceList(dice), KeepHigh(keep), meta);
 
   public static function diceExplosive<T>(dice: Array<Die<T>>, explodeOn: Int, meta: T): DiceExpression<T>
-    return RollAndExplode(DiceList(dice), explodeOn, meta);
+    return RollGroup(DiceList(dice), ExplodeOn(explodeOn), meta);
 
   public static function add<T>(a: DiceExpression<T>, b: DiceExpression<T>, meta: T): DiceExpression<T>
     return BinaryOp(Sum, a, b, meta);
