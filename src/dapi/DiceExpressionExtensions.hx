@@ -28,6 +28,6 @@ class DiceExpressionExtensions {
     return if(sides.length == 1) // all dice have the same number of sides
       dice.length + dice[0].toString();
     else
-      '{' + dice.map.fn(_.toString()).join(" + ") + '}';
+      '{' + dice.map.fn(_.toString()).join("+") + '}';
   }
 }
