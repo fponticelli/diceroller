@@ -7,7 +7,7 @@ class DiceDSL {
     return RollGroup(RepeatDie(dice, die), Sum, meta);
 
   public static function dice<T>(dice: Array<Die<T>>, meta: T): DiceExpression<T>
-    return RollGroup(DiceList(dice), Sum, meta);
+    return RollGroup(DiceSet(dice), Sum, meta);
 
   public static function die<T>(sides: Int, meta: T): DiceExpression<T>
     return RollOne(new Die(sides, meta));
@@ -22,13 +22,13 @@ class DiceDSL {
     return RollGroup(RepeatDie(dice, die), ExplodeOn(explodeOn), meta);
 
   public static function diceDropLow<T>(dice: Array<Die<T>>, drop: Int, meta: T): DiceExpression<T>
-    return RollGroup(DiceList(dice), DropLow(drop), meta);
+    return RollGroup(DiceSet(dice), DropLow(drop), meta);
 
   public static function diceKeepHigh<T>(dice: Array<Die<T>>, keep: Int, meta: T): DiceExpression<T>
-    return RollGroup(DiceList(dice), KeepHigh(keep), meta);
+    return RollGroup(DiceSet(dice), KeepHigh(keep), meta);
 
   public static function diceExplosive<T>(dice: Array<Die<T>>, explodeOn: Int, meta: T): DiceExpression<T>
-    return RollGroup(DiceList(dice), ExplodeOn(explodeOn), meta);
+    return RollGroup(DiceSet(dice), ExplodeOn(explodeOn), meta);
 
   public static function add<T>(a: DiceExpression<T>, b: DiceExpression<T>, meta: T): DiceExpression<T>
     return BinaryOp(Sum, a, b, meta);

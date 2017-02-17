@@ -19,7 +19,7 @@ class DiceExpressionExtensions {
 
   public static function diceToString<T>(group: DiceGroup<T>, extractor: GroupExtractor)
     return (switch group {
-      case DiceList(dice):
+      case DiceSet(dice):
          '{' + dice.map.fn(_.toString()).join(",") + '}';
       case RepeatDie(time, die):
         '${time}${die.toString()}';

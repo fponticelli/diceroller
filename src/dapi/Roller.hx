@@ -19,7 +19,7 @@ class Roller {
       case RollGroup(dice, extractor, meta):
         var rolls = extractRolls(random, dice, extractor);
         var result = extractResult(rolls, extractor);
-        RollGroup(DiceList(rolls), extractor, { result: result, meta: meta});
+        RollGroup(DiceSet(rolls), extractor, { result: result, meta: meta});
       case BinaryOp(op, a, b, meta):
         var ra = roll(a),
             rb = roll(b);
@@ -61,7 +61,7 @@ class Roller {
 
   static function groupToDice<T>(group: DiceGroup<T>): Array<Die<T>>
     return switch group {
-      case DiceList(dice):
+      case DiceSet(dice):
          dice;
       case RepeatDie(times, die):
         [for(i in 0...times) die];

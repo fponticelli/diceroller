@@ -56,7 +56,7 @@ class DiceParser {
   static var rollMany = lbrace
     .then(commaSep(dN))
     .skip(rbrace)
-    .map.fn(RollGroup(DiceList(_), Sum, unit)); // TODO add other ops
+    .map.fn(RollGroup(DiceSet(_), Sum, unit)); // TODO add other ops
 
 /*
   RollAndDropLow(dice: Array<Die<T>>, drop: Int, meta: T);
@@ -71,10 +71,4 @@ class DiceParser {
     rollOne,
     literal
   ].alt());
-
-  // public static function parse(s: String): Either<{ expected: Array<String>, index: Int, furthest: Int }, MetricsQuery> {
-  //   var stripped = (~/\s+/g).replace(s, "");
-  //   var result = parser.skip(eof()).apply(stripped);
-  //   return if (result.status) Right(result.value) else Left(result);
-  // }
 }

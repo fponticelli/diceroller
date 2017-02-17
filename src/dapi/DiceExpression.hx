@@ -15,8 +15,8 @@ enum GroupExtractor {
 }
 
 enum DiceGroup<T> {
-  DiceList(dice: Array<Die<T>>);
-  RepeatDie(time: Int, die: Die<T>);
+  DiceSet(dice: Array<Die<T>>);
+  RepeatDie(times: Int, die: Die<T>);
 }
 
 enum DiceOperator {
