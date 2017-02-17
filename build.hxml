@@ -1,0 +1,12 @@
+-lib thx.core
+-lib utest
+-cp src
+-cp test
+-main TestAll
+-js bin/test.js
+
+dapi.DiceExpression
+dapi.DiceResult
+dapi.Roller
+
+-cmd node bin/test.js
