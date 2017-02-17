@@ -4,20 +4,23 @@ import dapi.DiceExpression;
 import thx.Unit;
 
 class SimpleDiceDSL {
+  public static function many(dice: Int, die: Die<Unit>): DiceExpression<Unit>
+    return DiceDSL.many(dice, die, unit);
+
   public static function dice(dice: Array<Die<Unit>>): DiceExpression<Unit>
     return DiceDSL.dice(dice, unit);
 
   public static function die(sides: Int): DiceExpression<Unit>
     return DiceDSL.die(sides, unit);
 
-  public static function dropLow(dice: Array<Die<Unit>>, drop: Int): DiceExpression<Unit>
-    return DiceDSL.dropLow(dice, drop, unit);
+  public static function dropLow(dice: Int, die: Die<Unit>, drop: Int): DiceExpression<Unit>
+    return DiceDSL.dropLow(dice, die, drop, unit);
 
-  public static function keepHigh(dice: Array<Die<Unit>>, keep: Int): DiceExpression<Unit>
-    return DiceDSL.keepHigh(dice, keep, unit);
+  public static function keepHigh(dice: Int, die: Die<Unit>, keep: Int): DiceExpression<Unit>
+    return DiceDSL.keepHigh(dice, die, keep, unit);
 
-  public static function explosive(dice: Array<Die<Unit>>, explodeOn: Int): DiceExpression<Unit>
-    return DiceDSL.explosive(dice, explodeOn, unit);
+  public static function explosive(dice: Int, die: Die<Unit>, explodeOn: Int): DiceExpression<Unit>
+    return DiceDSL.explosive(dice, die, explodeOn, unit);
 
   public static function add(a: DiceExpression<Unit>, b: DiceExpression<Unit>): DiceExpression<Unit>
     return DiceDSL.add(a, b, unit);

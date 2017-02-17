@@ -1,5 +1,6 @@
 -lib thx.core
 -lib utest
+-lib parsihax
 -cp src
 -cp test
 -main TestAll

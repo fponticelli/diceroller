@@ -457,17 +457,17 @@ TestAll.main = function() {
 TestAll.prototype = {
 	testRoller: function() {
 		var r = this.roller().rollDice(12,6);
-		utest_Assert.equals(42,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 21, className : "TestAll", methodName : "testRoller"});
+		utest_Assert.equals(42,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 22, className : "TestAll", methodName : "testRoller"});
 		r = this.roller().rollOne(6);
-		utest_Assert.equals(1,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 24, className : "TestAll", methodName : "testRoller"});
+		utest_Assert.equals(1,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 25, className : "TestAll", methodName : "testRoller"});
 		r = this.roller(2).rollOne(6);
-		utest_Assert.equals(2,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 26, className : "TestAll", methodName : "testRoller"});
+		utest_Assert.equals(2,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 27, className : "TestAll", methodName : "testRoller"});
 		r = this.roller().rollDiceAndDropLow(5,6,2);
-		utest_Assert.equals(12,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 29, className : "TestAll", methodName : "testRoller"});
+		utest_Assert.equals(12,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 30, className : "TestAll", methodName : "testRoller"});
 		r = this.roller().rollDiceAndKeepHigh(5,6,2);
-		utest_Assert.equals(9,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 32, className : "TestAll", methodName : "testRoller"});
+		utest_Assert.equals(9,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 33, className : "TestAll", methodName : "testRoller"});
 		r = this.roller().rollDiceAndExplode(5,6,5);
-		utest_Assert.equals(22,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 35, className : "TestAll", methodName : "testRoller"});
+		utest_Assert.equals(22,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 36, className : "TestAll", methodName : "testRoller"});
 	}
 	,roller: function(seq) {
 		if(seq == null) {
@@ -478,9 +478,48 @@ TestAll.prototype = {
 			return (seq - 1 - 1) % max + 1;
 		});
 	}
-	,testSimpleDSL: function() {
-		var e = dapi_SimpleDiceDSL.subtract(dapi_SimpleDiceDSL.add(dapi_SimpleDiceDSL.die(6),dapi_SimpleDiceDSL.dropLow([dapi_SimpleDiceDSL.d8,dapi_SimpleDiceDSL.d8,dapi_SimpleDiceDSL.d8,dapi_SimpleDiceDSL.d8],1)),dapi_SimpleDiceDSL.literal(1));
-		haxe_Log.trace(dapi_DiceExpressionExtensions.toString(e),{ fileName : "TestAll.hx", lineNumber : 43, className : "TestAll", methodName : "testSimpleDSL"});
+	,testParseDie: function() {
+		this.assertParseDie(dapi_SimpleDiceDSL.d8,"d8");
+		this.assertParseDie(dapi_SimpleDiceDSL.d12,"D12");
+	}
+	,testParse: function() {
+		var tests = [dapi_SimpleDiceDSL.die(6),dapi_SimpleDiceDSL.literal(2),dapi_SimpleDiceDSL.many(3,dapi_SimpleDiceDSL.d6),dapi_SimpleDiceDSL.dice([dapi_SimpleDiceDSL.d2,dapi_SimpleDiceDSL.d4,dapi_SimpleDiceDSL.d6])];
+		var _g = 0;
+		while(_g < tests.length) {
+			var test = tests[_g];
+			++_g;
+			this.assertParseExpression(test);
+		}
+	}
+	,assertParseDie: function(expected,test) {
+		var parsed = dapi_DiceParser.parseDie(test);
+		var _g = parsed;
+		switch(_g[1]) {
+		case 0:
+			var e = _g[2];
+			utest_Assert.fail(e,{ fileName : "TestAll.hx", lineNumber : 68, className : "TestAll", methodName : "assertParseDie"});
+			break;
+		case 1:
+			var v = _g[2];
+			utest_Assert.same(expected,v,null,null,null,{ fileName : "TestAll.hx", lineNumber : 70, className : "TestAll", methodName : "assertParseDie"});
+			break;
+		}
+	}
+	,assertParseExpression: function(exp) {
+		var test = dapi_DiceExpressionExtensions.toString(exp);
+		haxe_Log.trace(test,{ fileName : "TestAll.hx", lineNumber : 76, className : "TestAll", methodName : "assertParseExpression"});
+		var parsed = dapi_DiceParser.parse(test);
+		var _g = parsed;
+		switch(_g[1]) {
+		case 0:
+			var e = _g[2];
+			utest_Assert.fail(e,{ fileName : "TestAll.hx", lineNumber : 80, className : "TestAll", methodName : "assertParseExpression"});
+			break;
+		case 1:
+			var v = _g[2];
+			utest_Assert.same(exp,v,null,"expected " + Std.string(exp) + " but it is " + Std.string(v) + " for " + test,null,{ fileName : "TestAll.hx", lineNumber : 82, className : "TestAll", methodName : "assertParseExpression"});
+			break;
+		}
 	}
 	,__class__: TestAll
 };
@@ -609,20 +648,32 @@ Type["typeof"] = function(v) {
 };
 var dapi_DiceDSL = function() { };
 dapi_DiceDSL.__name__ = ["dapi","DiceDSL"];
+dapi_DiceDSL.many = function(dice,die,meta) {
+	return dapi_DiceExpression.RollMany(dapi_DiceGroup.RepeatDie(dice,die),meta);
+};
 dapi_DiceDSL.dice = function(dice,meta) {
-	return dapi_DiceExpression.RollMany(dice,meta);
+	return dapi_DiceExpression.RollMany(dapi_DiceGroup.DiceList(dice),meta);
 };
 dapi_DiceDSL.die = function(sides,meta) {
 	return dapi_DiceExpression.RollOne(new dapi_Die(sides,meta));
 };
-dapi_DiceDSL.dropLow = function(dice,drop,meta) {
-	return dapi_DiceExpression.RollAndDropLow(dice,drop,meta);
+dapi_DiceDSL.dropLow = function(dice,die,drop,meta) {
+	return dapi_DiceExpression.RollAndDropLow(dapi_DiceGroup.RepeatDie(dice,die),drop,meta);
 };
-dapi_DiceDSL.keepHigh = function(dice,keep,meta) {
-	return dapi_DiceExpression.RollAndKeepHigh(dice,keep,meta);
+dapi_DiceDSL.keepHigh = function(dice,die,keep,meta) {
+	return dapi_DiceExpression.RollAndKeepHigh(dapi_DiceGroup.RepeatDie(dice,die),keep,meta);
 };
-dapi_DiceDSL.explosive = function(dice,explodeOn,meta) {
-	return dapi_DiceExpression.RollAndExplode(dice,explodeOn,meta);
+dapi_DiceDSL.explosive = function(dice,die,explodeOn,meta) {
+	return dapi_DiceExpression.RollAndExplode(dapi_DiceGroup.RepeatDie(dice,die),explodeOn,meta);
+};
+dapi_DiceDSL.diceDropLow = function(dice,drop,meta) {
+	return dapi_DiceExpression.RollAndDropLow(dapi_DiceGroup.DiceList(dice),drop,meta);
+};
+dapi_DiceDSL.diceKeepHigh = function(dice,keep,meta) {
+	return dapi_DiceExpression.RollAndKeepHigh(dapi_DiceGroup.DiceList(dice),keep,meta);
+};
+dapi_DiceDSL.diceExplosive = function(dice,explodeOn,meta) {
+	return dapi_DiceExpression.RollAndExplode(dapi_DiceGroup.DiceList(dice),explodeOn,meta);
 };
 dapi_DiceDSL.add = function(a,b,meta) {
 	return dapi_DiceExpression.BinaryOp(dapi_DiceOperator.Sum,a,b,meta);
@@ -665,6 +716,9 @@ dapi_DiceExpression.RollAndKeepHigh = function(dice,keep,meta) { var $x = ["Roll
 dapi_DiceExpression.RollAndExplode = function(dice,explodeOn,meta) { var $x = ["RollAndExplode",4,dice,explodeOn,meta]; $x.__enum__ = dapi_DiceExpression; return $x; };
 dapi_DiceExpression.BinaryOp = function(op,a,b,meta) { var $x = ["BinaryOp",5,op,a,b,meta]; $x.__enum__ = dapi_DiceExpression; return $x; };
 dapi_DiceExpression.Literal = function(value,meta) { var $x = ["Literal",6,value,meta]; $x.__enum__ = dapi_DiceExpression; return $x; };
+var dapi_DiceGroup = { __ename__ : ["dapi","DiceGroup"], __constructs__ : ["DiceList","RepeatDie"] };
+dapi_DiceGroup.DiceList = function(dice) { var $x = ["DiceList",0,dice]; $x.__enum__ = dapi_DiceGroup; return $x; };
+dapi_DiceGroup.RepeatDie = function(time,die) { var $x = ["RepeatDie",1,time,die]; $x.__enum__ = dapi_DiceGroup; return $x; };
 var dapi_DiceOperator = { __ename__ : ["dapi","DiceOperator"], __constructs__ : ["Sum","Difference"] };
 dapi_DiceOperator.Sum = ["Sum",0];
 dapi_DiceOperator.Sum.__enum__ = dapi_DiceOperator;
@@ -709,17 +763,805 @@ dapi_DiceExpressionExtensions.toString = function(expr) {
 		return "" + value;
 	}
 };
-dapi_DiceExpressionExtensions.diceToString = function(dice) {
-	var sides = thx_Arrays.distinct(dice.map(function(_) {
-		return _.sides;
-	}));
-	if(sides.length == 1) {
-		return dice.length + dice[0].toString();
-	} else {
-		return "{" + dice.map(function(_1) {
-			return _1.toString();
-		}).join(" + ") + "}";
+dapi_DiceExpressionExtensions.diceToString = function(group) {
+	switch(group[1]) {
+	case 0:
+		var dice = group[2];
+		return "{" + dice.map(function(_) {
+			return _.toString();
+		}).join(",") + "}";
+	case 1:
+		var die = group[3];
+		var time = group[2];
+		return "" + time + die.toString();
 	}
+};
+var parsihax_Parser = function() { };
+parsihax_Parser.__name__ = ["parsihax","Parser"];
+parsihax_Parser.index = function() {
+	var this1;
+	var this2 = new Array(1);
+	this1 = this2;
+	var ret = this1;
+	ret[0] = function(stream,i) {
+		if(i == null) {
+			i = 0;
+		}
+		return { status : true, index : i, value : i, furthest : -1, expected : []};
+	};
+	return ret;
+};
+parsihax_Parser.letter = function() {
+	return parsihax_Parser["as"](parsihax_Parser.regexp(new EReg("[a-z]","i")),"a letter");
+};
+parsihax_Parser.letters = function() {
+	return parsihax_Parser.regexp(new EReg("[a-z]*","i"));
+};
+parsihax_Parser.digit = function() {
+	return parsihax_Parser["as"](parsihax_Parser.regexp(new EReg("[0-9]","")),"a digit");
+};
+parsihax_Parser.digits = function() {
+	return parsihax_Parser.regexp(new EReg("[0-9]*",""));
+};
+parsihax_Parser.whitespace = function() {
+	return parsihax_Parser["as"](parsihax_Parser.regexp(new EReg("\\s+","")),"whitespace");
+};
+parsihax_Parser.optWhitespace = function() {
+	return parsihax_Parser.regexp(new EReg("\\s*",""));
+};
+parsihax_Parser.any = function() {
+	var this1;
+	var this2 = new Array(1);
+	this1 = this2;
+	var ret = this1;
+	ret[0] = function(stream,i) {
+		if(i == null) {
+			i = 0;
+		}
+		if(i >= stream.length) {
+			return { status : false, index : -1, value : null, furthest : i, expected : ["any character"]};
+		} else {
+			return { status : true, index : i + 1, value : stream.charAt(i), furthest : -1, expected : []};
+		}
+	};
+	return ret;
+};
+parsihax_Parser.all = function() {
+	var this1;
+	var this2 = new Array(1);
+	this1 = this2;
+	var ret = this1;
+	ret[0] = function(stream,i) {
+		if(i == null) {
+			i = 0;
+		}
+		return { status : true, index : stream.length, value : stream.substring(i), furthest : -1, expected : []};
+	};
+	return ret;
+};
+parsihax_Parser.eof = function() {
+	var this1;
+	var this2 = new Array(1);
+	this1 = this2;
+	var ret = this1;
+	ret[0] = function(stream,i) {
+		if(i == null) {
+			i = 0;
+		}
+		if(i < stream.length) {
+			return { status : false, index : -1, value : null, furthest : i, expected : ["EOF"]};
+		} else {
+			return { status : true, index : i, value : null, furthest : -1, expected : []};
+		}
+	};
+	return ret;
+};
+parsihax_Parser.string = function(string) {
+	var len = string.length;
+	var expected = "'" + string + "'";
+	var this1;
+	var this2 = new Array(1);
+	this1 = this2;
+	var ret = this1;
+	ret[0] = function(stream,i) {
+		if(i == null) {
+			i = 0;
+		}
+		var head = stream.substring(i,i + len);
+		if(head == string) {
+			return { status : true, index : i + len, value : head, furthest : -1, expected : []};
+		} else {
+			return { status : false, index : -1, value : null, furthest : i, expected : [expected]};
+		}
+	};
+	return ret;
+};
+parsihax_Parser["char"] = function(character) {
+	return parsihax_Parser["as"](parsihax_Parser.test(function(ch) {
+		return character == ch;
+	}),"'" + character + "'");
+};
+parsihax_Parser.oneOf = function(string) {
+	return parsihax_Parser.test(function(ch) {
+		return string.indexOf(ch) >= 0;
+	});
+};
+parsihax_Parser.noneOf = function(string) {
+	return parsihax_Parser.test(function(ch) {
+		return string.indexOf(ch) < 0;
+	});
+};
+parsihax_Parser.regexp = function(re,group) {
+	if(group == null) {
+		group = 0;
+	}
+	var expected = Std.string(re);
+	var this1;
+	var this2 = new Array(1);
+	this1 = this2;
+	var ret = this1;
+	ret[0] = function(stream,i) {
+		if(i == null) {
+			i = 0;
+		}
+		var match = stream.substring(i);
+		var match1 = re.match(match);
+		if(match1) {
+			var groupMatch = re.matched(group);
+			var pos = re.matchedPos();
+			if(groupMatch != null && pos.pos == 0) {
+				return { status : true, index : i + pos.len, value : groupMatch, furthest : -1, expected : []};
+			}
+		}
+		return { status : false, index : -1, value : null, furthest : i, expected : [expected]};
+	};
+	return ret;
+};
+parsihax_Parser.succeed = function(value) {
+	var this1;
+	var this2 = new Array(1);
+	this1 = this2;
+	var ret = this1;
+	ret[0] = function(stream,i) {
+		if(i == null) {
+			i = 0;
+		}
+		return { status : true, index : i, value : value, furthest : -1, expected : []};
+	};
+	return ret;
+};
+parsihax_Parser.fail = function(expected) {
+	var this1;
+	var this2 = new Array(1);
+	this1 = this2;
+	var ret = this1;
+	ret[0] = function(stream,i) {
+		if(i == null) {
+			i = 0;
+		}
+		return { status : false, index : -1, value : null, furthest : i, expected : [expected]};
+	};
+	return ret;
+};
+parsihax_Parser.empty = function() {
+	return parsihax_Parser.fail("empty");
+};
+parsihax_Parser.seq = function(parsers) {
+	if(parsers.length == 0) {
+		return parsihax_Parser.fail("sequence of parsers");
+	}
+	var this1;
+	var this2 = new Array(1);
+	this1 = this2;
+	var ret = this1;
+	ret[0] = function(stream,i) {
+		if(i == null) {
+			i = 0;
+		}
+		var result = null;
+		var accum = [];
+		var _g = 0;
+		while(_g < parsers.length) {
+			var parser = parsers[_g];
+			++_g;
+			result = parsihax_ParseUtil.mergeReplies(parser[0](stream,i),result);
+			if(!result.status) {
+				return result;
+			}
+			accum.push(result.value);
+			i = result.index;
+		}
+		return parsihax_ParseUtil.mergeReplies({ status : true, index : i, value : accum, furthest : -1, expected : []},result);
+	};
+	return ret;
+};
+parsihax_Parser.alt = function(parsers) {
+	if(parsers.length == 0) {
+		return parsihax_Parser.fail("at least one alt");
+	}
+	var this1;
+	var this2 = new Array(1);
+	this1 = this2;
+	var ret = this1;
+	ret[0] = function(stream,i) {
+		if(i == null) {
+			i = 0;
+		}
+		var result = null;
+		var _g = 0;
+		while(_g < parsers.length) {
+			var parser = parsers[_g];
+			++_g;
+			result = parsihax_ParseUtil.mergeReplies(parser[0](stream,i),result);
+			if(result.status) {
+				return result;
+			}
+		}
+		return result;
+	};
+	return ret;
+};
+parsihax_Parser.sepBy = function(parser,separator) {
+	return parsihax_Parser.or(parsihax_Parser.sepBy1(parser,separator),parsihax_Parser.succeed([]));
+};
+parsihax_Parser.sepBy1 = function(parser,separator) {
+	var pairs = parsihax_Parser.many(parsihax_Parser.then(separator,parser));
+	return parsihax_Parser.flatMap(parser,function(r) {
+		return parsihax_Parser.map(pairs,function(rs) {
+			return [r].concat(rs);
+		});
+	});
+};
+parsihax_Parser.test = function(predicate) {
+	var this1;
+	var this2 = new Array(1);
+	this1 = this2;
+	var ret = this1;
+	ret[0] = function(stream,i) {
+		if(i == null) {
+			i = 0;
+		}
+		var $char = stream.charAt(i);
+		if(i < stream.length && predicate($char)) {
+			return { status : true, index : i + 1, value : $char, furthest : -1, expected : []};
+		} else {
+			return { status : false, index : -1, value : null, furthest : i, expected : ["a character matching " + Std.string(predicate)]};
+		}
+	};
+	return ret;
+};
+parsihax_Parser.takeWhile = function(predicate) {
+	var this1;
+	var this2 = new Array(1);
+	this1 = this2;
+	var ret = this1;
+	ret[0] = function(stream,i) {
+		if(i == null) {
+			i = 0;
+		}
+		var j = i;
+		while(true) {
+			var tmp;
+			if(j < stream.length) {
+				var tmp1 = stream.charAt(j);
+				tmp = predicate(tmp1);
+			} else {
+				tmp = false;
+			}
+			if(!tmp) {
+				break;
+			}
+			++j;
+		}
+		return { status : true, index : j, value : stream.substring(i,j), furthest : -1, expected : []};
+	};
+	return ret;
+};
+parsihax_Parser.or = function(parser,alternative) {
+	return parsihax_Parser.alt([parser,alternative]);
+};
+parsihax_Parser.flatMap = function(parser,fun) {
+	var this1;
+	var this2 = new Array(1);
+	this1 = this2;
+	var ret = this1;
+	ret[0] = function(stream,i) {
+		if(i == null) {
+			i = 0;
+		}
+		var result = parser[0](stream,i);
+		if(!result.status) {
+			return result;
+		}
+		var nextParseObject = fun(result.value);
+		return parsihax_ParseUtil.mergeReplies(nextParseObject[0](stream,result.index),result);
+	};
+	return ret;
+};
+parsihax_Parser.then = function(parser,next) {
+	return parsihax_Parser.flatMap(parser,function(result) {
+		return next;
+	});
+};
+parsihax_Parser.map = function(parser,fun) {
+	var this1;
+	var this2 = new Array(1);
+	this1 = this2;
+	var ret = this1;
+	ret[0] = function(stream,i) {
+		if(i == null) {
+			i = 0;
+		}
+		var result = parser[0](stream,i);
+		if(!result.status) {
+			return result;
+		}
+		return parsihax_ParseUtil.mergeReplies({ status : true, index : result.index, value : fun(result.value), furthest : -1, expected : []},result);
+	};
+	return ret;
+};
+parsihax_Parser.result = function(parser,value) {
+	return parsihax_Parser.map(parser,function(_) {
+		return value;
+	});
+};
+parsihax_Parser.skip = function(parser,next) {
+	return parsihax_Parser.flatMap(parser,function(result) {
+		return parsihax_Parser.result(next,result);
+	});
+};
+parsihax_Parser.many = function(parser) {
+	var this1;
+	var this2 = new Array(1);
+	this1 = this2;
+	var ret = this1;
+	ret[0] = function(stream,i) {
+		if(i == null) {
+			i = 0;
+		}
+		var accum = [];
+		var result = null;
+		while(true) {
+			result = parsihax_ParseUtil.mergeReplies(parser[0](stream,i),result);
+			if(result.status) {
+				i = result.index;
+				accum.push(result.value);
+			} else {
+				return parsihax_ParseUtil.mergeReplies({ status : true, index : i, value : accum, furthest : -1, expected : []},result);
+			}
+		}
+	};
+	return ret;
+};
+parsihax_Parser.many1 = function(parser) {
+	return parsihax_Parser.atLeast(parser,1);
+};
+parsihax_Parser.times = function(parser,min,max) {
+	if(max == null) {
+		max = min;
+	}
+	var this1;
+	var this2 = new Array(1);
+	this1 = this2;
+	var ret = this1;
+	ret[0] = function(stream,i) {
+		if(i == null) {
+			i = 0;
+		}
+		var accum = [];
+		var start = i;
+		var result = null;
+		var prevParseResult = null;
+		var _g1 = 0;
+		var _g = min;
+		while(_g1 < _g) {
+			var times = _g1++;
+			result = parser[0](stream,i);
+			prevParseResult = parsihax_ParseUtil.mergeReplies(result,prevParseResult);
+			if(result.status) {
+				i = result.index;
+				accum.push(result.value);
+			} else {
+				return prevParseResult;
+			}
+		}
+		var _g11 = 0;
+		var _g2 = max;
+		while(_g11 < _g2) {
+			var times1 = _g11++;
+			result = parser[0](stream,i);
+			prevParseResult = parsihax_ParseUtil.mergeReplies(result,prevParseResult);
+			if(result.status) {
+				i = result.index;
+				accum.push(result.value);
+			} else {
+				break;
+			}
+		}
+		return parsihax_ParseUtil.mergeReplies({ status : true, index : i, value : accum, furthest : -1, expected : []},prevParseResult);
+	};
+	return ret;
+};
+parsihax_Parser.atMost = function(parser,n) {
+	return parsihax_Parser.times(parser,0,n);
+};
+parsihax_Parser.atLeast = function(parser,n) {
+	return parsihax_Parser.map(parsihax_Parser.seq([parsihax_Parser.times(parser,n),parsihax_Parser.many(parser)]),function(results) {
+		return results[0].concat(results[1]);
+	});
+};
+parsihax_Parser["as"] = function(parser,expected) {
+	var this1;
+	var this2 = new Array(1);
+	this1 = this2;
+	var ret = this1;
+	ret[0] = function(stream,i) {
+		if(i == null) {
+			i = 0;
+		}
+		var reply = parser[0](stream,i);
+		if(!reply.status) {
+			reply.expected = [expected];
+		}
+		return reply;
+	};
+	return ret;
+};
+parsihax_Parser.lazy = function(fun) {
+	var parser = null;
+	var this1;
+	var this2 = new Array(1);
+	this1 = this2;
+	var ret = this1;
+	ret[0] = function(stream,i) {
+		if(i == null) {
+			i = 0;
+		}
+		var param = fun()[0];
+		return (parser[0] = param)(stream,i);
+	};
+	parser = ret;
+	return parser;
+};
+var parsihax_ParseUtil = function() { };
+parsihax_ParseUtil.__name__ = ["parsihax","ParseUtil"];
+parsihax_ParseUtil.formatError = function(result,stream) {
+	var sexpected = result.expected.length == 1 ? result.expected[0] : "one of " + result.expected.join(", ");
+	var indexOffset = result.furthest;
+	var lines = stream.substring(0,indexOffset).split("\n");
+	var lineWeAreUpTo = lines.length;
+	var columnWeAreUpTo = lines[lines.length - 1].length + 1;
+	var got = "";
+	if(indexOffset == stream.length) {
+		got = ", got the end of the stream";
+	} else {
+		var prefix = indexOffset > 0 ? "'..." : "'";
+		var suffix = stream.length - indexOffset > 12 ? "...'" : "'";
+		got = " at line " + lineWeAreUpTo + " column " + columnWeAreUpTo + ", got " + prefix + stream.substring(indexOffset,indexOffset + 12) + suffix;
+	}
+	return "expected " + sexpected + got;
+};
+parsihax_ParseUtil.makeSuccess = function(index,value) {
+	return { status : true, index : index, value : value, furthest : -1, expected : []};
+};
+parsihax_ParseUtil.makeFailure = function(index,expected) {
+	return { status : false, index : -1, value : null, furthest : index, expected : [expected]};
+};
+parsihax_ParseUtil.mergeReplies = function(result,last) {
+	if(last == null) {
+		return result;
+	}
+	if(result.furthest > last.furthest) {
+		return result;
+	}
+	var expected = result.furthest == last.furthest ? parsihax_ParseUtil.unsafeUnion(result.expected,last.expected) : last.expected;
+	return { status : result.status, index : result.index, value : result.value, furthest : last.furthest, expected : expected};
+};
+parsihax_ParseUtil.unsafeUnion = function(xs,ys) {
+	if(xs.length == 0) {
+		return ys;
+	} else if(ys.length == 0) {
+		return xs;
+	}
+	var result = xs.concat(ys);
+	result.sort(function(a,b) {
+		a = a.toLowerCase();
+		b = b.toLowerCase();
+		if(a < b) {
+			return -1;
+		}
+		if(a > b) {
+			return 1;
+		}
+		return 0;
+	});
+	return result;
+};
+var js_Boot = function() { };
+js_Boot.__name__ = ["js","Boot"];
+js_Boot.__unhtml = function(s) {
+	return s.split("&").join("&amp;").split("<").join("&lt;").split(">").join("&gt;");
+};
+js_Boot.__trace = function(v,i) {
+	var msg = i != null ? i.fileName + ":" + i.lineNumber + ": " : "";
+	msg += js_Boot.__string_rec(v,"");
+	if(i != null && i.customParams != null) {
+		var _g = 0;
+		var _g1 = i.customParams;
+		while(_g < _g1.length) {
+			var v1 = _g1[_g];
+			++_g;
+			msg += "," + js_Boot.__string_rec(v1,"");
+		}
+	}
+	var d;
+	var tmp;
+	if(typeof(document) != "undefined") {
+		d = document.getElementById("haxe:trace");
+		tmp = d != null;
+	} else {
+		tmp = false;
+	}
+	if(tmp) {
+		d.innerHTML += js_Boot.__unhtml(msg) + "<br/>";
+	} else if(typeof console != "undefined" && console.log != null) {
+		console.log(msg);
+	}
+};
+js_Boot.getClass = function(o) {
+	if((o instanceof Array) && o.__enum__ == null) {
+		return Array;
+	} else {
+		var cl = o.__class__;
+		if(cl != null) {
+			return cl;
+		}
+		var name = js_Boot.__nativeClassName(o);
+		if(name != null) {
+			return js_Boot.__resolveNativeClass(name);
+		}
+		return null;
+	}
+};
+js_Boot.__string_rec = function(o,s) {
+	if(o == null) {
+		return "null";
+	}
+	if(s.length >= 5) {
+		return "<...>";
+	}
+	var t = typeof(o);
+	if(t == "function" && (o.__name__ || o.__ename__)) {
+		t = "object";
+	}
+	switch(t) {
+	case "function":
+		return "<function>";
+	case "object":
+		if(o instanceof Array) {
+			if(o.__enum__) {
+				if(o.length == 2) {
+					return o[0];
+				}
+				var str = o[0] + "(";
+				s += "\t";
+				var _g1 = 2;
+				var _g = o.length;
+				while(_g1 < _g) {
+					var i = _g1++;
+					if(i != 2) {
+						str += "," + js_Boot.__string_rec(o[i],s);
+					} else {
+						str += js_Boot.__string_rec(o[i],s);
+					}
+				}
+				return str + ")";
+			}
+			var l = o.length;
+			var i1;
+			var str1 = "[";
+			s += "\t";
+			var _g11 = 0;
+			var _g2 = l;
+			while(_g11 < _g2) {
+				var i2 = _g11++;
+				str1 += (i2 > 0 ? "," : "") + js_Boot.__string_rec(o[i2],s);
+			}
+			str1 += "]";
+			return str1;
+		}
+		var tostr;
+		try {
+			tostr = o.toString;
+		} catch( e ) {
+			haxe_CallStack.lastException = e;
+			return "???";
+		}
+		if(tostr != null && tostr != Object.toString && typeof(tostr) == "function") {
+			var s2 = o.toString();
+			if(s2 != "[object Object]") {
+				return s2;
+			}
+		}
+		var k = null;
+		var str2 = "{\n";
+		s += "\t";
+		var hasp = o.hasOwnProperty != null;
+		for( var k in o ) {
+		if(hasp && !o.hasOwnProperty(k)) {
+			continue;
+		}
+		if(k == "prototype" || k == "__class__" || k == "__super__" || k == "__interfaces__" || k == "__properties__") {
+			continue;
+		}
+		if(str2.length != 2) {
+			str2 += ", \n";
+		}
+		str2 += s + k + " : " + js_Boot.__string_rec(o[k],s);
+		}
+		s = s.substring(1);
+		str2 += "\n" + s + "}";
+		return str2;
+	case "string":
+		return o;
+	default:
+		return String(o);
+	}
+};
+js_Boot.__interfLoop = function(cc,cl) {
+	if(cc == null) {
+		return false;
+	}
+	if(cc == cl) {
+		return true;
+	}
+	var intf = cc.__interfaces__;
+	if(intf != null) {
+		var _g1 = 0;
+		var _g = intf.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			var i1 = intf[i];
+			if(i1 == cl || js_Boot.__interfLoop(i1,cl)) {
+				return true;
+			}
+		}
+	}
+	return js_Boot.__interfLoop(cc.__super__,cl);
+};
+js_Boot.__instanceof = function(o,cl) {
+	if(cl == null) {
+		return false;
+	}
+	switch(cl) {
+	case Array:
+		if((o instanceof Array)) {
+			return o.__enum__ == null;
+		} else {
+			return false;
+		}
+		break;
+	case Bool:
+		return typeof(o) == "boolean";
+	case Dynamic:
+		return true;
+	case Float:
+		return typeof(o) == "number";
+	case Int:
+		if(typeof(o) == "number") {
+			return (o|0) === o;
+		} else {
+			return false;
+		}
+		break;
+	case String:
+		return typeof(o) == "string";
+	default:
+		if(o != null) {
+			if(typeof(cl) == "function") {
+				if(o instanceof cl) {
+					return true;
+				}
+				if(js_Boot.__interfLoop(js_Boot.getClass(o),cl)) {
+					return true;
+				}
+			} else if(typeof(cl) == "object" && js_Boot.__isNativeObj(cl)) {
+				if(o instanceof cl) {
+					return true;
+				}
+			}
+		} else {
+			return false;
+		}
+		if(cl == Class ? o.__name__ != null : false) {
+			return true;
+		}
+		if(cl == Enum ? o.__ename__ != null : false) {
+			return true;
+		}
+		return o.__enum__ == cl;
+	}
+};
+js_Boot.__cast = function(o,t) {
+	if(js_Boot.__instanceof(o,t)) {
+		return o;
+	} else {
+		throw new js__$Boot_HaxeError("Cannot cast " + Std.string(o) + " to " + Std.string(t));
+	}
+};
+js_Boot.__nativeClassName = function(o) {
+	var name = js_Boot.__toStr.call(o).slice(8,-1);
+	if(name == "Object" || name == "Function" || name == "Math" || name == "JSON") {
+		return null;
+	}
+	return name;
+};
+js_Boot.__isNativeObj = function(o) {
+	return js_Boot.__nativeClassName(o) != null;
+};
+js_Boot.__resolveNativeClass = function(name) {
+	return $global[name];
+};
+var dapi_Die = function(sides,meta) {
+	this.sides = sides;
+	this.meta = meta;
+};
+dapi_Die.__name__ = ["dapi","Die"];
+dapi_Die.withSides = function(sides) {
+	return new dapi_Die(sides,thx_Unit.unit);
+};
+dapi_Die.prototype = {
+	sides: null
+	,meta: null
+	,roll: function(random) {
+		return this.rollWithMeta(random,this.meta);
+	}
+	,rollWithMeta: function(random,meta) {
+		return new dapi_Die(this.sides,{ result : random(this.sides), meta : meta});
+	}
+	,toString: function() {
+		return "d" + this.sides;
+	}
+	,toStringWithMeta: function(f) {
+		return "d" + this.sides + " [" + f(this.meta) + "]";
+	}
+	,__class__: dapi_Die
+};
+var thx_Unit = { __ename__ : ["thx","Unit"], __constructs__ : ["unit"] };
+thx_Unit.unit = ["unit",0];
+thx_Unit.unit.__enum__ = thx_Unit;
+var dapi_DiceParser = function() { };
+dapi_DiceParser.__name__ = ["dapi","DiceParser"];
+dapi_DiceParser.parse = function(s) {
+	var _g = dapi_DiceParser.expression[0](s);
+	if(_g.status == true) {
+		var value = _g.value;
+		return thx_Either.Right(value);
+	} else {
+		var v = _g;
+		haxe_Log.trace(v,{ fileName : "DiceParser.hx", lineNumber : 17, className : "dapi.DiceParser", methodName : "parse"});
+		var sub = s.substring(v.furthest,40);
+		var rest = sub != s ? " within \"" + s + "\"" : "";
+		var msg = "expected " + v.expected.join(" or ") + " for \"" + sub + "\"" + rest;
+		return thx_Either.Left(msg);
+	}
+};
+dapi_DiceParser.parseDie = function(s) {
+	var _g = dapi_DiceParser.dN[0](s);
+	if(_g.status == true) {
+		var value = _g.value;
+		return thx_Either.Right(value);
+	} else {
+		var v = _g;
+		var msg = "expected " + v.expected.join(" or ") + " within \"" + s + "\"";
+		return thx_Either.Left(msg);
+	}
+};
+dapi_DiceParser.token = function(parser) {
+	return parsihax_Parser.skip(parser,dapi_DiceParser.whitespace);
+};
+dapi_DiceParser.commaSep = function(parser) {
+	return parsihax_Parser.or(parsihax_Parser.sepBy1(parser,dapi_DiceParser.token(parsihax_Parser.string(","))),parsihax_Parser.succeed([]));
 };
 var dapi_DiceResults = function() { };
 dapi_DiceResults.__name__ = ["dapi","DiceResults"];
@@ -748,35 +1590,28 @@ dapi_DiceResults.extractResult = function(expr) {
 		return meta5.result;
 	}
 };
-var dapi_Die = function(sides,meta) {
-	this.sides = sides;
-	this.meta = meta;
-};
-dapi_Die.__name__ = ["dapi","Die"];
-dapi_Die.withSides = function(sides) {
-	return new dapi_Die(sides,thx_Unit.unit);
-};
-dapi_Die.prototype = {
-	sides: null
-	,meta: null
-	,roll: function(random) {
-		return this.rollWithMeta(random,this.meta);
-	}
-	,rollWithMeta: function(random,meta) {
-		return new dapi_Die(this.sides,{ result : random(this.sides), meta : meta});
-	}
-	,toString: function() {
-		return "d" + this.sides;
-	}
-	,toStringWithMeta: function(f) {
-		return "d" + this.sides + " [" + f(this.meta) + "]";
-	}
-	,__class__: dapi_Die
-};
 var dapi_Roller = function(random) {
 	this.random = random;
 };
 dapi_Roller.__name__ = ["dapi","Roller"];
+dapi_Roller.groupToDice = function(group) {
+	switch(group[1]) {
+	case 0:
+		var dice = group[2];
+		return dice;
+	case 1:
+		var die = group[3];
+		var times = group[2];
+		var _g = [];
+		var _g2 = 0;
+		var _g1 = times;
+		while(_g2 < _g1) {
+			var i = _g2++;
+			_g.push(die);
+		}
+		return _g;
+	}
+};
 dapi_Roller.explodeRolls = function(random,dice,explodeOn) {
 	var rolls = dice.map(function(_) {
 		return _.roll(random);
@@ -799,29 +1634,29 @@ dapi_Roller.prototype = {
 		case 1:
 			var meta = expr[3];
 			var dice = expr[2];
-			var rolls = dice.map(function(_) {
+			var rolls = dapi_Roller.groupToDice(dice).map(function(_) {
 				return _.roll(_gthis.random);
 			});
 			var result = thx_Arrays.reduce(rolls,function(acc,roll) {
 				return acc + roll.meta.result;
 			},0);
-			return dapi_DiceExpression.RollMany(rolls,{ result : result, meta : meta});
+			return dapi_DiceExpression.RollMany(dapi_DiceGroup.DiceList(rolls),{ result : result, meta : meta});
 		case 2:
 			var meta1 = expr[4];
 			var drop = expr[3];
 			var dice1 = expr[2];
-			var rolls1 = dice1.map(function(_1) {
+			var rolls1 = dapi_Roller.groupToDice(dice1).map(function(_1) {
 				return _1.roll(_gthis.random);
 			});
 			var result1 = thx_ArrayInts.sum(thx_Arrays.order(rolls1.map(function(_2) {
 				return _2.meta.result;
 			}),thx_Ints.compare).slice(drop));
-			return dapi_DiceExpression.RollAndDropLow(rolls1,drop,{ result : result1, meta : meta1});
+			return dapi_DiceExpression.RollAndDropLow(dapi_DiceGroup.DiceList(rolls1),drop,{ result : result1, meta : meta1});
 		case 3:
 			var meta2 = expr[4];
 			var keep = expr[3];
 			var dice2 = expr[2];
-			var rolls2 = dice2.map(function(_3) {
+			var rolls2 = dapi_Roller.groupToDice(dice2).map(function(_3) {
 				return _3.roll(_gthis.random);
 			});
 			var result2 = thx_Arrays.order(rolls2.map(function(_4) {
@@ -829,16 +1664,16 @@ dapi_Roller.prototype = {
 			}),thx_Ints.compare).slice();
 			result2.reverse();
 			var result3 = thx_ArrayInts.sum(result2.slice(0,keep));
-			return dapi_DiceExpression.RollAndKeepHigh(rolls2,keep,{ result : result3, meta : meta2});
+			return dapi_DiceExpression.RollAndKeepHigh(dapi_DiceGroup.DiceList(rolls2),keep,{ result : result3, meta : meta2});
 		case 4:
 			var meta3 = expr[4];
 			var explodeOn = expr[3];
 			var dice3 = expr[2];
-			var rolls3 = dapi_Roller.explodeRolls(this.random,dice3,explodeOn);
+			var rolls3 = dapi_Roller.explodeRolls(this.random,dapi_Roller.groupToDice(dice3),explodeOn);
 			var result4 = thx_Arrays.reduce(rolls3,function(acc1,roll1) {
 				return acc1 + roll1.meta.result;
 			},0);
-			return dapi_DiceExpression.RollAndExplode(rolls3,explodeOn,{ result : result4, meta : meta3});
+			return dapi_DiceExpression.RollAndExplode(dapi_DiceGroup.DiceList(rolls3),explodeOn,{ result : result4, meta : meta3});
 		case 5:
 			var meta4 = expr[5];
 			var b = expr[4];
@@ -858,69 +1693,41 @@ dapi_Roller.prototype = {
 		}
 	}
 	,rollDice: function(dice,sides) {
-		var _g = [];
-		var _g2 = 0;
-		var _g1 = dice;
-		while(_g2 < _g1) {
-			var i = _g2++;
-			_g.push(dapi_Die.withSides(sides));
-		}
-		return this.roll(dapi_DiceExpression.RollMany(_g,thx_Unit.unit));
+		return this.roll(dapi_DiceExpression.RollMany(dapi_DiceGroup.RepeatDie(dice,new dapi_Die(sides,thx_Unit.unit)),thx_Unit.unit));
 	}
 	,rollOne: function(sides) {
 		return this.roll(dapi_DiceExpression.RollOne(dapi_Die.withSides(sides)));
 	}
 	,rollDiceAndDropLow: function(dice,sides,drop) {
-		var _g = [];
-		var _g2 = 0;
-		var _g1 = dice;
-		while(_g2 < _g1) {
-			var i = _g2++;
-			_g.push(dapi_Die.withSides(sides));
-		}
-		return this.roll(dapi_DiceExpression.RollAndDropLow(_g,drop,thx_Unit.unit));
+		return this.roll(dapi_DiceExpression.RollAndDropLow(dapi_DiceGroup.RepeatDie(dice,new dapi_Die(sides,thx_Unit.unit)),drop,thx_Unit.unit));
 	}
 	,rollDiceAndKeepHigh: function(dice,sides,keep) {
-		var _g = [];
-		var _g2 = 0;
-		var _g1 = dice;
-		while(_g2 < _g1) {
-			var i = _g2++;
-			_g.push(dapi_Die.withSides(sides));
-		}
-		return this.roll(dapi_DiceExpression.RollAndKeepHigh(_g,keep,thx_Unit.unit));
+		return this.roll(dapi_DiceExpression.RollAndKeepHigh(dapi_DiceGroup.RepeatDie(dice,new dapi_Die(sides,thx_Unit.unit)),keep,thx_Unit.unit));
 	}
 	,rollDiceAndExplode: function(dice,sides,explodeOn) {
-		var _g = [];
-		var _g2 = 0;
-		var _g1 = dice;
-		while(_g2 < _g1) {
-			var i = _g2++;
-			_g.push(dapi_Die.withSides(sides));
-		}
-		return this.roll(dapi_DiceExpression.RollAndExplode(_g,explodeOn,thx_Unit.unit));
+		return this.roll(dapi_DiceExpression.RollAndExplode(dapi_DiceGroup.RepeatDie(dice,new dapi_Die(sides,thx_Unit.unit)),explodeOn,thx_Unit.unit));
 	}
 	,__class__: dapi_Roller
 };
-var thx_Unit = { __ename__ : ["thx","Unit"], __constructs__ : ["unit"] };
-thx_Unit.unit = ["unit",0];
-thx_Unit.unit.__enum__ = thx_Unit;
 var dapi_SimpleDiceDSL = function() { };
 dapi_SimpleDiceDSL.__name__ = ["dapi","SimpleDiceDSL"];
+dapi_SimpleDiceDSL.many = function(dice,die) {
+	return dapi_DiceDSL.many(dice,die,thx_Unit.unit);
+};
 dapi_SimpleDiceDSL.dice = function(dice) {
 	return dapi_DiceDSL.dice(dice,thx_Unit.unit);
 };
 dapi_SimpleDiceDSL.die = function(sides) {
 	return dapi_DiceDSL.die(sides,thx_Unit.unit);
 };
-dapi_SimpleDiceDSL.dropLow = function(dice,drop) {
-	return dapi_DiceDSL.dropLow(dice,drop,thx_Unit.unit);
+dapi_SimpleDiceDSL.dropLow = function(dice,die,drop) {
+	return dapi_DiceDSL.dropLow(dice,die,drop,thx_Unit.unit);
 };
-dapi_SimpleDiceDSL.keepHigh = function(dice,keep) {
-	return dapi_DiceDSL.keepHigh(dice,keep,thx_Unit.unit);
+dapi_SimpleDiceDSL.keepHigh = function(dice,die,keep) {
+	return dapi_DiceDSL.keepHigh(dice,die,keep,thx_Unit.unit);
 };
-dapi_SimpleDiceDSL.explosive = function(dice,explodeOn) {
-	return dapi_DiceDSL.explosive(dice,explodeOn,thx_Unit.unit);
+dapi_SimpleDiceDSL.explosive = function(dice,die,explodeOn) {
+	return dapi_DiceDSL.explosive(dice,die,explodeOn,thx_Unit.unit);
 };
 dapi_SimpleDiceDSL.add = function(a,b) {
 	return dapi_DiceDSL.add(a,b,thx_Unit.unit);
@@ -1641,231 +2448,6 @@ js__$Boot_HaxeError.prototype = $extend(Error.prototype,{
 	val: null
 	,__class__: js__$Boot_HaxeError
 });
-var js_Boot = function() { };
-js_Boot.__name__ = ["js","Boot"];
-js_Boot.__unhtml = function(s) {
-	return s.split("&").join("&amp;").split("<").join("&lt;").split(">").join("&gt;");
-};
-js_Boot.__trace = function(v,i) {
-	var msg = i != null ? i.fileName + ":" + i.lineNumber + ": " : "";
-	msg += js_Boot.__string_rec(v,"");
-	if(i != null && i.customParams != null) {
-		var _g = 0;
-		var _g1 = i.customParams;
-		while(_g < _g1.length) {
-			var v1 = _g1[_g];
-			++_g;
-			msg += "," + js_Boot.__string_rec(v1,"");
-		}
-	}
-	var d;
-	var tmp;
-	if(typeof(document) != "undefined") {
-		d = document.getElementById("haxe:trace");
-		tmp = d != null;
-	} else {
-		tmp = false;
-	}
-	if(tmp) {
-		d.innerHTML += js_Boot.__unhtml(msg) + "<br/>";
-	} else if(typeof console != "undefined" && console.log != null) {
-		console.log(msg);
-	}
-};
-js_Boot.getClass = function(o) {
-	if((o instanceof Array) && o.__enum__ == null) {
-		return Array;
-	} else {
-		var cl = o.__class__;
-		if(cl != null) {
-			return cl;
-		}
-		var name = js_Boot.__nativeClassName(o);
-		if(name != null) {
-			return js_Boot.__resolveNativeClass(name);
-		}
-		return null;
-	}
-};
-js_Boot.__string_rec = function(o,s) {
-	if(o == null) {
-		return "null";
-	}
-	if(s.length >= 5) {
-		return "<...>";
-	}
-	var t = typeof(o);
-	if(t == "function" && (o.__name__ || o.__ename__)) {
-		t = "object";
-	}
-	switch(t) {
-	case "function":
-		return "<function>";
-	case "object":
-		if(o instanceof Array) {
-			if(o.__enum__) {
-				if(o.length == 2) {
-					return o[0];
-				}
-				var str = o[0] + "(";
-				s += "\t";
-				var _g1 = 2;
-				var _g = o.length;
-				while(_g1 < _g) {
-					var i = _g1++;
-					if(i != 2) {
-						str += "," + js_Boot.__string_rec(o[i],s);
-					} else {
-						str += js_Boot.__string_rec(o[i],s);
-					}
-				}
-				return str + ")";
-			}
-			var l = o.length;
-			var i1;
-			var str1 = "[";
-			s += "\t";
-			var _g11 = 0;
-			var _g2 = l;
-			while(_g11 < _g2) {
-				var i2 = _g11++;
-				str1 += (i2 > 0 ? "," : "") + js_Boot.__string_rec(o[i2],s);
-			}
-			str1 += "]";
-			return str1;
-		}
-		var tostr;
-		try {
-			tostr = o.toString;
-		} catch( e ) {
-			haxe_CallStack.lastException = e;
-			return "???";
-		}
-		if(tostr != null && tostr != Object.toString && typeof(tostr) == "function") {
-			var s2 = o.toString();
-			if(s2 != "[object Object]") {
-				return s2;
-			}
-		}
-		var k = null;
-		var str2 = "{\n";
-		s += "\t";
-		var hasp = o.hasOwnProperty != null;
-		for( var k in o ) {
-		if(hasp && !o.hasOwnProperty(k)) {
-			continue;
-		}
-		if(k == "prototype" || k == "__class__" || k == "__super__" || k == "__interfaces__" || k == "__properties__") {
-			continue;
-		}
-		if(str2.length != 2) {
-			str2 += ", \n";
-		}
-		str2 += s + k + " : " + js_Boot.__string_rec(o[k],s);
-		}
-		s = s.substring(1);
-		str2 += "\n" + s + "}";
-		return str2;
-	case "string":
-		return o;
-	default:
-		return String(o);
-	}
-};
-js_Boot.__interfLoop = function(cc,cl) {
-	if(cc == null) {
-		return false;
-	}
-	if(cc == cl) {
-		return true;
-	}
-	var intf = cc.__interfaces__;
-	if(intf != null) {
-		var _g1 = 0;
-		var _g = intf.length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			var i1 = intf[i];
-			if(i1 == cl || js_Boot.__interfLoop(i1,cl)) {
-				return true;
-			}
-		}
-	}
-	return js_Boot.__interfLoop(cc.__super__,cl);
-};
-js_Boot.__instanceof = function(o,cl) {
-	if(cl == null) {
-		return false;
-	}
-	switch(cl) {
-	case Array:
-		if((o instanceof Array)) {
-			return o.__enum__ == null;
-		} else {
-			return false;
-		}
-		break;
-	case Bool:
-		return typeof(o) == "boolean";
-	case Dynamic:
-		return true;
-	case Float:
-		return typeof(o) == "number";
-	case Int:
-		if(typeof(o) == "number") {
-			return (o|0) === o;
-		} else {
-			return false;
-		}
-		break;
-	case String:
-		return typeof(o) == "string";
-	default:
-		if(o != null) {
-			if(typeof(cl) == "function") {
-				if(o instanceof cl) {
-					return true;
-				}
-				if(js_Boot.__interfLoop(js_Boot.getClass(o),cl)) {
-					return true;
-				}
-			} else if(typeof(cl) == "object" && js_Boot.__isNativeObj(cl)) {
-				if(o instanceof cl) {
-					return true;
-				}
-			}
-		} else {
-			return false;
-		}
-		if(cl == Class ? o.__name__ != null : false) {
-			return true;
-		}
-		if(cl == Enum ? o.__ename__ != null : false) {
-			return true;
-		}
-		return o.__enum__ == cl;
-	}
-};
-js_Boot.__cast = function(o,t) {
-	if(js_Boot.__instanceof(o,t)) {
-		return o;
-	} else {
-		throw new js__$Boot_HaxeError("Cannot cast " + Std.string(o) + " to " + Std.string(t));
-	}
-};
-js_Boot.__nativeClassName = function(o) {
-	var name = js_Boot.__toStr.call(o).slice(8,-1);
-	if(name == "Object" || name == "Function" || name == "Math" || name == "JSON") {
-		return null;
-	}
-	return name;
-};
-js_Boot.__isNativeObj = function(o) {
-	return js_Boot.__nativeClassName(o) != null;
-};
-js_Boot.__resolveNativeClass = function(name) {
-	return $global[name];
-};
 var js_html_compat_ArrayBuffer = function(a) {
 	if((a instanceof Array) && a.__enum__ == null) {
 		this.a = a;
@@ -1972,6 +2554,37 @@ js_html_compat_Uint8Array._subarray = function(start,end) {
 	var a = js_html_compat_Uint8Array._new(this.slice(start,end));
 	a.byteOffset = start;
 	return a;
+};
+var parsihax__$ParseObject_ParseObject_$Impl_$ = {};
+parsihax__$ParseObject_ParseObject_$Impl_$.__name__ = ["parsihax","_ParseObject","ParseObject_Impl_"];
+parsihax__$ParseObject_ParseObject_$Impl_$._new = function() {
+	var this1;
+	var this2 = new Array(1);
+	this1 = this2;
+	return this1;
+};
+parsihax__$ParseObject_ParseObject_$Impl_$.get_apply = function(this1) {
+	return this1[0];
+};
+parsihax__$ParseObject_ParseObject_$Impl_$.set_apply = function(this1,param) {
+	return this1[0] = param;
+};
+parsihax__$ParseObject_ParseObject_$Impl_$.to = function(v) {
+	var this1;
+	var this2 = new Array(1);
+	this1 = this2;
+	var ret = this1;
+	ret[0] = v;
+	return ret;
+};
+parsihax__$ParseObject_ParseObject_$Impl_$.opAdd = function(l,r) {
+	return parsihax_Parser.then(l,r);
+};
+parsihax__$ParseObject_ParseObject_$Impl_$.opOr = function(l,r) {
+	return parsihax_Parser.or(l,r);
+};
+parsihax__$ParseObject_ParseObject_$Impl_$.opDiv = function(l,r) {
+	return parsihax_Parser["as"](l,r);
 };
 var thx_Arrays = function() { };
 thx_Arrays.__name__ = ["thx","Arrays"];
@@ -11556,6 +12169,40 @@ if(ArrayBuffer.prototype.slice == null) {
 }
 var Uint8Array = $global.Uint8Array || js_html_compat_Uint8Array._new;
 DateTools.DAYS_OF_MONTH = [31,28,31,30,31,30,31,31,30,31,30,31];
+js_Boot.__toStr = ({ }).toString;
+dapi_DiceParser.whitespace = parsihax_Parser.regexp(new EReg("\\s*","m"));
+dapi_DiceParser.positive = parsihax_Parser["as"](parsihax_Parser.map(parsihax_Parser.regexp(new EReg("[1-9][0-9]*","")),Std.parseInt),"positive number");
+dapi_DiceParser.dN = (function($this) {
+	var $r;
+	var f = function(sides,meta) {
+		return new dapi_Die(sides,meta);
+	};
+	var tmp = function(a1) {
+		return f(a1,thx_Unit.unit);
+	};
+	$r = parsihax_Parser["as"](parsihax_Parser.then(parsihax_Parser.alt([parsihax_Parser["char"]("d"),parsihax_Parser["char"]("D")]),parsihax_Parser.map(dapi_DiceParser.positive,tmp)),"dN");
+	return $r;
+}(this));
+dapi_DiceParser.rollOne = parsihax_Parser.map(dapi_DiceParser.dN,dapi_DiceExpression.RollOne);
+dapi_DiceParser.literal = parsihax_Parser["as"](parsihax_Parser.map(dapi_DiceParser.positive,function(a1) {
+	return dapi_DiceExpression.Literal(a1,thx_Unit.unit);
+}),"literal number");
+dapi_DiceParser.rollManySame = parsihax_Parser.map(parsihax_Parser.seq([dapi_DiceParser.positive,dapi_DiceParser.dN]),function(r) {
+	return dapi_DiceExpression.RollMany(dapi_DiceGroup.RepeatDie(r[0],r[1]),thx_Unit.unit);
+});
+dapi_DiceParser.lbrace = dapi_DiceParser.token(parsihax_Parser.string("{"));
+dapi_DiceParser.rbrace = parsihax_Parser.string("}");
+dapi_DiceParser.rollMany = (function($this) {
+	var $r;
+	var _e = parsihax_Parser.skip(parsihax_Parser.then(dapi_DiceParser.lbrace,dapi_DiceParser.commaSep(dapi_DiceParser.dN)),dapi_DiceParser.rbrace);
+	$r = (function(fun) {
+		return parsihax_Parser.map(_e,fun);
+	})(function(_) {
+		return dapi_DiceExpression.RollMany(dapi_DiceGroup.DiceList(_),thx_Unit.unit);
+	});
+	return $r;
+}(this));
+dapi_DiceParser.expression = parsihax_Parser.then(dapi_DiceParser.whitespace,parsihax_Parser.alt([dapi_DiceParser.rollMany,dapi_DiceParser.rollManySame,dapi_DiceParser.rollOne,dapi_DiceParser.literal]));
 dapi_SimpleDiceDSL.d2 = dapi_DiceDSL.d2(thx_Unit.unit);
 dapi_SimpleDiceDSL.d4 = dapi_DiceDSL.d4(thx_Unit.unit);
 dapi_SimpleDiceDSL.d6 = dapi_DiceDSL.d6(thx_Unit.unit);
@@ -11569,7 +12216,6 @@ haxe__$Int32_Int32_$Impl_$._mul = Math.imul != null ? Math.imul : function(a,b) 
 };
 haxe_crypto_Base64.CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 haxe_ds_ObjectMap.count = 0;
-js_Boot.__toStr = ({ }).toString;
 js_html_compat_Uint8Array.BYTES_PER_ELEMENT = 1;
 thx_Dates.order = thx__$Ord_Ord_$Impl_$.fromIntComparison(thx_Dates.compare);
 thx_Floats.TOLERANCE = 10e-5;

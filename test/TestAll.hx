@@ -1,9 +1,10 @@
 import utest.Assert;
 import utest.UTest;
-import thx.Unit;
-
+using dapi.DiceExpression;
 using dapi.DiceExpressionExtensions;
 import dapi.DiceResult;
+import dapi.DiceParser;
+import dapi.Die;
 import dapi.Roller;
 import dapi.SimpleDiceDSL.*;
 
@@ -38,8 +39,47 @@ class TestAll {
   public function roller(seq = 1)
     return new Roller(function(max: Int) return ((seq++ - 1) % max) + 1);
 
-  public function testSimpleDSL() {
-    var e = subtract(add(die(6), dropLow([d8, d8, d8, d8], 1)), literal(1));
-    trace(e.toString());
+  // public function testSimpleDSL() {
+  //   var e = subtract(add(die(6), dropLow([d8, d8, d8, d6], 1)), literal(1)),
+  //       s = e.toString();
+  //   Assert.same(Right(e), DiceParser.parse(s));
+  // }
+
+  public function testParseDie() {
+    assertParseDie(d8, "d8");
+    assertParseDie(d12, "D12");
+  }
+
+  public function testParse() {
+    var tests: Array<DiceExpression<thx.Unit>> = [
+      die(6),
+      literal(2),
+      many(3, d6),
+      dice([d2, d4, d6])
+    ];
+    for(test in tests)
+      assertParseExpression(test);
+  }
+
+  public function assertParseDie(expected: Die<thx.Unit>, test: String) {
+    var parsed = DiceParser.parseDie(test);
+    switch parsed.either {
+      case Left(e):
+        Assert.fail(e);
+      case Right(v):
+        Assert.same(expected, v);
+    }
+  }
+
+  public function assertParseExpression(exp: DiceExpression<thx.Unit>) {
+    var test = exp.toString();
+    trace(test);
+    var parsed = DiceParser.parse(test);
+    switch parsed.either {
+      case Left(e):
+        Assert.fail(e);
+      case Right(v):
+        Assert.same(exp, v, 'expected $exp but it is $v for $test');
+    }
   }
 }

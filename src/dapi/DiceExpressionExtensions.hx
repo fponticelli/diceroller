@@ -2,6 +2,7 @@ package dapi;
 
 using thx.Functions;
 using thx.Arrays;
+import dapi.DiceExpression;
 
 class DiceExpressionExtensions {
   public static function toString<T>(expr: DiceExpression<T>) return switch expr {
@@ -23,11 +24,11 @@ class DiceExpressionExtensions {
       '$value';
   }
 
-  public static function diceToString<T>(dice: Array<Die<T>>): String {
-    var sides = dice.map.fn(_.sides).distinct();
-    return if(sides.length == 1) // all dice have the same number of sides
-      dice.length + dice[0].toString();
-    else
-      '{' + dice.map.fn(_.toString()).join("+") + '}';
-  }
+  public static function diceToString<T>(group: DiceGroup<T>)
+    return switch group {
+      case DiceList(dice):
+         '{' + dice.map.fn(_.toString()).join(",") + '}';
+      case RepeatDie(time, die):
+        '${time}${die.toString()}';
+    };
 }
