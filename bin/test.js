@@ -497,27 +497,27 @@ TestAll.prototype = {
 		switch(_g[1]) {
 		case 0:
 			var e = _g[2];
-			utest_Assert.fail(e,{ fileName : "TestAll.hx", lineNumber : 68, className : "TestAll", methodName : "assertParseDie"});
+			utest_Assert.fail(e,{ fileName : "TestAll.hx", lineNumber : 62, className : "TestAll", methodName : "assertParseDie"});
 			break;
 		case 1:
 			var v = _g[2];
-			utest_Assert.same(expected,v,null,null,null,{ fileName : "TestAll.hx", lineNumber : 70, className : "TestAll", methodName : "assertParseDie"});
+			utest_Assert.same(expected,v,null,null,null,{ fileName : "TestAll.hx", lineNumber : 64, className : "TestAll", methodName : "assertParseDie"});
 			break;
 		}
 	}
 	,assertParseExpression: function(exp) {
 		var test = dapi_DiceExpressionExtensions.toString(exp);
-		haxe_Log.trace(test,{ fileName : "TestAll.hx", lineNumber : 76, className : "TestAll", methodName : "assertParseExpression"});
+		haxe_Log.trace(test,{ fileName : "TestAll.hx", lineNumber : 70, className : "TestAll", methodName : "assertParseExpression"});
 		var parsed = dapi_DiceParser.parse(test);
 		var _g = parsed;
 		switch(_g[1]) {
 		case 0:
 			var e = _g[2];
-			utest_Assert.fail(e,{ fileName : "TestAll.hx", lineNumber : 80, className : "TestAll", methodName : "assertParseExpression"});
+			utest_Assert.fail(e,{ fileName : "TestAll.hx", lineNumber : 74, className : "TestAll", methodName : "assertParseExpression"});
 			break;
 		case 1:
 			var v = _g[2];
-			utest_Assert.same(exp,v,null,"expected " + Std.string(exp) + " but it is " + Std.string(v) + " for " + test,null,{ fileName : "TestAll.hx", lineNumber : 82, className : "TestAll", methodName : "assertParseExpression"});
+			utest_Assert.same(exp,v,null,"expected " + Std.string(exp) + " but it is " + Std.string(v) + " for " + test,null,{ fileName : "TestAll.hx", lineNumber : 76, className : "TestAll", methodName : "assertParseExpression"});
 			break;
 		}
 	}

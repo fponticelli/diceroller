@@ -1,7 +1,6 @@
 package dapi;
 
 using thx.Functions;
-using thx.Arrays;
 import dapi.DiceExpression;
 
 class DiceExpressionExtensions {

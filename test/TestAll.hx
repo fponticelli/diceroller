@@ -39,12 +39,6 @@ class TestAll {
   public function roller(seq = 1)
     return new Roller(function(max: Int) return ((seq++ - 1) % max) + 1);
 
-  // public function testSimpleDSL() {
-  //   var e = subtract(add(die(6), dropLow([d8, d8, d8, d6], 1)), literal(1)),
-  //       s = e.toString();
-  //   Assert.same(Right(e), DiceParser.parse(s));
-  // }
-
   public function testParseDie() {
     assertParseDie(d8, "d8");
     assertParseDie(d12, "D12");
