@@ -1599,72 +1599,6 @@ var dapi_Roller = function(random) {
 	this.random = random;
 };
 dapi_Roller.__name__ = ["dapi","Roller"];
-dapi_Roller.extractRolls = function(random,dice,extractor) {
-	switch(extractor[1]) {
-	case 0:case 1:case 2:
-		return dapi_Roller.groupToDice(dice).map(function(_) {
-			return _.roll(random);
-		});
-	case 3:
-		var explodeOne = extractor[2];
-		var tmp = dapi_Roller.groupToDice(dice);
-		return dapi_Roller.explodeRolls(random,tmp,explodeOne);
-	}
-};
-dapi_Roller.extractResult = function(rolls,extractor) {
-	switch(extractor[1]) {
-	case 0:
-		return thx_Arrays.reduce(rolls,function(acc,roll) {
-			return acc + roll.meta.result;
-		},0);
-	case 1:
-		var drop = extractor[2];
-		return thx_ArrayInts.sum(thx_Arrays.order(rolls.map(function(_) {
-			return _.meta.result;
-		}),thx_Ints.compare).slice(drop));
-	case 2:
-		var keep = extractor[2];
-		var result = thx_Arrays.order(rolls.map(function(_1) {
-			return _1.meta.result;
-		}),thx_Ints.compare).slice();
-		result.reverse();
-		return thx_ArrayInts.sum(result.slice(0,keep));
-	case 3:
-		var explodeOn = extractor[2];
-		return thx_Arrays.reduce(rolls,function(acc1,roll1) {
-			return acc1 + roll1.meta.result;
-		},0);
-	}
-};
-dapi_Roller.groupToDice = function(group) {
-	switch(group[1]) {
-	case 0:
-		var dice = group[2];
-		return dice;
-	case 1:
-		var die = group[3];
-		var times = group[2];
-		var _g = [];
-		var _g2 = 0;
-		var _g1 = times;
-		while(_g2 < _g1) {
-			var i = _g2++;
-			_g.push(die);
-		}
-		return _g;
-	}
-};
-dapi_Roller.explodeRolls = function(random,dice,explodeOn) {
-	var rolls = dice.map(function(_) {
-		return _.roll(random);
-	});
-	var explosives = rolls.filter(function(_1) {
-		return _1.meta.result >= explodeOn;
-	}).map(function(_2) {
-		return new dapi_Die(_2.sides,_2.meta.meta);
-	});
-	return rolls.concat(explosives.length == 0 ? [] : dapi_Roller.explodeRolls(random,explosives,explodeOn));
-};
 dapi_Roller.prototype = {
 	random: null
 	,roll: function(expr) {
@@ -1676,8 +1610,8 @@ dapi_Roller.prototype = {
 			var meta = expr[4];
 			var extractor = expr[3];
 			var dice = expr[2];
-			var rolls = dapi_Roller.extractRolls(this.random,dice,extractor);
-			var result = dapi_Roller.extractResult(rolls,extractor);
+			var rolls = this.extractRolls(dice,extractor);
+			var result = this.extractResult(rolls,extractor);
 			return dapi_DiceExpression.RollGroup(dapi_DiceGroup.DiceSet(rolls),extractor,{ result : result, meta : meta});
 		case 2:
 			var meta1 = expr[5];
@@ -1696,6 +1630,73 @@ dapi_Roller.prototype = {
 		default:
 			return null;
 		}
+	}
+	,extractRolls: function(dice,extractor) {
+		var _gthis = this;
+		switch(extractor[1]) {
+		case 0:case 1:case 2:
+			return this.groupToDice(dice).map(function(_) {
+				return _.roll(_gthis.random);
+			});
+		case 3:
+			var explodeOne = extractor[2];
+			return this.explodeRolls(this.groupToDice(dice),explodeOne);
+		}
+	}
+	,extractResult: function(rolls,extractor) {
+		switch(extractor[1]) {
+		case 0:
+			return thx_Arrays.reduce(rolls,function(acc,roll) {
+				return acc + roll.meta.result;
+			},0);
+		case 1:
+			var drop = extractor[2];
+			return thx_ArrayInts.sum(thx_Arrays.order(rolls.map(function(_) {
+				return _.meta.result;
+			}),thx_Ints.compare).slice(drop));
+		case 2:
+			var keep = extractor[2];
+			var result = thx_Arrays.order(rolls.map(function(_1) {
+				return _1.meta.result;
+			}),thx_Ints.compare).slice();
+			result.reverse();
+			return thx_ArrayInts.sum(result.slice(0,keep));
+		case 3:
+			var explodeOn = extractor[2];
+			return thx_Arrays.reduce(rolls,function(acc1,roll1) {
+				return acc1 + roll1.meta.result;
+			},0);
+		}
+	}
+	,groupToDice: function(group) {
+		switch(group[1]) {
+		case 0:
+			var dice = group[2];
+			return dice;
+		case 1:
+			var die = group[3];
+			var times = group[2];
+			var _g = [];
+			var _g2 = 0;
+			var _g1 = times;
+			while(_g2 < _g1) {
+				var i = _g2++;
+				_g.push(die);
+			}
+			return _g;
+		}
+	}
+	,explodeRolls: function(dice,explodeOn) {
+		var _gthis = this;
+		var rolls = dice.map(function(_) {
+			return _.roll(_gthis.random);
+		});
+		var explosives = rolls.filter(function(_1) {
+			return _1.meta.result >= explodeOn;
+		}).map(function(_2) {
+			return new dapi_Die(_2.sides,_2.meta.meta);
+		});
+		return rolls.concat(explosives.length == 0 ? [] : this.explodeRolls(explosives,explodeOn));
 	}
 	,rollDice: function(dice,sides) {
 		return this.roll(dapi_DiceExpression.RollGroup(dapi_DiceGroup.RepeatDie(dice,new dapi_Die(sides,thx_Unit.unit)),dapi_GroupExtractor.Sum,thx_Unit.unit));

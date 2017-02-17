@@ -17,7 +17,7 @@ class Roller {
       case RollOne(die):
         RollOne(die.roll(random));
       case RollGroup(dice, extractor, meta):
-        var rolls = extractRolls(random, dice, extractor);
+        var rolls = extractRolls(dice, extractor);
         var result = extractResult(rolls, extractor);
         RollGroup(DiceSet(rolls), extractor, { result: result, meta: meta});
       case BinaryOp(op, a, b, meta):
@@ -39,15 +39,15 @@ class Roller {
     };
   }
 
-  static function extractRolls(random, dice, extractor)
+  function extractRolls(dice, extractor)
     return switch extractor {
       case Sum | DropLow(_) | KeepHigh(_):
         groupToDice(dice).map.fn(_.roll(random));
       case ExplodeOn(explodeOne):
-        explodeRolls(random, groupToDice(dice), explodeOne);
+        explodeRolls(groupToDice(dice), explodeOne);
     };
 
-  static function extractResult<T>(rolls: Array<Die<DiceResultMeta<T>>>, extractor)
+  function extractResult<T>(rolls: Array<Die<DiceResultMeta<T>>>, extractor)
     return switch extractor {
       case Sum:
         rolls.reduce(function(acc, roll) return acc + roll.meta.result, 0);
@@ -59,7 +59,7 @@ class Roller {
         rolls.reduce(function(acc, roll) return acc + roll.meta.result, 0);
     };
 
-  static function groupToDice<T>(group: DiceGroup<T>): Array<Die<T>>
+  function groupToDice<T>(group: DiceGroup<T>): Array<Die<T>>
     return switch group {
       case DiceSet(dice):
          dice;
@@ -67,14 +67,14 @@ class Roller {
         [for(i in 0...times) die];
     };
 
-  static function explodeRolls<T>(random: Int -> Int, dice: Array<Die<T>>, explodeOn: Int): Array<Die<DiceResultMeta<T>>> {
+  function explodeRolls<T>(dice: Array<Die<T>>, explodeOn: Int): Array<Die<DiceResultMeta<T>>> {
     var rolls = dice.map.fn(_.roll(random));
     var explosives = rolls
           .filter.fn(_.meta.result >= explodeOn)
           .map.fn(new Die(_.sides, _.meta.meta));
     return rolls.concat(
       explosives.length == 0 ? [] :
-      explodeRolls(random, explosives, explodeOn)
+      explodeRolls(explosives, explodeOn)
     );
   }
 
