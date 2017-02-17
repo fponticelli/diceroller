@@ -456,13 +456,27 @@ TestAll.main = function() {
 };
 TestAll.prototype = {
 	testRoller: function() {
-		var seq = 0;
-		var roller = new dapi_Roller(function(max) {
+		var r = this.roller().rollDice(12,6);
+		utest_Assert.equals(42,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 20, className : "TestAll", methodName : "testRoller"});
+		r = this.roller().rollOne(6);
+		utest_Assert.equals(1,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 23, className : "TestAll", methodName : "testRoller"});
+		r = this.roller(2).rollOne(6);
+		utest_Assert.equals(2,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 25, className : "TestAll", methodName : "testRoller"});
+		r = this.roller().rollDiceAndDropLow(5,6,2);
+		utest_Assert.equals(12,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 28, className : "TestAll", methodName : "testRoller"});
+		r = this.roller().rollDiceAndKeepHigh(5,6,2);
+		utest_Assert.equals(9,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 31, className : "TestAll", methodName : "testRoller"});
+		r = this.roller().rollDiceAndExplode(5,6,5);
+		utest_Assert.equals(22,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 34, className : "TestAll", methodName : "testRoller"});
+	}
+	,roller: function(seq) {
+		if(seq == null) {
+			seq = 1;
+		}
+		return new dapi_Roller(function(max) {
 			seq += 1;
-			return (seq - 1) % max + 1;
+			return (seq - 1 - 1) % max + 1;
 		});
-		var r = roller.rollDice(12,6);
-		haxe_Log.trace(r,{ fileName : "TestAll.hx", lineNumber : 22, className : "TestAll", methodName : "testRoller"});
 	}
 	,__class__: TestAll
 };
@@ -601,6 +615,30 @@ dapi_DiceOperator.Sum = ["Sum",0];
 dapi_DiceOperator.Sum.__enum__ = dapi_DiceOperator;
 dapi_DiceOperator.Difference = ["Difference",1];
 dapi_DiceOperator.Difference.__enum__ = dapi_DiceOperator;
+var dapi_DiceResults = function() { };
+dapi_DiceResults.__name__ = ["dapi","DiceResults"];
+dapi_DiceResults.extractResult = function(expr) {
+	switch(expr[1]) {
+	case 0:
+		var die = expr[2];
+		return die.meta.result;
+	case 1:
+		var meta = expr[3];
+		return meta.result;
+	case 2:
+		var meta1 = expr[4];
+		return meta1.result;
+	case 3:
+		var meta2 = expr[4];
+		return meta2.result;
+	case 4:
+		var meta3 = expr[4];
+		return meta3.result;
+	case 5:
+		var meta4 = expr[5];
+		return meta4.result;
+	}
+};
 var dapi_Die = function(sides,meta) {
 	this.sides = sides;
 	this.meta = meta;
@@ -613,7 +651,10 @@ dapi_Die.prototype = {
 	sides: null
 	,meta: null
 	,roll: function(random) {
-		return new dapi_Die(this.sides,{ result : random(this.sides), meta : this.meta});
+		return this.rollWithMeta(random,this.meta);
+	}
+	,rollWithMeta: function(random,meta) {
+		return new dapi_Die(this.sides,{ result : random(this.sides), meta : meta});
 	}
 	,__class__: dapi_Die
 };
@@ -621,6 +662,17 @@ var dapi_Roller = function(random) {
 	this.random = random;
 };
 dapi_Roller.__name__ = ["dapi","Roller"];
+dapi_Roller.explodeRolls = function(random,dice,explodeOn) {
+	var rolls = dice.map(function(_) {
+		return _.roll(random);
+	});
+	var explosives = rolls.filter(function(_1) {
+		return _1.meta.result >= explodeOn;
+	}).map(function(_2) {
+		return new dapi_Die(_2.sides,_2.meta.meta);
+	});
+	return rolls.concat(explosives.length == 0 ? [] : dapi_Roller.explodeRolls(random,explosives,explodeOn));
+};
 dapi_Roller.prototype = {
 	random: null
 	,roll: function(expr) {
@@ -663,8 +715,29 @@ dapi_Roller.prototype = {
 			result2.reverse();
 			var result3 = thx_ArrayInts.sum(result2.slice(0,keep));
 			return dapi_DiceExpression.RollAndKeepHigh(rolls2,keep,{ result : result3, meta : meta2});
-		default:
-			return null;
+		case 4:
+			var meta3 = expr[4];
+			var explodeOn = expr[3];
+			var dice3 = expr[2];
+			var rolls3 = dapi_Roller.explodeRolls(this.random,dice3,explodeOn);
+			var result4 = thx_Arrays.reduce(rolls3,function(acc1,roll1) {
+				return acc1 + roll1.meta.result;
+			},0);
+			return dapi_DiceExpression.RollAndExplode(rolls3,explodeOn,{ result : result4, meta : meta3});
+		case 5:
+			var meta4 = expr[5];
+			var b = expr[4];
+			var a = expr[3];
+			var op = expr[2];
+			var ra = this.roll(a);
+			var rb = this.roll(b);
+			switch(op[1]) {
+			case 0:
+				return dapi_DiceExpression.BinaryOp(dapi_DiceOperator.Sum,ra,rb,{ result : dapi_DiceResults.extractResult(ra) + dapi_DiceResults.extractResult(rb), meta : meta4});
+			case 1:
+				return dapi_DiceExpression.BinaryOp(dapi_DiceOperator.Difference,ra,rb,{ result : dapi_DiceResults.extractResult(ra) + dapi_DiceResults.extractResult(rb), meta : meta4});
+			}
+			break;
 		}
 	}
 	,rollDice: function(dice,sides) {
@@ -676,6 +749,39 @@ dapi_Roller.prototype = {
 			_g.push(dapi_Die.withSides(sides));
 		}
 		return this.roll(dapi_DiceExpression.RollMany(_g,thx_Unit.unit));
+	}
+	,rollOne: function(sides) {
+		return this.roll(dapi_DiceExpression.RollOne(dapi_Die.withSides(sides)));
+	}
+	,rollDiceAndDropLow: function(dice,sides,drop) {
+		var _g = [];
+		var _g2 = 0;
+		var _g1 = dice;
+		while(_g2 < _g1) {
+			var i = _g2++;
+			_g.push(dapi_Die.withSides(sides));
+		}
+		return this.roll(dapi_DiceExpression.RollAndDropLow(_g,drop,thx_Unit.unit));
+	}
+	,rollDiceAndKeepHigh: function(dice,sides,keep) {
+		var _g = [];
+		var _g2 = 0;
+		var _g1 = dice;
+		while(_g2 < _g1) {
+			var i = _g2++;
+			_g.push(dapi_Die.withSides(sides));
+		}
+		return this.roll(dapi_DiceExpression.RollAndKeepHigh(_g,keep,thx_Unit.unit));
+	}
+	,rollDiceAndExplode: function(dice,sides,explodeOn) {
+		var _g = [];
+		var _g2 = 0;
+		var _g1 = dice;
+		while(_g2 < _g1) {
+			var i = _g2++;
+			_g.push(dapi_Die.withSides(sides));
+		}
+		return this.roll(dapi_DiceExpression.RollAndExplode(_g,explodeOn,thx_Unit.unit));
 	}
 	,__class__: dapi_Roller
 };
