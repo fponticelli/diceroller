@@ -4,10 +4,10 @@ import dapi.DiceExpression;
 
 class DiceDSL {
   public static function many<T>(dice: Int, die: Die<T>, meta: T): DiceExpression<T>
-    return RollMany(RepeatDie(dice, die), meta);
+    return RollGroup(RepeatDie(dice, die), Sum, meta);
 
   public static function dice<T>(dice: Array<Die<T>>, meta: T): DiceExpression<T>
-    return RollMany(DiceList(dice), meta);
+    return RollGroup(DiceList(dice), Sum, meta);
 
   public static function die<T>(sides: Int, meta: T): DiceExpression<T>
     return RollOne(new Die(sides, meta));

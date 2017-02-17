@@ -8,7 +8,7 @@ class DiceExpressionExtensions {
   public static function toString<T>(expr: DiceExpression<T>) return switch expr {
     case RollOne(die):
       die.toString();
-    case RollMany(dice, _):
+    case RollGroup(dice, _):
       diceToString(dice);
     case RollAndDropLow(dice, drop, _):
       diceToString(dice) + 'd$drop';

@@ -16,10 +16,10 @@ class Roller {
     return switch expr {
       case RollOne(die):
         RollOne(die.roll(random));
-      case RollMany(dice, meta):
-        var rolls = groupToDice(dice).map.fn(_.roll(random));
-        var result = rolls.reduce(function(acc, roll) return acc + roll.meta.result, 0);
-        RollMany(DiceList(rolls), { result: result, meta: meta});
+      case RollGroup(dice, extractor, meta):
+        var rolls = extractRolls(random, dice, extractor);
+        var result = extractResult(rolls, extractor);
+        RollGroup(DiceList(rolls), extractor, { result: result, meta: meta});
       case RollAndDropLow(dice, drop, meta):
         var rolls = groupToDice(dice).map.fn(_.roll(random));
         var result = rolls.map.fn(_.meta.result).order(thx.Ints.compare).slice(drop).sum();
@@ -51,6 +51,26 @@ class Roller {
     };
   }
 
+  static function extractRolls(random, dice, extractor)
+    return switch extractor {
+      case Sum | DropLow(_) | KeepHigh(_):
+        groupToDice(dice).map.fn(_.roll(random));
+      case ExplodeOn(explodeOne):
+        explodeRolls(random, groupToDice(dice), explodeOne);
+    };
+
+  static function extractResult<T>(rolls: Array<Die<DiceResultMeta<T>>>, extractor)
+    return switch extractor {
+      case Sum:
+        rolls.reduce(function(acc, roll) return acc + roll.meta.result, 0);
+      case DropLow(drop):
+        rolls.map.fn(_.meta.result).order(thx.Ints.compare).slice(drop).sum();
+      case KeepHigh(keep):
+        rolls.map.fn(_.meta.result).order(thx.Ints.compare).reversed().slice(0, keep).sum();
+      case ExplodeOn(explodeOn):
+        rolls.reduce(function(acc, roll) return acc + roll.meta.result, 0);
+    };
+
   static function groupToDice<T>(group: DiceGroup<T>): Array<Die<T>>
     return switch group {
       case DiceList(dice):
@@ -71,7 +91,7 @@ class Roller {
   }
 
   public function rollDice(dice: Int, sides: Int): DiceResult<Unit>
-    return roll(RollMany(RepeatDie(dice, new Die(sides, unit)), unit));
+    return roll(RollGroup(RepeatDie(dice, new Die(sides, unit)), Sum, unit));
 
   public function rollOne(sides: Int): DiceResult<Unit>
     return roll(RollOne(Die.withSides(sides)));

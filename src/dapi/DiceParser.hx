@@ -42,21 +42,21 @@ class DiceParser {
     ].alt()
       .then(positive.map(Die.new.bind(_, unit)))
       .as("dN");
-  
+
   static var rollOne = dN.map(RollOne);
   static var literal = positive.map(Literal.bind(_, unit)).as("literal number");
-  static var rollManySame = seq(([positive, dN] : Array<ParseObject<Dynamic>>)).map(function(r) { // TODO
-    return RollMany(RepeatDie(r[0], cast r[1]), unit);
+  static var rollManySame = positive.flatMap(function(dice) {
+    return dN.map.fn(RollGroup(RepeatDie(dice, _), Sum, unit)); // TODO add other ops
   });
   static var lbrace = token('{'.string());
   static var rbrace = '}'.string();
   static function commaSep(parser)
     return sepBy(parser, token(','.string()));
-    
+
   static var rollMany = lbrace
     .then(commaSep(dN))
     .skip(rbrace)
-    .map.fn(RollMany(DiceList(_), unit));
+    .map.fn(RollGroup(DiceList(_), Sum, unit)); // TODO add other ops
 
 /*
   RollAndDropLow(dice: Array<Die<T>>, drop: Int, meta: T);

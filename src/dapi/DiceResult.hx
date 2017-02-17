@@ -7,7 +7,7 @@ class DiceResults {
     return switch expr {
       case RollOne(die):
         die.meta.result;
-      case RollMany(_, meta) |
+      case RollGroup(_, _, meta) |
            RollAndDropLow(_, _, meta) |
            RollAndKeepHigh(_, _, meta) | 
            RollAndExplode(_, _, meta) |
