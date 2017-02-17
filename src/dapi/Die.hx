@@ -22,4 +22,10 @@ class Die<T> {
       result: random(sides),
       meta: meta
     });
+
+  public function toString()
+    return 'd$sides';
+
+  public function toStringWithMeta(f: T -> String)
+    return 'd$sides [${f(meta)}]';
 }

@@ -11,7 +11,8 @@ class DiceResults {
            RollAndDropLow(_, _, meta) |
            RollAndKeepHigh(_, _, meta) | 
            RollAndExplode(_, _, meta) |
-           BinaryOp(_, _, _, meta):
+           BinaryOp(_, _, _, meta) |
+           Literal(_, meta):
         meta.result;
     };
   }

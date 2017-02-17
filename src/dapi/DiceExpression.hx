@@ -1,7 +1,5 @@
 package dapi;
 
-import thx.Unit;
-
 enum DiceExpression<T> {
   RollOne(die: Die<T>);
   RollMany(dice: Array<Die<T>>, meta: T);
@@ -9,6 +7,7 @@ enum DiceExpression<T> {
   RollAndKeepHigh(dice: Array<Die<T>>, keep: Int, meta: T);
   RollAndExplode(dice: Array<Die<T>>, explodeOn: Int, meta: T);
   BinaryOp(op: DiceOperator, a: DiceExpression<T>, b: DiceExpression<T>, meta: T);
+  Literal(value: Int, meta: T);
 }
 
 enum DiceOperator {

@@ -457,17 +457,17 @@ TestAll.main = function() {
 TestAll.prototype = {
 	testRoller: function() {
 		var r = this.roller().rollDice(12,6);
-		utest_Assert.equals(42,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 20, className : "TestAll", methodName : "testRoller"});
+		utest_Assert.equals(42,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 21, className : "TestAll", methodName : "testRoller"});
 		r = this.roller().rollOne(6);
-		utest_Assert.equals(1,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 23, className : "TestAll", methodName : "testRoller"});
+		utest_Assert.equals(1,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 24, className : "TestAll", methodName : "testRoller"});
 		r = this.roller(2).rollOne(6);
-		utest_Assert.equals(2,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 25, className : "TestAll", methodName : "testRoller"});
+		utest_Assert.equals(2,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 26, className : "TestAll", methodName : "testRoller"});
 		r = this.roller().rollDiceAndDropLow(5,6,2);
-		utest_Assert.equals(12,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 28, className : "TestAll", methodName : "testRoller"});
+		utest_Assert.equals(12,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 29, className : "TestAll", methodName : "testRoller"});
 		r = this.roller().rollDiceAndKeepHigh(5,6,2);
-		utest_Assert.equals(9,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 31, className : "TestAll", methodName : "testRoller"});
+		utest_Assert.equals(9,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 32, className : "TestAll", methodName : "testRoller"});
 		r = this.roller().rollDiceAndExplode(5,6,5);
-		utest_Assert.equals(22,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 34, className : "TestAll", methodName : "testRoller"});
+		utest_Assert.equals(22,dapi_DiceResults.extractResult(r),null,{ fileName : "TestAll.hx", lineNumber : 35, className : "TestAll", methodName : "testRoller"});
 	}
 	,roller: function(seq) {
 		if(seq == null) {
@@ -477,6 +477,10 @@ TestAll.prototype = {
 			seq += 1;
 			return (seq - 1 - 1) % max + 1;
 		});
+	}
+	,testSimpleDSL: function() {
+		var e = dapi_SimpleDiceDSL.subtract(dapi_SimpleDiceDSL.add(dapi_SimpleDiceDSL.die(6),dapi_SimpleDiceDSL.dropLow([dapi_SimpleDiceDSL.d8,dapi_SimpleDiceDSL.d8,dapi_SimpleDiceDSL.d8,dapi_SimpleDiceDSL.d8],1)),dapi_SimpleDiceDSL.literal(1));
+		haxe_Log.trace(dapi_DiceExpressionExtensions.toString(e),{ fileName : "TestAll.hx", lineNumber : 43, className : "TestAll", methodName : "testSimpleDSL"});
 	}
 	,__class__: TestAll
 };
@@ -603,18 +607,120 @@ Type["typeof"] = function(v) {
 		return ValueType.TUnknown;
 	}
 };
-var dapi_DiceExpression = { __ename__ : ["dapi","DiceExpression"], __constructs__ : ["RollOne","RollMany","RollAndDropLow","RollAndKeepHigh","RollAndExplode","BinaryOp"] };
+var dapi_DiceDSL = function() { };
+dapi_DiceDSL.__name__ = ["dapi","DiceDSL"];
+dapi_DiceDSL.dice = function(dice,meta) {
+	return dapi_DiceExpression.RollMany(dice,meta);
+};
+dapi_DiceDSL.die = function(sides,meta) {
+	return dapi_DiceExpression.RollOne(new dapi_Die(sides,meta));
+};
+dapi_DiceDSL.dropLow = function(dice,drop,meta) {
+	return dapi_DiceExpression.RollAndDropLow(dice,drop,meta);
+};
+dapi_DiceDSL.keepHigh = function(dice,keep,meta) {
+	return dapi_DiceExpression.RollAndKeepHigh(dice,keep,meta);
+};
+dapi_DiceDSL.explosive = function(dice,explodeOn,meta) {
+	return dapi_DiceExpression.RollAndExplode(dice,explodeOn,meta);
+};
+dapi_DiceDSL.add = function(a,b,meta) {
+	return dapi_DiceExpression.BinaryOp(dapi_DiceOperator.Sum,a,b,meta);
+};
+dapi_DiceDSL.subtract = function(a,b,meta) {
+	return dapi_DiceExpression.BinaryOp(dapi_DiceOperator.Difference,a,b,meta);
+};
+dapi_DiceDSL.literal = function(value,meta) {
+	return dapi_DiceExpression.Literal(value,meta);
+};
+dapi_DiceDSL.d2 = function(meta) {
+	return new dapi_Die(2,meta);
+};
+dapi_DiceDSL.d4 = function(meta) {
+	return new dapi_Die(4,meta);
+};
+dapi_DiceDSL.d6 = function(meta) {
+	return new dapi_Die(6,meta);
+};
+dapi_DiceDSL.d8 = function(meta) {
+	return new dapi_Die(8,meta);
+};
+dapi_DiceDSL.d10 = function(meta) {
+	return new dapi_Die(10,meta);
+};
+dapi_DiceDSL.d12 = function(meta) {
+	return new dapi_Die(12,meta);
+};
+dapi_DiceDSL.d20 = function(meta) {
+	return new dapi_Die(20,meta);
+};
+dapi_DiceDSL.d100 = function(meta) {
+	return new dapi_Die(100,meta);
+};
+var dapi_DiceExpression = { __ename__ : ["dapi","DiceExpression"], __constructs__ : ["RollOne","RollMany","RollAndDropLow","RollAndKeepHigh","RollAndExplode","BinaryOp","Literal"] };
 dapi_DiceExpression.RollOne = function(die) { var $x = ["RollOne",0,die]; $x.__enum__ = dapi_DiceExpression; return $x; };
 dapi_DiceExpression.RollMany = function(dice,meta) { var $x = ["RollMany",1,dice,meta]; $x.__enum__ = dapi_DiceExpression; return $x; };
 dapi_DiceExpression.RollAndDropLow = function(dice,drop,meta) { var $x = ["RollAndDropLow",2,dice,drop,meta]; $x.__enum__ = dapi_DiceExpression; return $x; };
 dapi_DiceExpression.RollAndKeepHigh = function(dice,keep,meta) { var $x = ["RollAndKeepHigh",3,dice,keep,meta]; $x.__enum__ = dapi_DiceExpression; return $x; };
 dapi_DiceExpression.RollAndExplode = function(dice,explodeOn,meta) { var $x = ["RollAndExplode",4,dice,explodeOn,meta]; $x.__enum__ = dapi_DiceExpression; return $x; };
 dapi_DiceExpression.BinaryOp = function(op,a,b,meta) { var $x = ["BinaryOp",5,op,a,b,meta]; $x.__enum__ = dapi_DiceExpression; return $x; };
+dapi_DiceExpression.Literal = function(value,meta) { var $x = ["Literal",6,value,meta]; $x.__enum__ = dapi_DiceExpression; return $x; };
 var dapi_DiceOperator = { __ename__ : ["dapi","DiceOperator"], __constructs__ : ["Sum","Difference"] };
 dapi_DiceOperator.Sum = ["Sum",0];
 dapi_DiceOperator.Sum.__enum__ = dapi_DiceOperator;
 dapi_DiceOperator.Difference = ["Difference",1];
 dapi_DiceOperator.Difference.__enum__ = dapi_DiceOperator;
+var dapi_DiceExpressionExtensions = function() { };
+dapi_DiceExpressionExtensions.__name__ = ["dapi","DiceExpressionExtensions"];
+dapi_DiceExpressionExtensions.toString = function(expr) {
+	switch(expr[1]) {
+	case 0:
+		var die = expr[2];
+		return die.toString();
+	case 1:
+		var dice = expr[2];
+		return dapi_DiceExpressionExtensions.diceToString(dice);
+	case 2:
+		var drop = expr[3];
+		var dice1 = expr[2];
+		return dapi_DiceExpressionExtensions.diceToString(dice1) + ("d" + drop);
+	case 3:
+		var keep = expr[3];
+		var dice2 = expr[2];
+		return dapi_DiceExpressionExtensions.diceToString(dice2) + ("k" + keep);
+	case 4:
+		var explodeOn = expr[3];
+		var dice3 = expr[2];
+		return dapi_DiceExpressionExtensions.diceToString(dice3) + ("x" + explodeOn);
+	case 5:
+		switch(expr[2][1]) {
+		case 0:
+			var b = expr[4];
+			var a = expr[3];
+			return dapi_DiceExpressionExtensions.toString(a) + " + " + dapi_DiceExpressionExtensions.toString(b);
+		case 1:
+			var b1 = expr[4];
+			var a1 = expr[3];
+			return dapi_DiceExpressionExtensions.toString(a1) + " - " + dapi_DiceExpressionExtensions.toString(b1);
+		}
+		break;
+	case 6:
+		var value = expr[2];
+		return "" + value;
+	}
+};
+dapi_DiceExpressionExtensions.diceToString = function(dice) {
+	var sides = thx_Arrays.distinct(dice.map(function(_) {
+		return _.sides;
+	}));
+	if(sides.length == 1) {
+		return dice.length + dice[0].toString();
+	} else {
+		return "{" + dice.map(function(_1) {
+			return _1.toString();
+		}).join(" + ") + "}";
+	}
+};
 var dapi_DiceResults = function() { };
 dapi_DiceResults.__name__ = ["dapi","DiceResults"];
 dapi_DiceResults.extractResult = function(expr) {
@@ -637,6 +743,9 @@ dapi_DiceResults.extractResult = function(expr) {
 	case 5:
 		var meta4 = expr[5];
 		return meta4.result;
+	case 6:
+		var meta5 = expr[3];
+		return meta5.result;
 	}
 };
 var dapi_Die = function(sides,meta) {
@@ -655,6 +764,12 @@ dapi_Die.prototype = {
 	}
 	,rollWithMeta: function(random,meta) {
 		return new dapi_Die(this.sides,{ result : random(this.sides), meta : meta});
+	}
+	,toString: function() {
+		return "d" + this.sides;
+	}
+	,toStringWithMeta: function(f) {
+		return "d" + this.sides + " [" + f(this.meta) + "]";
 	}
 	,__class__: dapi_Die
 };
@@ -738,6 +853,8 @@ dapi_Roller.prototype = {
 				return dapi_DiceExpression.BinaryOp(dapi_DiceOperator.Difference,ra,rb,{ result : dapi_DiceResults.extractResult(ra) + dapi_DiceResults.extractResult(rb), meta : meta4});
 			}
 			break;
+		default:
+			return null;
 		}
 	}
 	,rollDice: function(dice,sides) {
@@ -784,6 +901,35 @@ dapi_Roller.prototype = {
 		return this.roll(dapi_DiceExpression.RollAndExplode(_g,explodeOn,thx_Unit.unit));
 	}
 	,__class__: dapi_Roller
+};
+var thx_Unit = { __ename__ : ["thx","Unit"], __constructs__ : ["unit"] };
+thx_Unit.unit = ["unit",0];
+thx_Unit.unit.__enum__ = thx_Unit;
+var dapi_SimpleDiceDSL = function() { };
+dapi_SimpleDiceDSL.__name__ = ["dapi","SimpleDiceDSL"];
+dapi_SimpleDiceDSL.dice = function(dice) {
+	return dapi_DiceDSL.dice(dice,thx_Unit.unit);
+};
+dapi_SimpleDiceDSL.die = function(sides) {
+	return dapi_DiceDSL.die(sides,thx_Unit.unit);
+};
+dapi_SimpleDiceDSL.dropLow = function(dice,drop) {
+	return dapi_DiceDSL.dropLow(dice,drop,thx_Unit.unit);
+};
+dapi_SimpleDiceDSL.keepHigh = function(dice,keep) {
+	return dapi_DiceDSL.keepHigh(dice,keep,thx_Unit.unit);
+};
+dapi_SimpleDiceDSL.explosive = function(dice,explodeOn) {
+	return dapi_DiceDSL.explosive(dice,explodeOn,thx_Unit.unit);
+};
+dapi_SimpleDiceDSL.add = function(a,b) {
+	return dapi_DiceDSL.add(a,b,thx_Unit.unit);
+};
+dapi_SimpleDiceDSL.subtract = function(a,b) {
+	return dapi_DiceDSL.subtract(a,b,thx_Unit.unit);
+};
+dapi_SimpleDiceDSL.literal = function(value) {
+	return dapi_DiceDSL.literal(value,thx_Unit.unit);
 };
 var haxe_StackItem = { __ename__ : ["haxe","StackItem"], __constructs__ : ["CFunction","Module","FilePos","Method","LocalFunction"] };
 haxe_StackItem.CFunction = ["CFunction",0];
@@ -7967,9 +8113,6 @@ thx_Types.anyValueToString = function(value) {
 	}
 	return thx_Types.toString(Type["typeof"](value));
 };
-var thx_Unit = { __ename__ : ["thx","Unit"], __constructs__ : ["unit"] };
-thx_Unit.unit = ["unit",0];
-thx_Unit.unit.__enum__ = thx_Unit;
 var thx__$Validation_Validation_$Impl_$ = {};
 thx__$Validation_Validation_$Impl_$.__name__ = ["thx","_Validation","Validation_Impl_"];
 thx__$Validation_Validation_$Impl_$.get_either = function(this1) {
@@ -11413,6 +11556,14 @@ if(ArrayBuffer.prototype.slice == null) {
 }
 var Uint8Array = $global.Uint8Array || js_html_compat_Uint8Array._new;
 DateTools.DAYS_OF_MONTH = [31,28,31,30,31,30,31,31,30,31,30,31];
+dapi_SimpleDiceDSL.d2 = dapi_DiceDSL.d2(thx_Unit.unit);
+dapi_SimpleDiceDSL.d4 = dapi_DiceDSL.d4(thx_Unit.unit);
+dapi_SimpleDiceDSL.d6 = dapi_DiceDSL.d6(thx_Unit.unit);
+dapi_SimpleDiceDSL.d8 = dapi_DiceDSL.d8(thx_Unit.unit);
+dapi_SimpleDiceDSL.d10 = dapi_DiceDSL.d10(thx_Unit.unit);
+dapi_SimpleDiceDSL.d12 = dapi_DiceDSL.d12(thx_Unit.unit);
+dapi_SimpleDiceDSL.d20 = dapi_DiceDSL.d20(thx_Unit.unit);
+dapi_SimpleDiceDSL.d100 = dapi_DiceDSL.d100(thx_Unit.unit);
 haxe__$Int32_Int32_$Impl_$._mul = Math.imul != null ? Math.imul : function(a,b) {
 	return a * (b & 65535) + (a * (b >>> 16) << 16 | 0) | 0;
 };

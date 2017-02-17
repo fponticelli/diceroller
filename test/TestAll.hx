@@ -2,9 +2,10 @@ import utest.Assert;
 import utest.UTest;
 import thx.Unit;
 
-import dapi.DiceExpression;
+using dapi.DiceExpressionExtensions;
 import dapi.DiceResult;
 import dapi.Roller;
+import dapi.SimpleDiceDSL.*;
 
 class TestAll {
   public static function main() {
@@ -36,4 +37,9 @@ class TestAll {
 
   public function roller(seq = 1)
     return new Roller(function(max: Int) return ((seq++ - 1) % max) + 1);
+
+  public function testSimpleDSL() {
+    var e = subtract(add(die(6), dropLow([d8, d8, d8, d8], 1)), literal(1));
+    trace(e.toString());
+  }
 }
