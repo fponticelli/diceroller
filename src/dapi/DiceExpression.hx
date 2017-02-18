@@ -2,19 +2,19 @@ package dapi;
 
 enum DiceExpression<T> {
   RollOne(die: Die<T>);
-  RollGroup(dice: DiceGroup<T>, extractor: GroupExtractor, meta: T);
+  RollBag(dice: DiceBag<T>, extractor: BagExtractor, meta: T);
   BinaryOp(op: DiceOperator, a: DiceExpression<T>, b: DiceExpression<T>, meta: T);
   Literal(value: Int, meta: T);
 }
 
-enum GroupExtractor {
+enum BagExtractor {
   Sum;
   DropLow(drop: Int);
   KeepHigh(keep: Int);
   ExplodeOn(explodeOn: Int);
 }
 
-enum DiceGroup<T> {
+enum DiceBag<T> {
   DiceSet(dice: Array<Die<T>>);
   RepeatDie(times: Int, die: Die<T>);
 }

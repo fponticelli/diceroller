@@ -7,7 +7,7 @@ class DiceExpressionExtensions {
   public static function toString<T>(expr: DiceExpression<T>) return switch expr {
     case RollOne(die):
       die.toString();
-    case RollGroup(dice, extractor, _):
+    case RollBag(dice, extractor, _):
       diceToString(dice, extractor);
     case BinaryOp(Sum, a, b, _):
       toString(a) + " + " + toString(b);
@@ -17,7 +17,7 @@ class DiceExpressionExtensions {
       '$value';
   }
 
-  public static function diceToString<T>(group: DiceGroup<T>, extractor: GroupExtractor)
+  public static function diceToString<T>(group: DiceBag<T>, extractor: BagExtractor)
     return (switch group {
       case DiceSet(dice):
          '{' + dice.map.fn(_.toString()).join(",") + '}';

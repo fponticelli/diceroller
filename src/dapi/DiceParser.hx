@@ -46,7 +46,7 @@ class DiceParser {
   static var rollOne = dN.map(RollOne);
   static var literal = positive.map(Literal.bind(_, unit)).as("literal number");
   static var rollManySame = positive.flatMap(function(dice) {
-    return dN.map.fn(RollGroup(RepeatDie(dice, _), Sum, unit)); // TODO add other ops
+    return dN.map.fn(RollBag(RepeatDie(dice, _), Sum, unit)); // TODO add other ops
   });
   static var lbrace = token('{'.string());
   static var rbrace = '}'.string();
@@ -56,7 +56,7 @@ class DiceParser {
   static var rollMany = lbrace
     .then(commaSep(dN))
     .skip(rbrace)
-    .map.fn(RollGroup(DiceSet(_), Sum, unit)); // TODO add other ops
+    .map.fn(RollBag(DiceSet(_), Sum, unit)); // TODO add other ops
 
 /*
   RollAndDropLow(dice: Array<Die<T>>, drop: Int, meta: T);

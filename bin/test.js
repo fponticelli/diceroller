@@ -649,31 +649,31 @@ Type["typeof"] = function(v) {
 var dapi_DiceDSL = function() { };
 dapi_DiceDSL.__name__ = ["dapi","DiceDSL"];
 dapi_DiceDSL.many = function(dice,die,meta) {
-	return dapi_DiceExpression.RollGroup(dapi_DiceGroup.RepeatDie(dice,die),dapi_GroupExtractor.Sum,meta);
+	return dapi_DiceExpression.RollBag(dapi_DiceBag.RepeatDie(dice,die),dapi_BagExtractor.Sum,meta);
 };
 dapi_DiceDSL.dice = function(dice,meta) {
-	return dapi_DiceExpression.RollGroup(dapi_DiceGroup.DiceSet(dice),dapi_GroupExtractor.Sum,meta);
+	return dapi_DiceExpression.RollBag(dapi_DiceBag.DiceSet(dice),dapi_BagExtractor.Sum,meta);
 };
 dapi_DiceDSL.die = function(sides,meta) {
 	return dapi_DiceExpression.RollOne(new dapi_Die(sides,meta));
 };
 dapi_DiceDSL.dropLow = function(dice,die,drop,meta) {
-	return dapi_DiceExpression.RollGroup(dapi_DiceGroup.RepeatDie(dice,die),dapi_GroupExtractor.DropLow(drop),meta);
+	return dapi_DiceExpression.RollBag(dapi_DiceBag.RepeatDie(dice,die),dapi_BagExtractor.DropLow(drop),meta);
 };
 dapi_DiceDSL.keepHigh = function(dice,die,keep,meta) {
-	return dapi_DiceExpression.RollGroup(dapi_DiceGroup.RepeatDie(dice,die),dapi_GroupExtractor.KeepHigh(keep),meta);
+	return dapi_DiceExpression.RollBag(dapi_DiceBag.RepeatDie(dice,die),dapi_BagExtractor.KeepHigh(keep),meta);
 };
 dapi_DiceDSL.explosive = function(dice,die,explodeOn,meta) {
-	return dapi_DiceExpression.RollGroup(dapi_DiceGroup.RepeatDie(dice,die),dapi_GroupExtractor.ExplodeOn(explodeOn),meta);
+	return dapi_DiceExpression.RollBag(dapi_DiceBag.RepeatDie(dice,die),dapi_BagExtractor.ExplodeOn(explodeOn),meta);
 };
 dapi_DiceDSL.diceDropLow = function(dice,drop,meta) {
-	return dapi_DiceExpression.RollGroup(dapi_DiceGroup.DiceSet(dice),dapi_GroupExtractor.DropLow(drop),meta);
+	return dapi_DiceExpression.RollBag(dapi_DiceBag.DiceSet(dice),dapi_BagExtractor.DropLow(drop),meta);
 };
 dapi_DiceDSL.diceKeepHigh = function(dice,keep,meta) {
-	return dapi_DiceExpression.RollGroup(dapi_DiceGroup.DiceSet(dice),dapi_GroupExtractor.KeepHigh(keep),meta);
+	return dapi_DiceExpression.RollBag(dapi_DiceBag.DiceSet(dice),dapi_BagExtractor.KeepHigh(keep),meta);
 };
 dapi_DiceDSL.diceExplosive = function(dice,explodeOn,meta) {
-	return dapi_DiceExpression.RollGroup(dapi_DiceGroup.DiceSet(dice),dapi_GroupExtractor.ExplodeOn(explodeOn),meta);
+	return dapi_DiceExpression.RollBag(dapi_DiceBag.DiceSet(dice),dapi_BagExtractor.ExplodeOn(explodeOn),meta);
 };
 dapi_DiceDSL.add = function(a,b,meta) {
 	return dapi_DiceExpression.BinaryOp(dapi_DiceOperator.Sum,a,b,meta);
@@ -708,20 +708,20 @@ dapi_DiceDSL.d20 = function(meta) {
 dapi_DiceDSL.d100 = function(meta) {
 	return new dapi_Die(100,meta);
 };
-var dapi_DiceExpression = { __ename__ : ["dapi","DiceExpression"], __constructs__ : ["RollOne","RollGroup","BinaryOp","Literal"] };
+var dapi_DiceExpression = { __ename__ : ["dapi","DiceExpression"], __constructs__ : ["RollOne","RollBag","BinaryOp","Literal"] };
 dapi_DiceExpression.RollOne = function(die) { var $x = ["RollOne",0,die]; $x.__enum__ = dapi_DiceExpression; return $x; };
-dapi_DiceExpression.RollGroup = function(dice,extractor,meta) { var $x = ["RollGroup",1,dice,extractor,meta]; $x.__enum__ = dapi_DiceExpression; return $x; };
+dapi_DiceExpression.RollBag = function(dice,extractor,meta) { var $x = ["RollBag",1,dice,extractor,meta]; $x.__enum__ = dapi_DiceExpression; return $x; };
 dapi_DiceExpression.BinaryOp = function(op,a,b,meta) { var $x = ["BinaryOp",2,op,a,b,meta]; $x.__enum__ = dapi_DiceExpression; return $x; };
 dapi_DiceExpression.Literal = function(value,meta) { var $x = ["Literal",3,value,meta]; $x.__enum__ = dapi_DiceExpression; return $x; };
-var dapi_GroupExtractor = { __ename__ : ["dapi","GroupExtractor"], __constructs__ : ["Sum","DropLow","KeepHigh","ExplodeOn"] };
-dapi_GroupExtractor.Sum = ["Sum",0];
-dapi_GroupExtractor.Sum.__enum__ = dapi_GroupExtractor;
-dapi_GroupExtractor.DropLow = function(drop) { var $x = ["DropLow",1,drop]; $x.__enum__ = dapi_GroupExtractor; return $x; };
-dapi_GroupExtractor.KeepHigh = function(keep) { var $x = ["KeepHigh",2,keep]; $x.__enum__ = dapi_GroupExtractor; return $x; };
-dapi_GroupExtractor.ExplodeOn = function(explodeOn) { var $x = ["ExplodeOn",3,explodeOn]; $x.__enum__ = dapi_GroupExtractor; return $x; };
-var dapi_DiceGroup = { __ename__ : ["dapi","DiceGroup"], __constructs__ : ["DiceSet","RepeatDie"] };
-dapi_DiceGroup.DiceSet = function(dice) { var $x = ["DiceSet",0,dice]; $x.__enum__ = dapi_DiceGroup; return $x; };
-dapi_DiceGroup.RepeatDie = function(times,die) { var $x = ["RepeatDie",1,times,die]; $x.__enum__ = dapi_DiceGroup; return $x; };
+var dapi_BagExtractor = { __ename__ : ["dapi","BagExtractor"], __constructs__ : ["Sum","DropLow","KeepHigh","ExplodeOn"] };
+dapi_BagExtractor.Sum = ["Sum",0];
+dapi_BagExtractor.Sum.__enum__ = dapi_BagExtractor;
+dapi_BagExtractor.DropLow = function(drop) { var $x = ["DropLow",1,drop]; $x.__enum__ = dapi_BagExtractor; return $x; };
+dapi_BagExtractor.KeepHigh = function(keep) { var $x = ["KeepHigh",2,keep]; $x.__enum__ = dapi_BagExtractor; return $x; };
+dapi_BagExtractor.ExplodeOn = function(explodeOn) { var $x = ["ExplodeOn",3,explodeOn]; $x.__enum__ = dapi_BagExtractor; return $x; };
+var dapi_DiceBag = { __ename__ : ["dapi","DiceBag"], __constructs__ : ["DiceSet","RepeatDie"] };
+dapi_DiceBag.DiceSet = function(dice) { var $x = ["DiceSet",0,dice]; $x.__enum__ = dapi_DiceBag; return $x; };
+dapi_DiceBag.RepeatDie = function(times,die) { var $x = ["RepeatDie",1,times,die]; $x.__enum__ = dapi_DiceBag; return $x; };
 var dapi_DiceOperator = { __ename__ : ["dapi","DiceOperator"], __constructs__ : ["Sum","Difference"] };
 dapi_DiceOperator.Sum = ["Sum",0];
 dapi_DiceOperator.Sum.__enum__ = dapi_DiceOperator;
@@ -1612,7 +1612,7 @@ dapi_Roller.prototype = {
 			var dice = expr[2];
 			var rolls = this.extractRolls(dice,extractor);
 			var result = this.extractResult(rolls,extractor);
-			return dapi_DiceExpression.RollGroup(dapi_DiceGroup.DiceSet(rolls),extractor,{ result : result, meta : meta});
+			return dapi_DiceExpression.RollBag(dapi_DiceBag.DiceSet(rolls),extractor,{ result : result, meta : meta});
 		case 2:
 			var meta1 = expr[5];
 			var b = expr[4];
@@ -1699,19 +1699,19 @@ dapi_Roller.prototype = {
 		return rolls.concat(explosives.length == 0 ? [] : this.explodeRolls(explosives,explodeOn));
 	}
 	,rollDice: function(dice,sides) {
-		return this.roll(dapi_DiceExpression.RollGroup(dapi_DiceGroup.RepeatDie(dice,new dapi_Die(sides,thx_Unit.unit)),dapi_GroupExtractor.Sum,thx_Unit.unit));
+		return this.roll(dapi_DiceExpression.RollBag(dapi_DiceBag.RepeatDie(dice,new dapi_Die(sides,thx_Unit.unit)),dapi_BagExtractor.Sum,thx_Unit.unit));
 	}
 	,rollOne: function(sides) {
 		return this.roll(dapi_DiceExpression.RollOne(dapi_Die.withSides(sides)));
 	}
 	,rollDiceAndDropLow: function(dice,sides,drop) {
-		return this.roll(dapi_DiceExpression.RollGroup(dapi_DiceGroup.RepeatDie(dice,new dapi_Die(sides,thx_Unit.unit)),dapi_GroupExtractor.DropLow(drop),thx_Unit.unit));
+		return this.roll(dapi_DiceExpression.RollBag(dapi_DiceBag.RepeatDie(dice,new dapi_Die(sides,thx_Unit.unit)),dapi_BagExtractor.DropLow(drop),thx_Unit.unit));
 	}
 	,rollDiceAndKeepHigh: function(dice,sides,keep) {
-		return this.roll(dapi_DiceExpression.RollGroup(dapi_DiceGroup.RepeatDie(dice,new dapi_Die(sides,thx_Unit.unit)),dapi_GroupExtractor.KeepHigh(keep),thx_Unit.unit));
+		return this.roll(dapi_DiceExpression.RollBag(dapi_DiceBag.RepeatDie(dice,new dapi_Die(sides,thx_Unit.unit)),dapi_BagExtractor.KeepHigh(keep),thx_Unit.unit));
 	}
 	,rollDiceAndExplode: function(dice,sides,explodeOn) {
-		return this.roll(dapi_DiceExpression.RollGroup(dapi_DiceGroup.RepeatDie(dice,new dapi_Die(sides,thx_Unit.unit)),dapi_GroupExtractor.ExplodeOn(explodeOn),thx_Unit.unit));
+		return this.roll(dapi_DiceExpression.RollBag(dapi_DiceBag.RepeatDie(dice,new dapi_Die(sides,thx_Unit.unit)),dapi_BagExtractor.ExplodeOn(explodeOn),thx_Unit.unit));
 	}
 	,__class__: dapi_Roller
 };
@@ -12198,7 +12198,7 @@ dapi_DiceParser.rollManySame = parsihax_Parser.flatMap(dapi_DiceParser.positive,
 	return (function(fun) {
 		return parsihax_Parser.map(_e,fun);
 	})(function(_) {
-		return dapi_DiceExpression.RollGroup(dapi_DiceGroup.RepeatDie(dice,_),dapi_GroupExtractor.Sum,thx_Unit.unit);
+		return dapi_DiceExpression.RollBag(dapi_DiceBag.RepeatDie(dice,_),dapi_BagExtractor.Sum,thx_Unit.unit);
 	});
 });
 dapi_DiceParser.lbrace = dapi_DiceParser.token(parsihax_Parser.string("{"));
@@ -12209,7 +12209,7 @@ dapi_DiceParser.rollMany = (function($this) {
 	$r = (function(fun) {
 		return parsihax_Parser.map(_e,fun);
 	})(function(_) {
-		return dapi_DiceExpression.RollGroup(dapi_DiceGroup.DiceSet(_),dapi_GroupExtractor.Sum,thx_Unit.unit);
+		return dapi_DiceExpression.RollBag(dapi_DiceBag.DiceSet(_),dapi_BagExtractor.Sum,thx_Unit.unit);
 	});
 	return $r;
 }(this));

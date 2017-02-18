@@ -7,7 +7,7 @@ class DiceResults {
     return switch expr {
       case RollOne(die):
         die.meta.result;
-      case RollGroup(_, _, meta) |
+      case RollBag(_, _, meta) |
            BinaryOp(_, _, _, meta) |
            Literal(_, meta):
         meta.result;

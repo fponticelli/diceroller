@@ -16,10 +16,10 @@ class Roller {
     return switch expr {
       case RollOne(die):
         RollOne(die.roll(random));
-      case RollGroup(dice, extractor, meta):
+      case RollBag(dice, extractor, meta):
         var rolls = extractRolls(dice, extractor);
         var result = extractResult(rolls, extractor);
-        RollGroup(DiceSet(rolls), extractor, { result: result, meta: meta});
+        RollBag(DiceSet(rolls), extractor, { result: result, meta: meta});
       case BinaryOp(op, a, b, meta):
         var ra = roll(a),
             rb = roll(b);
@@ -59,7 +59,7 @@ class Roller {
         rolls.reduce(function(acc, roll) return acc + roll.meta.result, 0);
     };
 
-  function groupToDice<T>(group: DiceGroup<T>): Array<Die<T>>
+  function groupToDice<T>(group: DiceBag<T>): Array<Die<T>>
     return switch group {
       case DiceSet(dice):
          dice;
@@ -79,17 +79,17 @@ class Roller {
   }
 
   public function rollDice(dice: Int, sides: Int): DiceResult<Unit>
-    return roll(RollGroup(RepeatDie(dice, new Die(sides, unit)), Sum, unit));
+    return roll(RollBag(RepeatDie(dice, new Die(sides, unit)), Sum, unit));
 
   public function rollOne(sides: Int): DiceResult<Unit>
     return roll(RollOne(Die.withSides(sides)));
 
   public function rollDiceAndDropLow(dice: Int, sides: Int, drop: Int): DiceResult<Unit>
-    return roll(RollGroup(RepeatDie(dice, new Die(sides, unit)), DropLow(drop), unit));
+    return roll(RollBag(RepeatDie(dice, new Die(sides, unit)), DropLow(drop), unit));
 
   public function rollDiceAndKeepHigh(dice: Int, sides: Int, keep: Int): DiceResult<Unit>
-    return roll(RollGroup(RepeatDie(dice, new Die(sides, unit)), KeepHigh(keep), unit));
+    return roll(RollBag(RepeatDie(dice, new Die(sides, unit)), KeepHigh(keep), unit));
 
   public function rollDiceAndExplode(dice: Int, sides: Int, explodeOn: Int): DiceResult<Unit>
-    return roll(RollGroup(RepeatDie(dice, new Die(sides, unit)), ExplodeOn(explodeOn), unit));
+    return roll(RollBag(RepeatDie(dice, new Die(sides, unit)), ExplodeOn(explodeOn), unit));
 }
