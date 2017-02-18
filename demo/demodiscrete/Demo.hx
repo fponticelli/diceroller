@@ -1,4 +1,4 @@
-import probability.Discrete;
+import dapi.Discrete;
 
 class Demo {
   public static function main() {

@@ -1,16 +1,14 @@
-package probability;
+package dapi;
 
 import thx.Tuple;
 
 // We model discrete distributions as pairs of (integer) weights and values
 class Discrete {
-  public var weighted_values(default, null): Array<Tuple2<Int, Float>>;
+  public var weighted_values(default, null): Array<Tuple2<Int, Float>> = [];
 
   // Standard constructor
-  public function new(weights: Array<Int>, values: Array<Float>) {
-    var n = weights.length;
-    weighted_values = [for (i in 0...n) new Tuple2(0, 0.0)];
-    for(i in 0...n)
+  function new(weights: Array<Int>, values: Array<Float>) {
+    for(i in 0...weights.length)
       weighted_values[i] = new Tuple2(weights[i], values[i]);
     compact();
   }
@@ -25,16 +23,16 @@ class Discrete {
     return weighted_values.length;
 
   public function weights(): Array<Int>
-    return [for (i in 0...length()) weighted_values[i].left];
+    return [for (i in 0...length()) weighted_values[i]._0];
 
   public function values(): Array<Float>
-    return [for (i in 0...length()) weighted_values[i].right];
+    return [for (i in 0...length()) weighted_values[i]._1];
 
   public function probabilities(): Array<Float> {
     var sum: Int = 0;
     for(i in 0...length())
-      sum += weighted_values[i].left;
-    return [for (i in 0...length()) weighted_values[i].left / sum];
+      sum += weighted_values[i]._0;
+    return [for (i in 0...length()) weighted_values[i]._0 / sum];
   }
 
   // Internal utility function. Call this before any returns of Discrete
@@ -47,8 +45,8 @@ class Discrete {
     weighted_values[0] = new Tuple2(old_weights[0], old_values[0]);
     var j: Int = 0;
     for(i in 1...old_weights.length)
-      if(weighted_values[j].right == old_values[i])
-        weighted_values[j] = new Tuple2(weighted_values[j].left + old_weights[i], weighted_values[j].right);
+      if(weighted_values[j]._1 == old_values[i])
+        weighted_values[j] = new Tuple2(weighted_values[j]._0 + old_weights[i], weighted_values[j]._1);
       else {
         j++;
         weighted_values[j] = new Tuple2(old_weights[i], old_values[i]);
@@ -66,8 +64,8 @@ class Discrete {
     var k = 0;
     for(i in 0...this.length())
       for(j in 0...other.length()) {
-        weights[k] = this.weighted_values[i].left * other.weighted_values[j].left;
-        values[k] = f(this.weighted_values[i].right, other.weighted_values[j].right);
+        weights[k] = this.weighted_values[i]._0 * other.weighted_values[j]._0;
+        values[k] = f(this.weighted_values[i]._1, other.weighted_values[j]._1);
         k++;
       }
     return new Discrete(weights, values);
@@ -75,5 +73,5 @@ class Discrete {
 
   // Comparison function for sorting. Used in compact
   static function compare(x: Tuple2<Int, Float>, y: Tuple2<Int, Float>): Int
-    return if(x.right == y.right) 0 else if(x.right < y.right) -1 else 1;
+    return if(x._1 == y._1) 0 else if(x._1 < y._1) -1 else 1;
 }
