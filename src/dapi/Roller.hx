@@ -20,6 +20,10 @@ class Roller {
         var rolls = extractRolls(dice, extractor);
         var result = extractResult(rolls, extractor);
         RollBag(DiceSet(rolls), extractor, { result: result, meta: meta});
+      case RollExpressions(exprs, extractor, meta):
+        var exaluatedExpressions = expressionBagToArrayOfExpression(exprs).map(roll),
+            result = extractExpressionResults(exaluatedExpressions, extractor);
+        RollExpressions(ExpressionSet(exaluatedExpressions), extractor, { result: result, meta: meta});
       case BinaryOp(op, a, b, meta):
         var ra = roll(a),
             rb = roll(b);
@@ -35,19 +39,20 @@ class Roller {
               meta: meta
             });
         }
-      case _: null;
+      case Literal(value, meta):
+        Literal(value, { result: value, meta: meta });
     };
   }
 
   function extractRolls(dice, extractor)
     return switch extractor {
       case Sum | DropLow(_) | KeepHigh(_):
-        groupToDice(dice).map.fn(_.roll(random));
+        diceBagToArrayOfDice(dice).map.fn(_.roll(random));
       case ExplodeOn(explodeOne):
-        explodeRolls(groupToDice(dice), explodeOne);
+        explodeRolls(diceBagToArrayOfDice(dice), explodeOne);
     };
 
-  function extractResult<T>(rolls: Array<Die<DiceResultMeta<T>>>, extractor)
+  function extractResult<T>(rolls: Array<Die<DiceResultMeta<T>>>, extractor: BagExtractor)
     return switch extractor {
       case Sum:
         rolls.reduce(function(acc, roll) return acc + roll.meta.result, 0);
@@ -59,10 +64,28 @@ class Roller {
         rolls.reduce(function(acc, roll) return acc + roll.meta.result, 0);
     };
 
-  function groupToDice<T>(group: DiceBag<T>): Array<Die<T>>
+  function extractExpressionResults<T>(exprs: Array<DiceResult<T>>, extractor: ExpressionExtractor)
+    return switch extractor {
+      case Sum:
+        exprs.reduce(function(acc, expr) return acc + DiceResults.extractResult(expr), 0);
+      case DropLow(drop):
+        exprs.map(DiceResults.extractResult).order(thx.Ints.compare).slice(drop).sum();
+      case KeepHigh(keep):
+        exprs.map(DiceResults.extractResult).order(thx.Ints.compare).reversed().slice(0, keep).sum();
+    };
+
+  function expressionBagToArrayOfExpression<T>(exprs: ExpressionBag<T>): Array<DiceExpression<T>>
+    return switch exprs {
+      case ExpressionSet(exprs):
+        exprs;
+      case RepeatDie(times, die):
+        [for(i in 0...times) RollOne(die)];
+    };
+
+  function diceBagToArrayOfDice<T>(group: DiceBag<T>): Array<Die<T>>
     return switch group {
       case DiceSet(dice):
-         dice;
+        dice;
       case RepeatDie(times, die):
         [for(i in 0...times) die];
     };

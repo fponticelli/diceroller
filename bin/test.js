@@ -708,11 +708,12 @@ dapi_DiceDSL.d20 = function(meta) {
 dapi_DiceDSL.d100 = function(meta) {
 	return new dapi_Die(100,meta);
 };
-var dapi_DiceExpression = { __ename__ : ["dapi","DiceExpression"], __constructs__ : ["RollOne","RollBag","BinaryOp","Literal"] };
+var dapi_DiceExpression = { __ename__ : ["dapi","DiceExpression"], __constructs__ : ["RollOne","RollBag","RollExpressions","BinaryOp","Literal"] };
 dapi_DiceExpression.RollOne = function(die) { var $x = ["RollOne",0,die]; $x.__enum__ = dapi_DiceExpression; return $x; };
 dapi_DiceExpression.RollBag = function(dice,extractor,meta) { var $x = ["RollBag",1,dice,extractor,meta]; $x.__enum__ = dapi_DiceExpression; return $x; };
-dapi_DiceExpression.BinaryOp = function(op,a,b,meta) { var $x = ["BinaryOp",2,op,a,b,meta]; $x.__enum__ = dapi_DiceExpression; return $x; };
-dapi_DiceExpression.Literal = function(value,meta) { var $x = ["Literal",3,value,meta]; $x.__enum__ = dapi_DiceExpression; return $x; };
+dapi_DiceExpression.RollExpressions = function(exprs,extractor,meta) { var $x = ["RollExpressions",2,exprs,extractor,meta]; $x.__enum__ = dapi_DiceExpression; return $x; };
+dapi_DiceExpression.BinaryOp = function(op,a,b,meta) { var $x = ["BinaryOp",3,op,a,b,meta]; $x.__enum__ = dapi_DiceExpression; return $x; };
+dapi_DiceExpression.Literal = function(value,meta) { var $x = ["Literal",4,value,meta]; $x.__enum__ = dapi_DiceExpression; return $x; };
 var dapi_BagExtractor = { __ename__ : ["dapi","BagExtractor"], __constructs__ : ["Sum","DropLow","KeepHigh","ExplodeOn"] };
 dapi_BagExtractor.Sum = ["Sum",0];
 dapi_BagExtractor.Sum.__enum__ = dapi_BagExtractor;
@@ -722,6 +723,14 @@ dapi_BagExtractor.ExplodeOn = function(explodeOn) { var $x = ["ExplodeOn",3,expl
 var dapi_DiceBag = { __ename__ : ["dapi","DiceBag"], __constructs__ : ["DiceSet","RepeatDie"] };
 dapi_DiceBag.DiceSet = function(dice) { var $x = ["DiceSet",0,dice]; $x.__enum__ = dapi_DiceBag; return $x; };
 dapi_DiceBag.RepeatDie = function(times,die) { var $x = ["RepeatDie",1,times,die]; $x.__enum__ = dapi_DiceBag; return $x; };
+var dapi_ExpressionExtractor = { __ename__ : ["dapi","ExpressionExtractor"], __constructs__ : ["Sum","DropLow","KeepHigh"] };
+dapi_ExpressionExtractor.Sum = ["Sum",0];
+dapi_ExpressionExtractor.Sum.__enum__ = dapi_ExpressionExtractor;
+dapi_ExpressionExtractor.DropLow = function(drop) { var $x = ["DropLow",1,drop]; $x.__enum__ = dapi_ExpressionExtractor; return $x; };
+dapi_ExpressionExtractor.KeepHigh = function(keep) { var $x = ["KeepHigh",2,keep]; $x.__enum__ = dapi_ExpressionExtractor; return $x; };
+var dapi_ExpressionBag = { __ename__ : ["dapi","ExpressionBag"], __constructs__ : ["ExpressionSet","RepeatDie"] };
+dapi_ExpressionBag.ExpressionSet = function(exprs) { var $x = ["ExpressionSet",0,exprs]; $x.__enum__ = dapi_ExpressionBag; return $x; };
+dapi_ExpressionBag.RepeatDie = function(times,die) { var $x = ["RepeatDie",1,times,die]; $x.__enum__ = dapi_ExpressionBag; return $x; };
 var dapi_DiceOperator = { __ename__ : ["dapi","DiceOperator"], __constructs__ : ["Sum","Difference"] };
 dapi_DiceOperator.Sum = ["Sum",0];
 dapi_DiceOperator.Sum.__enum__ = dapi_DiceOperator;
@@ -737,8 +746,12 @@ dapi_DiceExpressionExtensions.toString = function(expr) {
 	case 1:
 		var extractor = expr[3];
 		var dice = expr[2];
-		return dapi_DiceExpressionExtensions.diceToString(dice,extractor);
+		return dapi_DiceExpressionExtensions.diceBagToString(dice,extractor);
 	case 2:
+		var extractor1 = expr[3];
+		var exprs = expr[2];
+		return dapi_DiceExpressionExtensions.expressionBagToString(exprs,extractor1);
+	case 3:
 		switch(expr[2][1]) {
 		case 0:
 			var b = expr[4];
@@ -750,12 +763,12 @@ dapi_DiceExpressionExtensions.toString = function(expr) {
 			return dapi_DiceExpressionExtensions.toString(a1) + " - " + dapi_DiceExpressionExtensions.toString(b1);
 		}
 		break;
-	case 3:
+	case 4:
 		var value = expr[2];
 		return "" + value;
 	}
 };
-dapi_DiceExpressionExtensions.diceToString = function(group,extractor) {
+dapi_DiceExpressionExtensions.diceBagToString = function(group,extractor) {
 	var tmp;
 	switch(group[1]) {
 	case 0:
@@ -786,6 +799,35 @@ dapi_DiceExpressionExtensions.diceToString = function(group,extractor) {
 	case 3:
 		var explodeOn = extractor[2];
 		tmp1 = "e" + explodeOn;
+		break;
+	}
+	return tmp + tmp1;
+};
+dapi_DiceExpressionExtensions.expressionBagToString = function(group,extractor) {
+	var tmp;
+	switch(group[1]) {
+	case 0:
+		var exprs = group[2];
+		tmp = "{" + exprs.map(dapi_DiceExpressionExtensions.toString).join(",") + "}";
+		break;
+	case 1:
+		var die = group[3];
+		var time = group[2];
+		tmp = "" + time + die.toString();
+		break;
+	}
+	var tmp1;
+	switch(extractor[1]) {
+	case 0:
+		tmp1 = "";
+		break;
+	case 1:
+		var drop = extractor[2];
+		tmp1 = "d" + drop;
+		break;
+	case 2:
+		var keep = extractor[2];
+		tmp1 = "k" + keep;
 		break;
 	}
 	return tmp + tmp1;
@@ -1588,11 +1630,14 @@ dapi_DiceResults.extractResult = function(expr) {
 		var meta = expr[4];
 		return meta.result;
 	case 2:
-		var meta1 = expr[5];
+		var meta1 = expr[4];
 		return meta1.result;
 	case 3:
-		var meta2 = expr[3];
+		var meta2 = expr[5];
 		return meta2.result;
+	case 4:
+		var meta3 = expr[3];
+		return meta3.result;
 	}
 };
 var dapi_Roller = function(random) {
@@ -1614,7 +1659,14 @@ dapi_Roller.prototype = {
 			var result = this.extractResult(rolls,extractor);
 			return dapi_DiceExpression.RollBag(dapi_DiceBag.DiceSet(rolls),extractor,{ result : result, meta : meta});
 		case 2:
-			var meta1 = expr[5];
+			var meta1 = expr[4];
+			var extractor1 = expr[3];
+			var exprs = expr[2];
+			var exaluatedExpressions = this.expressionBagToArrayOfExpression(exprs).map($bind(this,this.roll));
+			var result1 = this.extractExpressionResults(exaluatedExpressions,extractor1);
+			return dapi_DiceExpression.RollExpressions(dapi_ExpressionBag.ExpressionSet(exaluatedExpressions),extractor1,{ result : result1, meta : meta1});
+		case 3:
+			var meta2 = expr[5];
 			var b = expr[4];
 			var a = expr[3];
 			var op = expr[2];
@@ -1622,25 +1674,27 @@ dapi_Roller.prototype = {
 			var rb = this.roll(b);
 			switch(op[1]) {
 			case 0:
-				return dapi_DiceExpression.BinaryOp(dapi_DiceOperator.Sum,ra,rb,{ result : dapi_DiceResults.extractResult(ra) + dapi_DiceResults.extractResult(rb), meta : meta1});
+				return dapi_DiceExpression.BinaryOp(dapi_DiceOperator.Sum,ra,rb,{ result : dapi_DiceResults.extractResult(ra) + dapi_DiceResults.extractResult(rb), meta : meta2});
 			case 1:
-				return dapi_DiceExpression.BinaryOp(dapi_DiceOperator.Difference,ra,rb,{ result : dapi_DiceResults.extractResult(ra) + dapi_DiceResults.extractResult(rb), meta : meta1});
+				return dapi_DiceExpression.BinaryOp(dapi_DiceOperator.Difference,ra,rb,{ result : dapi_DiceResults.extractResult(ra) + dapi_DiceResults.extractResult(rb), meta : meta2});
 			}
 			break;
-		default:
-			return null;
+		case 4:
+			var meta3 = expr[3];
+			var value = expr[2];
+			return dapi_DiceExpression.Literal(value,{ result : value, meta : meta3});
 		}
 	}
 	,extractRolls: function(dice,extractor) {
 		var _gthis = this;
 		switch(extractor[1]) {
 		case 0:case 1:case 2:
-			return this.groupToDice(dice).map(function(_) {
+			return this.diceBagToArrayOfDice(dice).map(function(_) {
 				return _.roll(_gthis.random);
 			});
 		case 3:
 			var explodeOne = extractor[2];
-			return this.explodeRolls(this.groupToDice(dice),explodeOne);
+			return this.explodeRolls(this.diceBagToArrayOfDice(dice),explodeOne);
 		}
 	}
 	,extractResult: function(rolls,extractor) {
@@ -1668,7 +1722,41 @@ dapi_Roller.prototype = {
 			},0);
 		}
 	}
-	,groupToDice: function(group) {
+	,extractExpressionResults: function(exprs,extractor) {
+		switch(extractor[1]) {
+		case 0:
+			return thx_Arrays.reduce(exprs,function(acc,expr) {
+				return acc + dapi_DiceResults.extractResult(expr);
+			},0);
+		case 1:
+			var drop = extractor[2];
+			return thx_ArrayInts.sum(thx_Arrays.order(exprs.map(dapi_DiceResults.extractResult),thx_Ints.compare).slice(drop));
+		case 2:
+			var keep = extractor[2];
+			var result = thx_Arrays.order(exprs.map(dapi_DiceResults.extractResult),thx_Ints.compare).slice();
+			result.reverse();
+			return thx_ArrayInts.sum(result.slice(0,keep));
+		}
+	}
+	,expressionBagToArrayOfExpression: function(exprs) {
+		switch(exprs[1]) {
+		case 0:
+			var exprs1 = exprs[2];
+			return exprs1;
+		case 1:
+			var die = exprs[3];
+			var times = exprs[2];
+			var _g = [];
+			var _g2 = 0;
+			var _g1 = times;
+			while(_g2 < _g1) {
+				var i = _g2++;
+				_g.push(dapi_DiceExpression.RollOne(die));
+			}
+			return _g;
+		}
+	}
+	,diceBagToArrayOfDice: function(group) {
 		switch(group[1]) {
 		case 0:
 			var dice = group[2];

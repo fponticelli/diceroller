@@ -8,6 +8,7 @@ class DiceResults {
       case RollOne(die):
         die.meta.result;
       case RollBag(_, _, meta) |
+           RollExpressions(_, _, meta) |
            BinaryOp(_, _, _, meta) |
            Literal(_, meta):
         meta.result;

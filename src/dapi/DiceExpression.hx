@@ -3,6 +3,7 @@ package dapi;
 enum DiceExpression<T> {
   RollOne(die: Die<T>);
   RollBag(dice: DiceBag<T>, extractor: BagExtractor, meta: T);
+  RollExpressions(exprs: ExpressionBag<T>, extractor: ExpressionExtractor, meta: T);
   BinaryOp(op: DiceOperator, a: DiceExpression<T>, b: DiceExpression<T>, meta: T);
   Literal(value: Int, meta: T);
 }
@@ -16,6 +17,17 @@ enum BagExtractor {
 
 enum DiceBag<T> {
   DiceSet(dice: Array<Die<T>>);
+  RepeatDie(times: Int, die: Die<T>);
+}
+
+enum ExpressionExtractor {
+  Sum;
+  DropLow(drop: Int);
+  KeepHigh(keep: Int);
+}
+
+enum ExpressionBag<T> {
+  ExpressionSet(exprs: Array<DiceExpression<T>>);
   RepeatDie(times: Int, die: Die<T>);
 }
 
