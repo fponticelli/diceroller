@@ -1,7 +1,7 @@
 import utest.Assert;
 import utest.UTest;
 using dr.DiceExpressionExtensions;
-import dr.DiceResult;
+using dr.DiceResult;
 import dr.DiceParser;
 import dr.Roller;
 
@@ -44,6 +44,8 @@ class TestAll {
 
   public function testParseAndBoundaries() {
     var tests = [
+      { min: 1, max: 1, t: "1", pos: pos() },
+      { min: 2, max: 2, t: "2", pos: pos() },
       { min: 1, max: 6, t: "D", pos: pos() },
       { min: 1, max: 6, t: "d", pos: pos() },
       { min: 1, max: 6, t: "1d", pos: pos() },
@@ -65,10 +67,11 @@ class TestAll {
       case Right(v):
         var serialized = v.toString();
         var expected = null == t.p ? t.t : t.p;
-        Assert.same(expected, serialized, t.pos);
-
-        Assert.equals(t.min, min().roll(v), t.pos);
-        Assert.equals(t.max, max().roll(v), t.pos);
+        Assert.equals(expected, serialized, 'expected serialization to be "${expected}" but it is "${serialized}', t.pos);
+        var minr = min().roll(v).extractResult();
+        Assert.equals(t.min, minr, 'expected min to be ${t.min} but it is $minr', t.pos);
+        var maxr = min().roll(v).extractResult();
+        Assert.equals(t.min, maxr, 'expected max to be ${t.min} but it is $maxr', t.pos);
     }
   }
 
