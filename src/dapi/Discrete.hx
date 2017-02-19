@@ -36,20 +36,36 @@ class Discrete {
   }
 
   // Internal utility function. Call this before any returns of Discrete
+  // After calling, weighted_values will have no repeated tuples, no zero
+  // or negative weights and will be sorted by value
   function compact() {
     weighted_values.sort(compare);
-    var old_weights = weights();
-    var old_values = values();
-    weighted_values = [];
-
-    weighted_values[0] = new Tuple2(old_weights[0], old_values[0]);
+    var maybezero_weights = weights();
+    var maybezero_values = values();
+    var old_weights = [];
+    var old_values = [];
     var j: Int = 0;
-    for(i in 1...old_weights.length)
-      if(weighted_values[j]._1 == old_values[i])
-        weighted_values[j] = new Tuple2(weighted_values[j]._0 + old_weights[i], weighted_values[j]._1);
-      else {
+
+    // Remove zero or negative weights
+    for (i in 0...maybezero_weights.length) {
+      if(maybezero_weights[i] > 0) {
+        old_weights[j] = maybezero_weights[i];
+        old_values[j] = maybezero_values[i];
         j++;
-        weighted_values[j] = new Tuple2(old_weights[i], old_values[i]);
+      }
+    }
+
+    // Consolidate weights with the same values
+    var k: Int = 0;
+    weighted_values = [];
+    weighted_values[0] = new Tuple2(old_weights[0], old_values[0]);
+
+    for(i in 1...old_weights.length)
+      if(weighted_values[k]._1 == old_values[i])
+        weighted_values[k] = new Tuple2(weighted_values[k]._0 + old_weights[i], weighted_values[k]._1);
+      else {
+        k++;
+        weighted_values[k] = new Tuple2(old_weights[i], old_values[i]);
       }
   }
 
@@ -69,6 +85,17 @@ class Discrete {
         k++;
       }
     return new Discrete(weights, values);
+  }
+
+  public function always_resample(x: Array<Float>) {
+  // We set the weights of values in x to zero and let
+  // compact (inside the constructor) remove them
+    var weights: Array<Int> = this.weights();
+    for(i in 0...this.length())
+      for(j in 0...x.length)
+        if(weighted_values[j]._1 == x[j])
+          weights[j] = 0;
+    return new Discrete(weights, this.values());
   }
 
   // Comparison function for sorting. Used in compact
