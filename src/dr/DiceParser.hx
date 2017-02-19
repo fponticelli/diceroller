@@ -1,4 +1,4 @@
-package dapi;
+package dr;
 
 import parsihax.*;
 import parsihax.Parser.*;
@@ -6,7 +6,7 @@ using parsihax.Parser;
 using thx.Functions;
 import thx.Unit;
 import thx.Validation;
-import dapi.DiceExpression;
+import dr.DiceExpression;
 
 class DiceParser {
   public static function parse(s: String): Validation<String, DiceExpression<Unit>> {

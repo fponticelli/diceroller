@@ -6,8 +6,8 @@
 -main TestAll
 -js bin/test.js
 
-dapi.DiceExpression
-dapi.DiceResult
-dapi.Roller
+dr.DiceExpression
+dr.DiceResult
+dr.Roller
 
 -cmd node bin/test.js

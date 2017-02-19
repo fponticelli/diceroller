@@ -1,4 +1,4 @@
-package dapi;
+package dr;
 
 enum DiceExpression<T> {
   RollOne(die: Die<T>);

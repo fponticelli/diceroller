@@ -1,7 +1,7 @@
-package dapi;
+package dr;
 
 using thx.Functions;
-import dapi.DiceExpression;
+import dr.DiceExpression;
 
 class DiceExpressionExtensions {
   public static function toString<T>(expr: DiceExpression<T>) return switch expr {

@@ -1,6 +1,6 @@
-package dapi;
+package dr;
 
-import dapi.DiceExpression;
+import dr.DiceExpression;
 import thx.Unit;
 
 class SimpleDiceDSL {

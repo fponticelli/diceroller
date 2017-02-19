@@ -1,6 +1,6 @@
-package dapi;
+package dr;
 
-import dapi.DiceExpression;
+import dr.DiceExpression;
 
 class DiceDSL {
   public static function many<T>(dice: Int, die: Die<T>, meta: T): DiceExpression<T>

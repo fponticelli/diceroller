@@ -1,10 +1,10 @@
-package dapi;
+package dr;
 
 import thx.Unit;
 using thx.Arrays;
 using thx.Functions;
-import dapi.DiceExpression;
-import dapi.DiceResult;
+import dr.DiceExpression;
+import dr.DiceResult;
 
 class Roller {
   var random: Int -> Int;

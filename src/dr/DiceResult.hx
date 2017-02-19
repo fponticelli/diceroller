@@ -1,4 +1,4 @@
-package dapi;
+package dr;
 
 typedef DiceResult<T> = DiceExpression<DiceResultMeta<T>>;
 

@@ -1,4 +1,4 @@
-import dapi.Discrete;
+import dr.Discrete;
 
 class Demo {
   public static function main() {

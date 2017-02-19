@@ -1,12 +1,9 @@
 import utest.Assert;
 import utest.UTest;
-using dapi.DiceExpression;
-using dapi.DiceExpressionExtensions;
-import dapi.DiceResult;
-import dapi.DiceParser;
-import dapi.Die;
-import dapi.Roller;
-import dapi.SimpleDiceDSL.*;
+using dr.DiceExpressionExtensions;
+import dr.DiceResult;
+import dr.DiceParser;
+import dr.Roller;
 
 class TestAll {
   public static function main() {
@@ -39,41 +36,41 @@ class TestAll {
   public function roller(seq = 1)
     return new Roller(function(max: Int) return ((seq++ - 1) % max) + 1);
 
-  public function testParseDie() {
-    assertParseDie(d8, "d8");
-    assertParseDie(d12, "D12");
-  }
+  public function max()
+    return new Roller(function(max: Int) return max);
 
-  public function testParse() {
-    var tests: Array<DiceExpression<thx.Unit>> = [
-      die(6),
-      literal(2),
-      many(3, d6),
-      dice([d2, d4, d6])
+  public function min()
+    return new Roller(function(_: Int) return 1);
+
+  public function testParseAndBoundaries() {
+    var tests = [
+      { min: 1, max: 6, t: "D", pos: pos() },
+      { min: 1, max: 6, t: "d", pos: pos() },
+      { min: 1, max: 6, t: "1d", pos: pos() },
+      { min: 1, max: 6, t: "1D", pos: pos() },
+      { min: 1, max: 6, t: "1d6", pos: pos() },
+      { min: 1, max: 6, t: "1D6", pos: pos() },
+      { min: 1, max: 6, t: "d6", pos: pos() },
+      { min: 1, max: 6, t: "D6", pos: pos() },
     ];
-    for(test in tests)
-      assertParseExpression(test);
+    
+    tests.map(assertParseAndBoundaries);
   }
 
-  public function assertParseDie(expected: Die<thx.Unit>, test: String) {
-    var parsed = DiceParser.parseDie(test);
+  public function assertParseAndBoundaries(t: {min: Int, max: Int, t: String, ?p: String, pos: haxe.PosInfos}) {
+    var parsed = DiceParser.parse(t.t);
     switch parsed.either {
       case Left(e):
-        Assert.fail(e);
+        Assert.fail(e, t.pos);
       case Right(v):
-        Assert.same(expected, v);
+        var serialized = v.toString();
+        var expected = null == t.p ? t.t : t.p;
+        Assert.same(expected, serialized, t.pos);
+
+        Assert.equals(t.min, min().roll(v), t.pos);
+        Assert.equals(t.max, max().roll(v), t.pos);
     }
   }
 
-  public function assertParseExpression(exp: DiceExpression<thx.Unit>) {
-    var test = exp.toString();
-    trace(test);
-    var parsed = DiceParser.parse(test);
-    switch parsed.either {
-      case Left(e):
-        Assert.fail(e);
-      case Right(v):
-        Assert.same(exp, v, 'expected $exp but it is $v for $test');
-    }
-  }
+  inline public function pos(?pos: haxe.PosInfos) return pos;
 }
