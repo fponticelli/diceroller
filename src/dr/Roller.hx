@@ -14,18 +14,8 @@ class Roller {
 
   public function roll<T>(expr: DiceExpression<T>): DiceResult<T> {
     return switch expr {
-      case Roll(One(die)):
-        Roll(One(die.roll(random)));
-      case Roll(Repeat(rolls, die, meta)):
-        var rolls = [for(i in 0...rolls) die].map.fn(_.roll(random));
-        var result = sumResults(rolls);
-        Roll(Bag(rolls, { result: result, meta: meta }));
-      case Roll(Bag(list, meta)):
-        var rolls = list.map.fn(_.roll(random));
-        var result = sumResults(rolls);
-        Roll(Bag(rolls, { result: result, meta: meta }));
-      case Roll(Literal(value, meta)):
-        Roll(Literal(value, { result: value, meta: meta }));
+      case Roll(roll):
+        Roll(basicRoll(roll));
       case RollBag(dice, extractor, meta):
         var rolls = extractRolls(dice, extractor);
         var result = extractResult(rolls, extractor);
@@ -52,6 +42,21 @@ class Roller {
     };
   }
 
+  function basicRoll<T>(roll: BasicRoll<T>): BasicRoll<DiceResultMeta<T>> return switch roll {
+    case One(die):
+      One(die.roll(random));
+    case Bag(list, meta):
+      var rolls = list.map(basicRoll);
+      var result = sumBasicRoll(rolls);
+      Bag(rolls, {result: result, meta: meta});
+    case Repeat(times, die, meta):
+      var rolls = [for(i in 0...times) die.roll(random)];
+      var result = sumDice(rolls);
+      Bag(rolls.map(One), {result: result, meta: meta});
+    case Literal(value, meta):
+      Literal(value, {result: value, meta: meta});
+  }
+
   function extractRolls(dice, extractor)
     return switch extractor {
       case Sum | DropLow(_) | KeepHigh(_):
@@ -60,8 +65,21 @@ class Roller {
         explodeRolls(diceBagToArrayOfDice(dice), explodeOne);
     };
 
-  function sumResults<T>(rolls: Array<Die<DiceResultMeta<T>>>)
+  function sumDice<T>(rolls: Array<Die<DiceResultMeta<T>>>)
     return rolls.reduce(function(acc, roll) return acc + roll.meta.result, 0);
+
+  function sumBasicRoll<T>(rolls: Array<BasicRoll<DiceResultMeta<T>>>)
+    return rolls.reduce(function(acc, roll) return acc + switch roll {
+      case One(die):
+        die.meta.result;
+      case Bag(_, meta) |
+           Repeat(_, _, meta) |
+           Literal(_, meta):
+        meta.result;
+    }, 0);
+
+  function sumResults<T>(rolls: Array<DiceResult<T>>)
+    return rolls.reduce(function(acc, roll) return acc + DiceResults.extractResult(roll), 0);
 
   function extractResult<T>(rolls: Array<Die<DiceResultMeta<T>>>, extractor: BagExtractor)
     return switch extractor {

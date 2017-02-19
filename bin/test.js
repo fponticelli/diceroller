@@ -489,7 +489,7 @@ TestAll.prototype = {
 		});
 	}
 	,testParseAndBoundaries: function() {
-		var tests = [{ min : 1, max : 1, t : "1", pos : { fileName : "TestAll.hx", lineNumber : 47, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 2, t : "2", pos : { fileName : "TestAll.hx", lineNumber : 48, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "D", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 49, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 50, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1d", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 51, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1D", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 52, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1d6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 53, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1D6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 54, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d6", pos : { fileName : "TestAll.hx", lineNumber : 55, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "D6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 56, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : " d6 ", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 57, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d6 ", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 58, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : " d6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 59, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 100, t : "d%", pos : { fileName : "TestAll.hx", lineNumber : 60, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 300, t : "3d100", p : "3d%", pos : { fileName : "TestAll.hx", lineNumber : 61, className : "TestAll", methodName : "testParseAndBoundaries"}}];
+		var tests = [{ min : 1, max : 1, t : "1", pos : { fileName : "TestAll.hx", lineNumber : 47, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 2, t : "2", pos : { fileName : "TestAll.hx", lineNumber : 48, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "D", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 49, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 50, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1d", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 51, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1D", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 52, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1d6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 53, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1D6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 54, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d6", pos : { fileName : "TestAll.hx", lineNumber : 55, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "D6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 56, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : " d6 ", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 57, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d6 ", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 58, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : " d6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 59, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 100, t : "d%", pos : { fileName : "TestAll.hx", lineNumber : 60, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 300, t : "3d100", p : "3d%", pos : { fileName : "TestAll.hx", lineNumber : 61, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 8, t : "{d8}", pos : { fileName : "TestAll.hx", lineNumber : 63, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 2, t : "{2}", pos : { fileName : "TestAll.hx", lineNumber : 64, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, max : 5, t : "{2,3}", pos : { fileName : "TestAll.hx", lineNumber : 65, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 6, t : "{2d3}", pos : { fileName : "TestAll.hx", lineNumber : 66, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 14, t : "{d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 67, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 14, t : "{ d6 , d8 }", p : "{d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 68, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 18, t : "{d4,d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 69, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, max : 20, t : "{2,d4,d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 70, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 6, max : 30, t : "{2,d4,3d8}", pos : { fileName : "TestAll.hx", lineNumber : 71, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, max : 58, t : "{{2,d4,3d8},d4,3d8}", pos : { fileName : "TestAll.hx", lineNumber : 72, className : "TestAll", methodName : "testParseAndBoundaries"}}];
 		tests.map($bind(this,this.assertParseAndBoundaries));
 	}
 	,assertParseAndBoundaries: function(t) {
@@ -641,18 +641,22 @@ Type["typeof"] = function(v) {
 		return ValueType.TUnknown;
 	}
 };
-var dr_DiceExpression = { __ename__ : ["dr","DiceExpression"], __constructs__ : ["RollOne","RollBag","RollExpressions","BinaryOp","Literal"] };
-dr_DiceExpression.RollOne = function(die) { var $x = ["RollOne",0,die]; $x.__enum__ = dr_DiceExpression; return $x; };
+var dr_DiceExpression = { __ename__ : ["dr","DiceExpression"], __constructs__ : ["Roll","RollBag","RollExpressions","BinaryOp"] };
+dr_DiceExpression.Roll = function(basic) { var $x = ["Roll",0,basic]; $x.__enum__ = dr_DiceExpression; return $x; };
 dr_DiceExpression.RollBag = function(dice,extractor,meta) { var $x = ["RollBag",1,dice,extractor,meta]; $x.__enum__ = dr_DiceExpression; return $x; };
 dr_DiceExpression.RollExpressions = function(exprs,extractor,meta) { var $x = ["RollExpressions",2,exprs,extractor,meta]; $x.__enum__ = dr_DiceExpression; return $x; };
 dr_DiceExpression.BinaryOp = function(op,a,b,meta) { var $x = ["BinaryOp",3,op,a,b,meta]; $x.__enum__ = dr_DiceExpression; return $x; };
-dr_DiceExpression.Literal = function(value,meta) { var $x = ["Literal",4,value,meta]; $x.__enum__ = dr_DiceExpression; return $x; };
 var dr_BagExtractor = { __ename__ : ["dr","BagExtractor"], __constructs__ : ["Sum","DropLow","KeepHigh","ExplodeOn"] };
 dr_BagExtractor.Sum = ["Sum",0];
 dr_BagExtractor.Sum.__enum__ = dr_BagExtractor;
 dr_BagExtractor.DropLow = function(drop) { var $x = ["DropLow",1,drop]; $x.__enum__ = dr_BagExtractor; return $x; };
 dr_BagExtractor.KeepHigh = function(keep) { var $x = ["KeepHigh",2,keep]; $x.__enum__ = dr_BagExtractor; return $x; };
 dr_BagExtractor.ExplodeOn = function(explodeOn) { var $x = ["ExplodeOn",3,explodeOn]; $x.__enum__ = dr_BagExtractor; return $x; };
+var dr_BasicRoll = { __ename__ : ["dr","BasicRoll"], __constructs__ : ["One","Bag","Repeat","Literal"] };
+dr_BasicRoll.One = function(die) { var $x = ["One",0,die]; $x.__enum__ = dr_BasicRoll; return $x; };
+dr_BasicRoll.Bag = function(list,meta) { var $x = ["Bag",1,list,meta]; $x.__enum__ = dr_BasicRoll; return $x; };
+dr_BasicRoll.Repeat = function(times,die,meta) { var $x = ["Repeat",2,times,die,meta]; $x.__enum__ = dr_BasicRoll; return $x; };
+dr_BasicRoll.Literal = function(value,meta) { var $x = ["Literal",3,value,meta]; $x.__enum__ = dr_BasicRoll; return $x; };
 var dr_DiceBag = { __ename__ : ["dr","DiceBag"], __constructs__ : ["DiceSet","RepeatDie"] };
 dr_DiceBag.DiceSet = function(dice) { var $x = ["DiceSet",0,dice]; $x.__enum__ = dr_DiceBag; return $x; };
 dr_DiceBag.RepeatDie = function(times,die) { var $x = ["RepeatDie",1,times,die]; $x.__enum__ = dr_DiceBag; return $x; };
@@ -674,8 +678,8 @@ dr_DiceExpressionExtensions.__name__ = ["dr","DiceExpressionExtensions"];
 dr_DiceExpressionExtensions.toString = function(expr) {
 	switch(expr[1]) {
 	case 0:
-		var die = expr[2];
-		return die.toString();
+		var roll = expr[2];
+		return dr_DiceExpressionExtensions.rollToString(roll);
 	case 1:
 		var extractor = expr[3];
 		var dice = expr[2];
@@ -696,8 +700,22 @@ dr_DiceExpressionExtensions.toString = function(expr) {
 			return dr_DiceExpressionExtensions.toString(a1) + " - " + dr_DiceExpressionExtensions.toString(b1);
 		}
 		break;
-	case 4:
-		var value = expr[2];
+	}
+};
+dr_DiceExpressionExtensions.rollToString = function(roll) {
+	switch(roll[1]) {
+	case 0:
+		var die = roll[2];
+		return die.toString();
+	case 1:
+		var list = roll[2];
+		return "{" + list.map(dr_DiceExpressionExtensions.rollToString).join(",") + "}";
+	case 2:
+		var die1 = roll[3];
+		var time = roll[2];
+		return "" + time + die1.toString();
+	case 3:
+		var value = roll[2];
 		return "" + value;
 	}
 };
@@ -1547,20 +1565,30 @@ dr_DiceResults.__name__ = ["dr","DiceResults"];
 dr_DiceResults.extractResult = function(expr) {
 	switch(expr[1]) {
 	case 0:
-		var die = expr[2];
-		return die.meta.result;
+		switch(expr[2][1]) {
+		case 0:
+			var die = expr[2][2];
+			return die.meta.result;
+		case 1:
+			var meta = expr[2][3];
+			return meta.result;
+		case 2:
+			var meta1 = expr[2][4];
+			return meta1.result;
+		case 3:
+			var meta2 = expr[2][3];
+			return meta2.result;
+		}
+		break;
 	case 1:
-		var meta = expr[4];
-		return meta.result;
-	case 2:
-		var meta1 = expr[4];
-		return meta1.result;
-	case 3:
-		var meta2 = expr[5];
-		return meta2.result;
-	case 4:
-		var meta3 = expr[3];
+		var meta3 = expr[4];
 		return meta3.result;
+	case 2:
+		var meta4 = expr[4];
+		return meta4.result;
+	case 3:
+		var meta5 = expr[5];
+		return meta5.result;
 	}
 };
 var dr_Roller = function(random) {
@@ -1572,8 +1600,8 @@ dr_Roller.prototype = {
 	,roll: function(expr) {
 		switch(expr[1]) {
 		case 0:
-			var die = expr[2];
-			return dr_DiceExpression.RollOne(die.roll(this.random));
+			var roll = expr[2];
+			return dr_DiceExpression.Roll(this.basicRoll(roll));
 		case 1:
 			var meta = expr[4];
 			var extractor = expr[3];
@@ -1602,10 +1630,37 @@ dr_Roller.prototype = {
 				return dr_DiceExpression.BinaryOp(dr_DiceOperator.Difference,ra,rb,{ result : dr_DiceResults.extractResult(ra) + dr_DiceResults.extractResult(rb), meta : meta2});
 			}
 			break;
-		case 4:
-			var meta3 = expr[3];
-			var value = expr[2];
-			return dr_DiceExpression.Literal(value,{ result : value, meta : meta3});
+		}
+	}
+	,basicRoll: function(roll) {
+		switch(roll[1]) {
+		case 0:
+			var die = roll[2];
+			return dr_BasicRoll.One(die.roll(this.random));
+		case 1:
+			var meta = roll[3];
+			var list = roll[2];
+			var rolls = list.map($bind(this,this.basicRoll));
+			var result = this.sumBasicRoll(rolls);
+			return dr_BasicRoll.Bag(rolls,{ result : result, meta : meta});
+		case 2:
+			var meta1 = roll[4];
+			var die1 = roll[3];
+			var times = roll[2];
+			var _g = [];
+			var _g2 = 0;
+			var _g1 = times;
+			while(_g2 < _g1) {
+				var i = _g2++;
+				_g.push(die1.roll(this.random));
+			}
+			var rolls1 = _g;
+			var result1 = this.sumDice(rolls1);
+			return dr_BasicRoll.Bag(rolls1.map(dr_BasicRoll.One),{ result : result1, meta : meta1});
+		case 3:
+			var meta2 = roll[3];
+			var value = roll[2];
+			return dr_BasicRoll.Literal(value,{ result : value, meta : meta2});
 		}
 	}
 	,extractRolls: function(dice,extractor) {
@@ -1619,6 +1674,40 @@ dr_Roller.prototype = {
 			var explodeOne = extractor[2];
 			return this.explodeRolls(this.diceBagToArrayOfDice(dice),explodeOne);
 		}
+	}
+	,sumDice: function(rolls) {
+		return thx_Arrays.reduce(rolls,function(acc,roll) {
+			return acc + roll.meta.result;
+		},0);
+	}
+	,sumBasicRoll: function(rolls) {
+		return thx_Arrays.reduce(rolls,function(acc,roll) {
+			var tmp;
+			switch(roll[1]) {
+			case 0:
+				var die = roll[2];
+				tmp = die.meta.result;
+				break;
+			case 1:
+				var meta = roll[3];
+				tmp = meta.result;
+				break;
+			case 2:
+				var meta1 = roll[4];
+				tmp = meta1.result;
+				break;
+			case 3:
+				var meta2 = roll[3];
+				tmp = meta2.result;
+				break;
+			}
+			return acc + tmp;
+		},0);
+	}
+	,sumResults: function(rolls) {
+		return thx_Arrays.reduce(rolls,function(acc,roll) {
+			return acc + dr_DiceResults.extractResult(roll);
+		},0);
 	}
 	,extractResult: function(rolls,extractor) {
 		switch(extractor[1]) {
@@ -1674,7 +1763,7 @@ dr_Roller.prototype = {
 			var _g1 = times;
 			while(_g2 < _g1) {
 				var i = _g2++;
-				_g.push(dr_DiceExpression.RollOne(die));
+				_g.push(dr_DiceExpression.Roll(dr_BasicRoll.One(die)));
 			}
 			return _g;
 		}
@@ -1713,7 +1802,7 @@ dr_Roller.prototype = {
 		return this.roll(dr_DiceExpression.RollBag(dr_DiceBag.RepeatDie(dice,new dr_Die(sides,thx_Unit.unit)),dr_BagExtractor.Sum,thx_Unit.unit));
 	}
 	,rollOne: function(sides) {
-		return this.roll(dr_DiceExpression.RollOne(dr_Die.withSides(sides)));
+		return this.roll(dr_DiceExpression.Roll(dr_BasicRoll.One(dr_Die.withSides(sides))));
 	}
 	,rollDiceAndDropLow: function(dice,sides,drop) {
 		return this.roll(dr_DiceExpression.RollBag(dr_DiceBag.RepeatDie(dice,new dr_Die(sides,thx_Unit.unit)),dr_BagExtractor.DropLow(drop),thx_Unit.unit));
@@ -12179,28 +12268,46 @@ dr_DiceParser.LOW_HIGH = parsihax_Parser.or(parsihax_Parser.or(parsihax_Parser.o
 dr_DiceParser.MORE_LESS = parsihax_Parser.or(parsihax_Parser.string("more"),parsihax_Parser.string("less"));
 dr_DiceParser.OR_MORE_LESS = parsihax_Parser.then(dr_DiceParser.SKIP_WS(parsihax_Parser.string("or")),parsihax_Parser["as"](dr_DiceParser.MORE_LESS,"or (more|less)"));
 dr_DiceParser.times = parsihax_Parser["as"](parsihax_Parser.alt([parsihax_Parser.result(parsihax_Parser.string("once"),1),parsihax_Parser.result(parsihax_Parser.string("twice"),2),parsihax_Parser.result(parsihax_Parser.string("thrice"),3),parsihax_Parser.skip(dr_DiceParser.SKIP_OWS(dr_DiceParser.positive),parsihax_Parser.string("times"))]),"times");
-dr_DiceParser.literal = (function($this) {
+dr_DiceParser.basicLiteral = (function($this) {
 	var $r;
 	var _e = dr_DiceParser.positive;
 	$r = parsihax_Parser["as"]((function(fun) {
 		return parsihax_Parser.map(_e,fun);
 	})(function(_) {
-		return dr_DiceExpression.Literal(_,thx_Unit.unit);
-	}),"literal");
+		return dr_BasicRoll.Literal(_,thx_Unit.unit);
+	}),"basic literal");
 	return $r;
 }(this));
+dr_DiceParser.literal = parsihax_Parser["as"](parsihax_Parser.map(dr_DiceParser.basicLiteral,dr_DiceExpression.Roll),"literal");
 dr_DiceParser.DEFAULT_DIE_SIDES = 6;
 dr_DiceParser.die = parsihax_Parser["as"](parsihax_Parser.alt([parsihax_Parser.result(parsihax_Parser.then(dr_DiceParser.D,dr_DiceParser.PERCENT),dr_DiceParser.toDie(100)),parsihax_Parser.map(parsihax_Parser.then(dr_DiceParser.D,dr_DiceParser.positive),dr_DiceParser.toDie),parsihax_Parser.result(dr_DiceParser.D,dr_DiceParser.toDie(dr_DiceParser.DEFAULT_DIE_SIDES))]),"one die");
-dr_DiceParser.dice = parsihax_Parser["as"](parsihax_Parser.alt([parsihax_Parser.flatMap(dr_DiceParser.positive,function(rolls) {
-	return parsihax_Parser.map(dr_DiceParser.die,function(die) {
-		if(rolls == 1) {
-			return dr_DiceExpression.RollOne(die);
-		} else {
-			return dr_DiceExpression.RollBag(dr_DiceBag.RepeatDie(rolls,die),dr_BagExtractor.Sum,thx_Unit.unit);
-		}
+dr_DiceParser.basicDice = (function($this) {
+	var $r;
+	var l = parsihax_Parser.flatMap(dr_DiceParser.positive,function(rolls) {
+		return parsihax_Parser.map(dr_DiceParser.die,function(die) {
+			if(rolls == 1) {
+				return dr_BasicRoll.One(die);
+			} else {
+				return dr_BasicRoll.Repeat(rolls,die,thx_Unit.unit);
+			}
+		});
 	});
-}),parsihax_Parser.map(dr_DiceParser.die,dr_DiceExpression.RollOne)]),"dice");
-dr_DiceParser.INLINE_EXPRESSION = parsihax_Parser["as"](parsihax_Parser.alt([dr_DiceParser.dice,dr_DiceParser.literal]),"expression");
+	var _e = dr_DiceParser.die;
+	$r = parsihax_Parser["as"](parsihax_Parser.alt([l,(function(fun) {
+		return parsihax_Parser.map(_e,fun);
+	})(function(_) {
+		return dr_BasicRoll.One(_);
+	})]),"basic dice");
+	return $r;
+}(this));
+dr_DiceParser.basicDiceSetElement = parsihax_Parser["as"](parsihax_Parser.alt([dr_DiceParser.basicDice,dr_DiceParser.basicLiteral]),"dice set element");
+dr_DiceParser.basicDiceSet = parsihax_Parser["as"](parsihax_Parser.lazy(function() {
+	return parsihax_Parser.alt([parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OPEN_SET_BRACKET,dr_DiceParser.OWS),parsihax_Parser.map(parsihax_Parser.skip(parsihax_Parser.or(parsihax_Parser.sepBy1(parsihax_Parser.alt([dr_DiceParser.basicDiceSetElement,dr_DiceParser.basicDiceSet]),parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.string(",")),dr_DiceParser.OWS)),parsihax_Parser.succeed([])),parsihax_Parser.then(dr_DiceParser.OWS,dr_DiceParser.CLOSE_SET_BRACKET)),function(arr) {
+		return dr_BasicRoll.Bag(arr,thx_Unit.unit);
+	})),dr_DiceParser.basicDice]);
+}),"dice set");
+dr_DiceParser.diceSet = parsihax_Parser["as"](parsihax_Parser.map(dr_DiceParser.basicDiceSet,dr_DiceExpression.Roll),"dice set");
+dr_DiceParser.INLINE_EXPRESSION = parsihax_Parser["as"](parsihax_Parser.alt([dr_DiceParser.diceSet,dr_DiceParser.literal]),"expression");
 dr_DiceParser.grammar = parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.skip(parsihax_Parser.skip(dr_DiceParser.INLINE_EXPRESSION,dr_DiceParser.OWS),parsihax_Parser.eof()));
 haxe__$Int32_Int32_$Impl_$._mul = Math.imul != null ? Math.imul : function(a,b) {
 	return a * (b & 65535) + (a * (b >>> 16) << 16 | 0) | 0;

@@ -24,7 +24,7 @@ class DiceExpressionExtensions {
       case One(die):
         die.toString();
       case Bag(list, _):
-        '{' + list.map.fn(_.toString()).join(",") + '}';
+        '{' + list.map(rollToString).join(",") + '}';
       case Repeat(time, die, _):
         '${time}${die.toString()}';
     };

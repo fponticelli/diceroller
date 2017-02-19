@@ -16,7 +16,7 @@ enum BagExtractor {
 
 enum BasicRoll<T> {
   One(die: Die<T>);
-  Bag(list: Array<Die<T>>, meta: T);
+  Bag(list: Array<BasicRoll<T>>, meta: T);
   Repeat(times: Int, die: Die<T>, meta: T);
   Literal(value: Int, meta: T);
 }

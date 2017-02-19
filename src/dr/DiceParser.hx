@@ -102,8 +102,8 @@ class DiceParser {
 // MAP_SEQUENCE = OPEN_PAREN, { WS }, MAP_KEY_VALUE_PAIR, { WS }, {COMMA, { WS }, MAP_KEY_VALUE_PAIR, { WS } }, CLOSE_PAREN;
 
 
-
-  static var literal = positive.map.fn(Roll(Literal(_, unit))) / "literal";
+  static var basicLiteral = positive.map.fn(Literal(_, unit)) / "basic literal";
+  static var literal = basicLiteral.map(Roll) / "literal";
   static function toDie(sides: Int) return new Die(sides, unit);
   
   static var DEFAULT_DIE_SIDES = 6;
@@ -112,22 +112,42 @@ class DiceParser {
       (D + positive).map(toDie),
       D.result(toDie(DEFAULT_DIE_SIDES))
     ].alt() / "one die";
-  static var dice = [
+
+  static var basicDice = [
     positive.flatMap(function(rolls) {
       return die.map(function(die) {
         return if(rolls == 1) {
-          Roll(One(die));
+          One(die);
         } else {
-          RollBag(RepeatDie(rolls, die), Sum, unit);
+          Repeat(rolls, die, unit);
         }
       });
     }),
-    die.map.fn(Roll(One(_)))
-  ].alt() / "dice";
-  
+    die.map.fn(One(_))
+  ].alt() / "basic dice";
+  // static var dice = basicDice.map(Roll) / "dice";
+
+  static var basicDiceSetElement = [
+    basicDice,
+    basicLiteral
+  ].alt() / "dice set element";
+
+  static var basicDiceSet: parsihax.ParseObject<BasicRoll<Unit>> = function() {
+    return [
+      OPEN_SET_BRACKET + OWS + [
+        basicDiceSetElement,
+        basicDiceSet
+      ].alt().sepBy(OWS + ",".string() + OWS).skip(OWS + CLOSE_SET_BRACKET).map(function(arr) {
+        return Bag(arr, unit);
+      }),
+      basicDice
+    ].alt();
+  }.lazy() / "dice set";
+
+  static var diceSet = basicDiceSet.map(Roll) / "dice set";
 
   static var INLINE_EXPRESSION = [
-    dice,
+    diceSet,
     literal
   ].alt() / "expression";
 
