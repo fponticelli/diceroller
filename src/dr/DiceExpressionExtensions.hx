@@ -42,13 +42,9 @@ class DiceExpressionExtensions {
       case ExplodeOn(explodeOn): 'e$explodeOn';
     });
 
-  public static function expressionBagToString<T>(group: ExpressionBag<T>, extractor: ExpressionExtractor)
-    return (switch group {
-      case ExpressionSet(exprs):
-         '{' + exprs.map(toString).join(",") + '}';
-      case RepeatDie(time, die):
-        '${time}${die.toString()}';
-    }) + (switch extractor {
+  public static function expressionBagToString<T>(exprs: Array<DiceExpression<T>>, extractor: ExpressionExtractor)
+    return '{' + exprs.map(toString).join(",") + '}' +
+    (switch extractor {
       case Sum: "";
       case DropLow(drop): 'd$drop';
       case KeepHigh(keep): 'k$keep';

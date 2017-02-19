@@ -665,9 +665,6 @@ dr_ExpressionExtractor.Sum = ["Sum",0];
 dr_ExpressionExtractor.Sum.__enum__ = dr_ExpressionExtractor;
 dr_ExpressionExtractor.DropLow = function(drop) { var $x = ["DropLow",1,drop]; $x.__enum__ = dr_ExpressionExtractor; return $x; };
 dr_ExpressionExtractor.KeepHigh = function(keep) { var $x = ["KeepHigh",2,keep]; $x.__enum__ = dr_ExpressionExtractor; return $x; };
-var dr_ExpressionBag = { __ename__ : ["dr","ExpressionBag"], __constructs__ : ["ExpressionSet","RepeatDie"] };
-dr_ExpressionBag.ExpressionSet = function(exprs) { var $x = ["ExpressionSet",0,exprs]; $x.__enum__ = dr_ExpressionBag; return $x; };
-dr_ExpressionBag.RepeatDie = function(times,die) { var $x = ["RepeatDie",1,times,die]; $x.__enum__ = dr_ExpressionBag; return $x; };
 var dr_DiceOperator = { __ename__ : ["dr","DiceOperator"], __constructs__ : ["Sum","Difference"] };
 dr_DiceOperator.Sum = ["Sum",0];
 dr_DiceOperator.Sum.__enum__ = dr_DiceOperator;
@@ -754,19 +751,8 @@ dr_DiceExpressionExtensions.diceBagToString = function(group,extractor) {
 	}
 	return tmp + tmp1;
 };
-dr_DiceExpressionExtensions.expressionBagToString = function(group,extractor) {
-	var tmp;
-	switch(group[1]) {
-	case 0:
-		var exprs = group[2];
-		tmp = "{" + exprs.map(dr_DiceExpressionExtensions.toString).join(",") + "}";
-		break;
-	case 1:
-		var die = group[3];
-		var time = group[2];
-		tmp = "" + time + die.toString();
-		break;
-	}
+dr_DiceExpressionExtensions.expressionBagToString = function(exprs,extractor) {
+	var tmp = "{" + exprs.map(dr_DiceExpressionExtensions.toString).join(",") + "}";
 	var tmp1;
 	switch(extractor[1]) {
 	case 0:
@@ -1543,7 +1529,7 @@ dr_DiceParser.parse = function(s) {
 	var _g = dr_DiceParser.grammar[0](s);
 	if(_g.status == true) {
 		var value = _g.value;
-		haxe_Log.trace(value,{ fileName : "DiceParser.hx", lineNumber : 15, className : "dr.DiceParser", methodName : "parse"});
+		haxe_Log.trace(value,{ fileName : "DiceParser.hx", lineNumber : 16, className : "dr.DiceParser", methodName : "parse"});
 		return thx_Either.Right(value);
 	} else {
 		var v = _g;
@@ -1613,9 +1599,9 @@ dr_Roller.prototype = {
 			var meta1 = expr[4];
 			var extractor1 = expr[3];
 			var exprs = expr[2];
-			var exaluatedExpressions = this.expressionBagToArrayOfExpression(exprs).map($bind(this,this.roll));
+			var exaluatedExpressions = exprs.map($bind(this,this.roll));
 			var result1 = this.extractExpressionResults(exaluatedExpressions,extractor1);
-			return dr_DiceExpression.RollExpressions(dr_ExpressionBag.ExpressionSet(exaluatedExpressions),extractor1,{ result : result1, meta : meta1});
+			return dr_DiceExpression.RollExpressions(exaluatedExpressions,extractor1,{ result : result1, meta : meta1});
 		case 3:
 			var meta2 = expr[5];
 			var b = expr[4];
@@ -1748,24 +1734,6 @@ dr_Roller.prototype = {
 			var result = thx_Arrays.order(exprs.map(dr_DiceResults.extractResult),thx_Ints.compare).slice();
 			result.reverse();
 			return thx_ArrayInts.sum(result.slice(0,keep));
-		}
-	}
-	,expressionBagToArrayOfExpression: function(exprs) {
-		switch(exprs[1]) {
-		case 0:
-			var exprs1 = exprs[2];
-			return exprs1;
-		case 1:
-			var die = exprs[3];
-			var times = exprs[2];
-			var _g = [];
-			var _g2 = 0;
-			var _g1 = times;
-			while(_g2 < _g1) {
-				var i = _g2++;
-				_g.push(dr_DiceExpression.Roll(dr_BasicRoll.One(die)));
-			}
-			return _g;
 		}
 	}
 	,diceBagToArrayOfDice: function(group) {
@@ -12307,8 +12275,23 @@ dr_DiceParser.basicDiceSet = parsihax_Parser["as"](parsihax_Parser.lazy(function
 	})),dr_DiceParser.basicDice]);
 }),"dice set");
 dr_DiceParser.diceSet = parsihax_Parser["as"](parsihax_Parser.map(dr_DiceParser.basicDiceSet,dr_DiceExpression.Roll),"dice set");
-dr_DiceParser.INLINE_EXPRESSION = parsihax_Parser["as"](parsihax_Parser.alt([dr_DiceParser.diceSet,dr_DiceParser.literal]),"expression");
-dr_DiceParser.grammar = parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.skip(parsihax_Parser.skip(dr_DiceParser.INLINE_EXPRESSION,dr_DiceParser.OWS),parsihax_Parser.eof()));
+dr_DiceParser.basicExpressionSet = parsihax_Parser["as"](parsihax_Parser.lazy(function() {
+	return parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OPEN_SET_BRACKET,dr_DiceParser.OWS),parsihax_Parser.skip(parsihax_Parser.or(parsihax_Parser.sepBy1(dr_DiceParser.inlineExpression,parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.string(",")),dr_DiceParser.OWS)),parsihax_Parser.succeed([])),parsihax_Parser.then(dr_DiceParser.OWS,dr_DiceParser.CLOSE_SET_BRACKET)));
+}),"expression set");
+dr_DiceParser.sumExpressionSet = (function($this) {
+	var $r;
+	var _e = dr_DiceParser.basicExpressionSet;
+	$r = parsihax_Parser["as"]((function(fun) {
+		return parsihax_Parser.map(_e,fun);
+	})(function(_) {
+		return dr_DiceExpression.RollExpressions(_,dr_ExpressionExtractor.Sum,thx_Unit.unit);
+	}),"expression set");
+	return $r;
+}(this));
+dr_DiceParser.inlineExpression = parsihax_Parser["as"](parsihax_Parser.lazy(function() {
+	return parsihax_Parser.alt([dr_DiceParser.sumExpressionSet,dr_DiceParser.diceSet,dr_DiceParser.literal]);
+}),"expression");
+dr_DiceParser.grammar = parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.skip(parsihax_Parser.skip(dr_DiceParser.inlineExpression,dr_DiceParser.OWS),parsihax_Parser.eof()));
 haxe__$Int32_Int32_$Impl_$._mul = Math.imul != null ? Math.imul : function(a,b) {
 	return a * (b & 65535) + (a * (b >>> 16) << 16 | 0) | 0;
 };

@@ -3,7 +3,7 @@ package dr;
 enum DiceExpression<T> {
   Roll(basic: BasicRoll<T>);
   RollBag(dice: DiceBag<T>, extractor: BagExtractor, meta: T);
-  RollExpressions(exprs: ExpressionBag<T>, extractor: ExpressionExtractor, meta: T);
+  RollExpressions(exprs: Array<DiceExpression<T>>, extractor: ExpressionExtractor, meta: T);
   BinaryOp(op: DiceOperator, a: DiceExpression<T>, b: DiceExpression<T>, meta: T);
 }
 
@@ -30,11 +30,6 @@ enum ExpressionExtractor {
   Sum;
   DropLow(drop: Int);
   KeepHigh(keep: Int);
-}
-
-enum ExpressionBag<T> {
-  ExpressionSet(exprs: Array<DiceExpression<T>>);
-  RepeatDie(times: Int, die: Die<T>);
 }
 
 enum DiceOperator {

@@ -2,6 +2,7 @@ package dr;
 
 import parsihax.*;
 import parsihax.Parser.*;
+import parsihax.ParseObject;
 using parsihax.Parser;
 using thx.Functions;
 import thx.Unit;
@@ -132,7 +133,7 @@ class DiceParser {
     basicLiteral
   ].alt() / "dice set element";
 
-  static var basicDiceSet: parsihax.ParseObject<BasicRoll<Unit>> = function() {
+  static var basicDiceSet: ParseObject<BasicRoll<Unit>> = function() {
     return [
       OPEN_SET_BRACKET + OWS + [
         basicDiceSetElement,
@@ -146,11 +147,24 @@ class DiceParser {
 
   static var diceSet = basicDiceSet.map(Roll) / "dice set";
 
-  static var INLINE_EXPRESSION = [
-    diceSet,
-    literal
-  ].alt() / "expression";
+  static var basicExpressionSet: ParseObject<Array<DiceExpression<Unit>>> = function() {
+    return OPEN_SET_BRACKET + OWS +
+      inlineExpression
+        .sepBy(OWS + ",".string() + OWS)
+        .skip(OWS + CLOSE_SET_BRACKET);
+  }.lazy() / "expression set";
+
+  static var sumExpressionSet: ParseObject<DiceExpression<Unit>> = 
+    basicExpressionSet.map.fn(RollExpressions(_, Sum, unit)) / "expression set";
+
+  static var inlineExpression: ParseObject<DiceExpression<Unit>> = function() {
+    return [
+      sumExpressionSet,
+      diceSet,
+      literal
+    ].alt();
+  }.lazy() / "expression";
 
   static var grammar = 
-    OWS + INLINE_EXPRESSION.skip(OWS).skip(eof());
+    OWS + inlineExpression.skip(OWS).skip(eof());
 }

@@ -21,9 +21,9 @@ class Roller {
         var result = extractResult(rolls, extractor);
         RollBag(DiceSet(rolls), extractor, { result: result, meta: meta});
       case RollExpressions(exprs, extractor, meta):
-        var exaluatedExpressions = expressionBagToArrayOfExpression(exprs).map(roll),
+        var exaluatedExpressions = exprs.map(roll),
             result = extractExpressionResults(exaluatedExpressions, extractor);
-        RollExpressions(ExpressionSet(exaluatedExpressions), extractor, { result: result, meta: meta});
+        RollExpressions(exaluatedExpressions, extractor, { result: result, meta: meta});
       case BinaryOp(op, a, b, meta):
         var ra = roll(a),
             rb = roll(b);
@@ -101,14 +101,6 @@ class Roller {
         exprs.map(DiceResults.extractResult).order(thx.Ints.compare).slice(drop).sum();
       case KeepHigh(keep):
         exprs.map(DiceResults.extractResult).order(thx.Ints.compare).reversed().slice(0, keep).sum();
-    };
-
-  function expressionBagToArrayOfExpression<T>(exprs: ExpressionBag<T>): Array<DiceExpression<T>>
-    return switch exprs {
-      case ExpressionSet(exprs):
-        exprs;
-      case RepeatDie(times, die):
-        [for(i in 0...times) Roll(One(die))];
     };
 
   function diceBagToArrayOfDice<T>(group: DiceBag<T>): Array<Die<T>>
