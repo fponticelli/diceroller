@@ -103,7 +103,7 @@ class DiceParser {
 
 
 
-  static var literal = positive.map.fn(Literal(_, unit)) / "literal";
+  static var literal = positive.map.fn(Roll(Literal(_, unit))) / "literal";
   static function toDie(sides: Int) return new Die(sides, unit);
   
   static var DEFAULT_DIE_SIDES = 6;
@@ -116,13 +116,13 @@ class DiceParser {
     positive.flatMap(function(rolls) {
       return die.map(function(die) {
         return if(rolls == 1) {
-          RollOne(die);
+          Roll(One(die));
         } else {
           RollBag(RepeatDie(rolls, die), Sum, unit);
         }
       });
     }),
-    die.map(RollOne)
+    die.map.fn(Roll(One(_)))
   ].alt() / "dice";
   
 

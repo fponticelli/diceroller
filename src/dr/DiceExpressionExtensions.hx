@@ -5,8 +5,8 @@ import dr.DiceExpression;
 
 class DiceExpressionExtensions {
   public static function toString<T>(expr: DiceExpression<T>) return switch expr {
-    case RollOne(die):
-      die.toString();
+    case Roll(roll):
+      rollToString(roll);
     case RollBag(dice, extractor, _):
       diceBagToString(dice, extractor);
     case RollExpressions(exprs, extractor, _):
@@ -15,9 +15,19 @@ class DiceExpressionExtensions {
       toString(a) + " + " + toString(b);
     case BinaryOp(Difference, a, b, _):
       toString(a) + " - " + toString(b);
-    case Literal(value, _):
-      '$value';
   }
+
+  public static function rollToString<T>(roll: BasicRoll<T>)
+    return switch roll {
+      case Literal(value, _):
+        '$value';
+      case One(die):
+        die.toString();
+      case Bag(list, _):
+        '{' + list.map.fn(_.toString()).join(",") + '}';
+      case Repeat(time, die, _):
+        '${time}${die.toString()}';
+    };
 
   public static function diceBagToString<T>(group: DiceBag<T>, extractor: BagExtractor)
     return (switch group {

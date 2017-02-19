@@ -14,8 +14,18 @@ class Roller {
 
   public function roll<T>(expr: DiceExpression<T>): DiceResult<T> {
     return switch expr {
-      case RollOne(die):
-        RollOne(die.roll(random));
+      case Roll(One(die)):
+        Roll(One(die.roll(random)));
+      case Roll(Repeat(rolls, die, meta)):
+        var rolls = [for(i in 0...rolls) die].map.fn(_.roll(random));
+        var result = sumResults(rolls);
+        Roll(Bag(rolls, { result: result, meta: meta }));
+      case Roll(Bag(list, meta)):
+        var rolls = list.map.fn(_.roll(random));
+        var result = sumResults(rolls);
+        Roll(Bag(rolls, { result: result, meta: meta }));
+      case Roll(Literal(value, meta)):
+        Roll(Literal(value, { result: value, meta: meta }));
       case RollBag(dice, extractor, meta):
         var rolls = extractRolls(dice, extractor);
         var result = extractResult(rolls, extractor);
@@ -39,8 +49,6 @@ class Roller {
               meta: meta
             });
         }
-      case Literal(value, meta):
-        Literal(value, { result: value, meta: meta });
     };
   }
 
@@ -51,6 +59,9 @@ class Roller {
       case ExplodeOn(explodeOne):
         explodeRolls(diceBagToArrayOfDice(dice), explodeOne);
     };
+
+  function sumResults<T>(rolls: Array<Die<DiceResultMeta<T>>>)
+    return rolls.reduce(function(acc, roll) return acc + roll.meta.result, 0);
 
   function extractResult<T>(rolls: Array<Die<DiceResultMeta<T>>>, extractor: BagExtractor)
     return switch extractor {
@@ -79,7 +90,7 @@ class Roller {
       case ExpressionSet(exprs):
         exprs;
       case RepeatDie(times, die):
-        [for(i in 0...times) RollOne(die)];
+        [for(i in 0...times) Roll(One(die))];
     };
 
   function diceBagToArrayOfDice<T>(group: DiceBag<T>): Array<Die<T>>
@@ -105,7 +116,7 @@ class Roller {
     return roll(RollBag(RepeatDie(dice, new Die(sides, unit)), Sum, unit));
 
   public function rollOne(sides: Int): DiceResult<Unit>
-    return roll(RollOne(Die.withSides(sides)));
+    return roll(Roll(One(Die.withSides(sides))));
 
   public function rollDiceAndDropLow(dice: Int, sides: Int, drop: Int): DiceResult<Unit>
     return roll(RollBag(RepeatDie(dice, new Die(sides, unit)), DropLow(drop), unit));
