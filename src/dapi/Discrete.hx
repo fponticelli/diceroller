@@ -93,8 +93,8 @@ class Discrete {
     var weights: Array<Int> = this.weights();
     for(i in 0...this.length())
       for(j in 0...x.length)
-        if(weighted_values[j]._1 == x[j])
-          weights[j] = 0;
+        if(weighted_values[i]._1 == x[j])
+          weights[i] = 0;
     return new Discrete(weights, this.values());
   }
 

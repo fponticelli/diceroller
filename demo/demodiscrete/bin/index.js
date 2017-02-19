@@ -15,7 +15,7 @@ Demo.main = function() {
 	console.log(twod6.weights());
 	console.log(twod6.probabilities());
 	console.log(twod6.values());
-	var rerollOnes = d6.always_resample([1]);
+	var rerollOnes = d6.always_resample([3]);
 	console.log("d6, always reroll 1");
 	console.log(rerollOnes.weights());
 	console.log(rerollOnes.probabilities());
@@ -196,8 +196,8 @@ dapi_Discrete.prototype = {
 			var _g2 = x.length;
 			while(_g3 < _g2) {
 				var j = _g3++;
-				if(this.weighted_values[j]._1 == x[j]) {
-					weights[j] = 0;
+				if(this.weighted_values[i]._1 == x[j]) {
+					weights[i] = 0;
 				}
 			}
 		}
