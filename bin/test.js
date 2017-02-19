@@ -489,7 +489,7 @@ TestAll.prototype = {
 		});
 	}
 	,testParseAndBoundaries: function() {
-		var tests = [{ min : 1, max : 6, t : "D", pos : { fileName : "TestAll.hx", lineNumber : 47, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d", pos : { fileName : "TestAll.hx", lineNumber : 48, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1d", pos : { fileName : "TestAll.hx", lineNumber : 49, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1D", pos : { fileName : "TestAll.hx", lineNumber : 50, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1d6", pos : { fileName : "TestAll.hx", lineNumber : 51, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1D6", pos : { fileName : "TestAll.hx", lineNumber : 52, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d6", pos : { fileName : "TestAll.hx", lineNumber : 53, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "D6", pos : { fileName : "TestAll.hx", lineNumber : 54, className : "TestAll", methodName : "testParseAndBoundaries"}}];
+		var tests = [{ min : 1, max : 1, t : "1", pos : { fileName : "TestAll.hx", lineNumber : 47, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 2, t : "2", pos : { fileName : "TestAll.hx", lineNumber : 48, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "D", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 49, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 50, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1d", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 51, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1D", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 52, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1d6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 53, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1D6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 54, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d6", pos : { fileName : "TestAll.hx", lineNumber : 55, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "D6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 56, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : " d6 ", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 57, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d6 ", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 58, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : " d6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 59, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 100, t : "d%", pos : { fileName : "TestAll.hx", lineNumber : 60, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 300, t : "3d100", p : "3d%", pos : { fileName : "TestAll.hx", lineNumber : 61, className : "TestAll", methodName : "testParseAndBoundaries"}}];
 		tests.map($bind(this,this.assertParseAndBoundaries));
 	}
 	,assertParseAndBoundaries: function(t) {
@@ -504,9 +504,12 @@ TestAll.prototype = {
 			var v = _g[2];
 			var serialized = dr_DiceExpressionExtensions.toString(v);
 			var expected = null == t.p ? t.t : t.p;
-			utest_Assert.same(expected,serialized,null,null,null,t.pos);
-			utest_Assert.equals(t.min,this.min().roll(v),null,t.pos);
-			utest_Assert.equals(t.max,this.max().roll(v),null,t.pos);
+			var f = t.t != expected ? " for \"" + t.t + "\"" : "";
+			utest_Assert.equals(expected,serialized,"expected serialization to be \"" + expected + "\" but it is \"" + serialized + "\"" + f,t.pos);
+			var minr = dr_DiceResults.extractResult(this.min().roll(v));
+			utest_Assert.equals(t.min,minr,"expected min to be " + t.min + " but it is " + minr,t.pos);
+			var maxr = dr_DiceResults.extractResult(this.min().roll(v));
+			utest_Assert.equals(t.min,maxr,"expected max to be " + t.min + " but it is " + maxr,t.pos);
 			break;
 		}
 	}
@@ -1488,6 +1491,9 @@ js_Boot.__isNativeObj = function(o) {
 js_Boot.__resolveNativeClass = function(name) {
 	return $global[name];
 };
+var thx_Unit = { __ename__ : ["thx","Unit"], __constructs__ : ["unit"] };
+thx_Unit.unit = ["unit",0];
+thx_Unit.unit.__enum__ = thx_Unit;
 var dr_Die = function(sides,meta) {
 	this.sides = sides;
 	this.meta = meta;
@@ -1506,48 +1512,35 @@ dr_Die.prototype = {
 		return new dr_Die(this.sides,{ result : random(this.sides), meta : meta});
 	}
 	,toString: function() {
-		return "d" + this.sides;
+		return "d" + (this.sides == 100 ? "%" : "" + this.sides);
 	}
 	,toStringWithMeta: function(f) {
 		return "d" + this.sides + " [" + f(this.meta) + "]";
 	}
 	,__class__: dr_Die
 };
-var thx_Unit = { __ename__ : ["thx","Unit"], __constructs__ : ["unit"] };
-thx_Unit.unit = ["unit",0];
-thx_Unit.unit.__enum__ = thx_Unit;
 var dr_DiceParser = function() { };
 dr_DiceParser.__name__ = ["dr","DiceParser"];
 dr_DiceParser.parse = function(s) {
-	var _g = dr_DiceParser.expression[0](s);
+	var _g = dr_DiceParser.grammar[0](s);
 	if(_g.status == true) {
 		var value = _g.value;
+		haxe_Log.trace(value,{ fileName : "DiceParser.hx", lineNumber : 15, className : "dr.DiceParser", methodName : "parse"});
 		return thx_Either.Right(value);
 	} else {
 		var v = _g;
-		haxe_Log.trace(v,{ fileName : "DiceParser.hx", lineNumber : 17, className : "dr.DiceParser", methodName : "parse"});
-		var sub = s.substring(v.furthest,40);
-		var rest = sub != s ? " within \"" + s + "\"" : "";
-		var msg = "expected " + v.expected.join(" or ") + " for \"" + sub + "\"" + rest;
+		var msg = parsihax_ParseUtil.formatError(v,s);
 		return thx_Either.Left(msg);
 	}
 };
-dr_DiceParser.parseDie = function(s) {
-	var _g = dr_DiceParser.dN[0](s);
-	if(_g.status == true) {
-		var value = _g.value;
-		return thx_Either.Right(value);
-	} else {
-		var v = _g;
-		var msg = "expected " + v.expected.join(" or ") + " within \"" + s + "\"";
-		return thx_Either.Left(msg);
-	}
+dr_DiceParser.SKIP_WS = function(parser) {
+	return parsihax_Parser.skip(parser,dr_DiceParser.WS);
 };
-dr_DiceParser.token = function(parser) {
-	return parsihax_Parser.skip(parser,dr_DiceParser.whitespace);
+dr_DiceParser.SKIP_OWS = function(parser) {
+	return parsihax_Parser.skip(parser,dr_DiceParser.OWS);
 };
-dr_DiceParser.commaSep = function(parser) {
-	return parsihax_Parser.or(parsihax_Parser.sepBy1(parser,dr_DiceParser.token(parsihax_Parser.string(","))),parsihax_Parser.succeed([]));
+dr_DiceParser.toDie = function(sides) {
+	return new dr_Die(sides,thx_Unit.unit);
 };
 var dr_DiceResults = function() { };
 dr_DiceResults.__name__ = ["dr","DiceResults"];
@@ -12165,44 +12158,50 @@ if(ArrayBuffer.prototype.slice == null) {
 var Uint8Array = $global.Uint8Array || js_html_compat_Uint8Array._new;
 DateTools.DAYS_OF_MONTH = [31,28,31,30,31,30,31,31,30,31,30,31];
 js_Boot.__toStr = ({ }).toString;
-dr_DiceParser.whitespace = parsihax_Parser.regexp(new EReg("\\s*","m"));
-dr_DiceParser.positive = parsihax_Parser["as"](parsihax_Parser.map(parsihax_Parser.regexp(new EReg("[1-9][0-9]*","")),Std.parseInt),"positive number");
-dr_DiceParser.dN = (function($this) {
+dr_DiceParser.PLUS = parsihax_Parser["as"](parsihax_Parser.string("+"),"plus");
+dr_DiceParser.MINUS = parsihax_Parser["as"](parsihax_Parser.string("-"),"minus");
+dr_DiceParser.positive = parsihax_Parser["as"](parsihax_Parser.map(parsihax_Parser.regexp(new EReg("[+]?([1-9][0-9]*)",""),1),Std.parseInt),"positive number");
+dr_DiceParser.negative = parsihax_Parser["as"](parsihax_Parser.map(parsihax_Parser.regexp(new EReg("[-]([0-9]*[1-9])","")),Std.parseInt),"negative number");
+dr_DiceParser.whole = parsihax_Parser.or(dr_DiceParser.positive,parsihax_Parser["as"](dr_DiceParser.negative,"whole number"));
+dr_DiceParser.D = parsihax_Parser.or(parsihax_Parser.string("d"),parsihax_Parser["as"](parsihax_Parser.string("D"),"die symbol"));
+dr_DiceParser.OPEN_SET_BRACKET = parsihax_Parser["as"](parsihax_Parser.string("{"),"open set");
+dr_DiceParser.OPEN_PAREN = parsihax_Parser["as"](parsihax_Parser.string("("),"open parenthesis");
+dr_DiceParser.CLOSE_SET_BRACKET = parsihax_Parser["as"](parsihax_Parser.string("}"),"close set");
+dr_DiceParser.CLOSE_PAREN = parsihax_Parser["as"](parsihax_Parser.string(")"),"close parenthesis");
+dr_DiceParser.COMMA = parsihax_Parser["as"](parsihax_Parser.string(","),"comma");
+dr_DiceParser.PERCENT = parsihax_Parser["as"](parsihax_Parser.string("%"),"percent");
+dr_DiceParser.WS = parsihax_Parser["as"](parsihax_Parser.regexp(new EReg("\\s+","m")),"white space");
+dr_DiceParser.OWS = parsihax_Parser.or(dr_DiceParser.WS,parsihax_Parser["as"](parsihax_Parser.string(""),"optional white space"));
+dr_DiceParser.MULTIPLICATION = parsihax_Parser["as"](parsihax_Parser.regexp(new EReg("[*⋅×x]","")),"multiplication symbol");
+dr_DiceParser.DIVISION = parsihax_Parser.or(parsihax_Parser.or(parsihax_Parser.string("/"),parsihax_Parser.string("÷")),parsihax_Parser["as"](parsihax_Parser.string(":"),"division symbol"));
+dr_DiceParser.KEEP_OR_DROP = parsihax_Parser.or(parsihax_Parser.string("keep"),parsihax_Parser.string("drop"));
+dr_DiceParser.LOW_HIGH = parsihax_Parser.or(parsihax_Parser.or(parsihax_Parser.or(parsihax_Parser.string("lowest"),parsihax_Parser.string("low")),parsihax_Parser.string("highest")),parsihax_Parser.string("high"));
+dr_DiceParser.MORE_LESS = parsihax_Parser.or(parsihax_Parser.string("more"),parsihax_Parser.string("less"));
+dr_DiceParser.OR_MORE_LESS = parsihax_Parser.then(dr_DiceParser.SKIP_WS(parsihax_Parser.string("or")),parsihax_Parser["as"](dr_DiceParser.MORE_LESS,"or (more|less)"));
+dr_DiceParser.times = parsihax_Parser["as"](parsihax_Parser.alt([parsihax_Parser.result(parsihax_Parser.string("once"),1),parsihax_Parser.result(parsihax_Parser.string("twice"),2),parsihax_Parser.result(parsihax_Parser.string("thrice"),3),parsihax_Parser.skip(dr_DiceParser.SKIP_OWS(dr_DiceParser.positive),parsihax_Parser.string("times"))]),"times");
+dr_DiceParser.literal = (function($this) {
 	var $r;
-	var f = function(sides,meta) {
-		return new dr_Die(sides,meta);
-	};
-	var tmp = function(a1) {
-		return f(a1,thx_Unit.unit);
-	};
-	$r = parsihax_Parser["as"](parsihax_Parser.then(parsihax_Parser.alt([parsihax_Parser["char"]("d"),parsihax_Parser["char"]("D")]),parsihax_Parser.map(dr_DiceParser.positive,tmp)),"dN");
-	return $r;
-}(this));
-dr_DiceParser.rollOne = parsihax_Parser.map(dr_DiceParser.dN,dr_DiceExpression.RollOne);
-dr_DiceParser.literal = parsihax_Parser["as"](parsihax_Parser.map(dr_DiceParser.positive,function(a1) {
-	return dr_DiceExpression.Literal(a1,thx_Unit.unit);
-}),"literal number");
-dr_DiceParser.rollManySame = parsihax_Parser.flatMap(dr_DiceParser.positive,function(dice) {
-	var _e = dr_DiceParser.dN;
-	return (function(fun) {
+	var _e = dr_DiceParser.positive;
+	$r = parsihax_Parser["as"]((function(fun) {
 		return parsihax_Parser.map(_e,fun);
 	})(function(_) {
-		return dr_DiceExpression.RollBag(dr_DiceBag.RepeatDie(dice,_),dr_BagExtractor.Sum,thx_Unit.unit);
-	});
-});
-dr_DiceParser.lbrace = dr_DiceParser.token(parsihax_Parser.string("{"));
-dr_DiceParser.rbrace = parsihax_Parser.string("}");
-dr_DiceParser.rollMany = (function($this) {
-	var $r;
-	var _e = parsihax_Parser.skip(parsihax_Parser.then(dr_DiceParser.lbrace,dr_DiceParser.commaSep(dr_DiceParser.dN)),dr_DiceParser.rbrace);
-	$r = (function(fun) {
-		return parsihax_Parser.map(_e,fun);
-	})(function(_) {
-		return dr_DiceExpression.RollBag(dr_DiceBag.DiceSet(_),dr_BagExtractor.Sum,thx_Unit.unit);
-	});
+		return dr_DiceExpression.Literal(_,thx_Unit.unit);
+	}),"literal");
 	return $r;
 }(this));
-dr_DiceParser.expression = parsihax_Parser.then(dr_DiceParser.whitespace,parsihax_Parser.alt([dr_DiceParser.rollMany,dr_DiceParser.rollManySame,dr_DiceParser.rollOne,dr_DiceParser.literal]));
+dr_DiceParser.DEFAULT_DIE_SIDES = 6;
+dr_DiceParser.die = parsihax_Parser["as"](parsihax_Parser.alt([parsihax_Parser.result(parsihax_Parser.then(dr_DiceParser.D,dr_DiceParser.PERCENT),dr_DiceParser.toDie(100)),parsihax_Parser.map(parsihax_Parser.then(dr_DiceParser.D,dr_DiceParser.positive),dr_DiceParser.toDie),parsihax_Parser.result(dr_DiceParser.D,dr_DiceParser.toDie(dr_DiceParser.DEFAULT_DIE_SIDES))]),"one die");
+dr_DiceParser.dice = parsihax_Parser["as"](parsihax_Parser.alt([parsihax_Parser.flatMap(dr_DiceParser.positive,function(rolls) {
+	return parsihax_Parser.map(dr_DiceParser.die,function(die) {
+		if(rolls == 1) {
+			return dr_DiceExpression.RollOne(die);
+		} else {
+			return dr_DiceExpression.RollBag(dr_DiceBag.RepeatDie(rolls,die),dr_BagExtractor.Sum,thx_Unit.unit);
+		}
+	});
+}),parsihax_Parser.map(dr_DiceParser.die,dr_DiceExpression.RollOne)]),"dice");
+dr_DiceParser.INLINE_EXPRESSION = parsihax_Parser["as"](parsihax_Parser.alt([dr_DiceParser.dice,dr_DiceParser.literal]),"expression");
+dr_DiceParser.grammar = parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.skip(parsihax_Parser.skip(dr_DiceParser.INLINE_EXPRESSION,dr_DiceParser.OWS),parsihax_Parser.eof()));
 haxe__$Int32_Int32_$Impl_$._mul = Math.imul != null ? Math.imul : function(a,b) {
 	return a * (b & 65535) + (a * (b >>> 16) << 16 | 0) | 0;
 };

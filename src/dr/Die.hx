@@ -24,7 +24,7 @@ class Die<T> {
     });
 
   public function toString()
-    return 'd$sides';
+    return "d" + (sides == 100 ? "%" : '$sides');
 
   public function toStringWithMeta(f: T -> String)
     return 'd$sides [${f(meta)}]';
