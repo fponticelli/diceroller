@@ -91,6 +91,7 @@ class TestAll {
       { min: 4, max: 4, t: "100 / 25", pos: pos() },
       { min: 75, max: 75, t: "25 * 3", pos: pos() },
       { min: 2, max: 2, t: "150 / 25 * 3", pos: pos() },
+      { min: 18, max: 18, t: "{150 / 25} * 3", pos: pos() },
       { min: 11, max: 105, t: "{{2,d4,3d8},5} * {d4,3d8} / {3,d6}", pos: pos() },
     ];
     
