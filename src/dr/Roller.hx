@@ -100,17 +100,38 @@ class Roller {
         rolls.reduce(function(acc, roll) return acc + roll.meta.result, 0);
     };
 
-  function extractExpressionResults<T>(exprs: Array<DiceResult<T>>, extractor: ExpressionExtractor)
+  function extractExpressionResults<T>(exprs: Array<DiceResult<T>>, extractor: ExpressionExtractor) {
+    exprs = flattenExprs(exprs);
     return switch extractor {
       case Average:
         Std.int(exprs.reduce(function(acc, expr) return acc + DiceResults.extractResult(expr), 0) / exprs.length);
       case Sum:
         exprs.reduce(function(acc, expr) return acc + DiceResults.extractResult(expr), 0);
+      case Min:
+        exprs.map(DiceResults.extractResult).min();
+      case Max:
+        exprs.map(DiceResults.extractResult).max();
       case DropLow(drop):
         exprs.map(DiceResults.extractResult).order(thx.Ints.compare).slice(drop).sum();
       case KeepHigh(keep):
         exprs.map(DiceResults.extractResult).order(thx.Ints.compare).reversed().slice(0, keep).sum();
     };
+  }
+
+  function flattenExprs<T>(exprs: Array<DiceResult<T>>) {
+    return if(exprs.length == 1) {
+      switch exprs[0] {
+        case Roll(Bag(rolls, _)):
+          rolls.map.fn(Roll(_));
+        case RollExpressions(exprs, _):
+          exprs;
+        case _:
+          exprs;
+      }
+    } else {
+      exprs;
+    }
+  }
 
   function diceBagToArrayOfDice<T>(group: DiceBag<T>): Array<Die<T>>
     return switch group {

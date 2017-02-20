@@ -13,7 +13,6 @@ class DiceParser {
   public static function parse(s: String): Validation<String, DiceExpression<Unit>> {
     return switch grammar.apply(s) {
       case { status: true, value: value }:
-        trace(value);
         Validation.success(value);
       case v:
         var msg = parsihax.ParseUtil.formatError(v, s);
@@ -48,6 +47,11 @@ class DiceParser {
   static var LOW_HIGH = "lowest".string() | "low".string() | "highest".string() | "high".string();
   static var MORE_LESS = "more".string() | "less".string();
   static var OR_MORE_LESS = SKIP_WS("or".string()) + MORE_LESS / "or (more|less)";
+
+  static var SUM = "sum".string() / "sum";
+  static var AVERAGE = "average".string().or("avg".string()) / "average";
+  static var MIN = "minimum".string().or("min".string()) / "minimum";
+  static var MAX = "maximum".string().or("max".string()) / "maximum";
 
   static var times = [
     "once".string().result(1),
@@ -116,8 +120,37 @@ class DiceParser {
         .skip(OWS + CLOSE_SET_BRACKET);
   }.lazy() / "expression set";
 
+  static var diceOrSet = [
+    diceSet.map(function(v) {
+      return switch v {
+        case Roll(Bag(list, _)):
+          list.map(Roll);
+        case _:
+          [v];
+      };
+    }),
+    basicExpressionSet
+  ].alt();
+
+
+  static var expressionSetImplicit: ParseObject<DiceExpression<Unit>> = 
+    diceOrSet.map.fn(RollExpressions(_, Sum, unit)) / "implicit sum";
   static var expressionSetSum: ParseObject<DiceExpression<Unit>> = 
-    basicExpressionSet.map.fn(RollExpressions(_, Sum, unit)) / "expression set";
+    diceOrSet.skip(OWS + SUM).map.fn(RollExpressions(_, Sum, unit)) / "sum";
+  static var expressionSetAverage: ParseObject<DiceExpression<Unit>> = 
+    diceOrSet.skip(OWS + AVERAGE).map.fn(RollExpressions(_, Average, unit)) / "average";
+  static var expressionSetMin: ParseObject<DiceExpression<Unit>> = 
+    diceOrSet.skip(OWS + MIN).map.fn(RollExpressions(_, Min, unit)) / "minimum";
+  static var expressionSetMax: ParseObject<DiceExpression<Unit>> = 
+    diceOrSet.skip(OWS + MAX).map.fn(RollExpressions(_, Max, unit)) / "maximum";
+
+  static var expressionSetOp = [
+    expressionSetAverage,
+    expressionSetMin,
+    expressionSetMax,
+    expressionSetSum,
+    expressionSetImplicit
+  ].alt();
 
   static var negate: ParseObject<DiceExpression<Unit>> = function() {
     return MINUS + inlineExpression.map(function(expr) {
@@ -168,7 +201,7 @@ class DiceParser {
 
   static var inlineExpression: ParseObject<DiceExpression<Unit>> = function() {
     return [
-      expressionSetSum,
+      expressionSetOp,
       diceSet,
       literal,
       negate

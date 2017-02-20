@@ -27,6 +27,8 @@ enum DiceBag<T> {
 enum ExpressionExtractor {
   Sum;
   Average;
+  Min;
+  Max;
   DropLow(drop: Int);
   KeepHigh(keep: Int);
 }

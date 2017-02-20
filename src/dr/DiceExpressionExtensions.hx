@@ -10,7 +10,7 @@ class DiceExpressionExtensions {
     case RollBag(dice, extractor, _):
       diceBagToString(dice, extractor);
     case RollExpressions(exprs, extractor, _):
-      expressionBagToString(exprs, extractor);
+      expressionsToString(exprs, extractor);
     case BinaryOp(op, a, b, _):
       toString(a) + " " + (switch op {
         case Sum: "+";
@@ -37,19 +37,35 @@ class DiceExpressionExtensions {
   public static function diceBagToString<T>(group: DiceBag<T>, extractor: BagExtractor)
     return (switch group {
       case DiceSet(dice):
-         '{' + dice.map.fn(_.toString()).join(",") + '}';
+        var s = dice.map.fn(_.toString()).join(",");
+         '{' + s + '}';
       case RepeatDie(time, die):
         '${time}${die.toString()}';
     }) + (switch extractor {
       case ExplodeOn(explodeOn): 'e$explodeOn';
     });
 
-  public static function expressionBagToString<T>(exprs: Array<DiceExpression<T>>, extractor: ExpressionExtractor)
-    return '{' + exprs.map(toString).join(",") + '}' +
-    (switch extractor {
-      case Sum: "";
-      case Average: " average";
-      case DropLow(drop): 'd$drop';
-      case KeepHigh(keep): 'k$keep';
-    });
+  public static function expressionsToString<T>(exprs: Array<DiceExpression<T>>, extractor: ExpressionExtractor)
+    return 
+      (exprs.length == 1 && !needsBraces(exprs[0]) ?
+        exprs.map(toString).join(",") :
+        '{' + exprs.map(toString).join(",") + '}') +
+        expressionExtractorToString(extractor);
+
+  public static function expressionExtractorToString(extractor) return switch extractor {
+    case Sum: "";
+    case Average: " average";
+    case Min: " min";
+    case Max: " max";
+    case DropLow(drop): 'd$drop';
+    case KeepHigh(keep): 'k$keep';
+  };
+
+  public static function needsBraces(expr) return switch expr {
+    case BinaryOp(_, _, _, _): true;
+    case Roll(_): false;
+    case RollBag(_): false;
+    case RollExpressions(_): false;
+    case UnaryOp(_): false;
+  }
 }
