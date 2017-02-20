@@ -70,6 +70,18 @@ class TestAll {
       { min: 5, max: 20, t: "{2,d4,d6,d8}", pos: pos() },
       { min: 6, max: 30, t: "{2,d4,3d8}", pos: pos() },
       { min: 10, max: 58, t: "{{2,d4,3d8},d4,3d8}", pos: pos() },
+
+      { min: -6, max: -6, t: "-6", pos: pos() },
+      { min: -1, max: -6, t: "-d6", pos: pos() },
+      { min: -2, max: -10, t: "-{d6,d4}", pos: pos() },
+      { min: 5, max: 5, t: "2+3", p: "2 + 3", pos: pos() },
+      { min: 1, max: 1, t: "2-1", p: "2 - 1", pos: pos() },
+      { min: 0, max: 0, t: "2-1-1", p: "2 - 1 - 1", pos: pos() },
+      { min: 6, max: 25, t: "3 + d6 + 2d8", pos: pos() },
+      { min: 0, max: 19, t: "-3 + d6 + 2d8", pos: pos() },
+      { min: -2, max: 7, t: "-3 + -d6 + 2d8", pos: pos() },
+      { min: 5, max: 24, t: "d6 + 2d8 + 2", pos: pos() },
+      { min: 1, max: 48, t: "d6 * 2d8 / 2", pos: pos() },
     ];
     
     tests.map(assertParseAndBoundaries);

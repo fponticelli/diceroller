@@ -11,10 +11,15 @@ class DiceExpressionExtensions {
       diceBagToString(dice, extractor);
     case RollExpressions(exprs, extractor, _):
       expressionBagToString(exprs, extractor);
-    case BinaryOp(Sum, a, b, _):
-      toString(a) + " + " + toString(b);
-    case BinaryOp(Difference, a, b, _):
-      toString(a) + " - " + toString(b);
+    case BinaryOp(op, a, b, _):
+      toString(a) + " " + (switch op {
+        case Sum: "+";
+        case Difference: "-";
+        case Multiplication: "*";
+        case Division: "/";
+      }) + " " + toString(b);
+    case UnaryOp(Negate, a, _):
+      "-" + toString(a);
   }
 
   public static function rollToString<T>(roll: BasicRoll<T>)

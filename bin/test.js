@@ -489,7 +489,7 @@ TestAll.prototype = {
 		});
 	}
 	,testParseAndBoundaries: function() {
-		var tests = [{ min : 1, max : 1, t : "1", pos : { fileName : "TestAll.hx", lineNumber : 47, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 2, t : "2", pos : { fileName : "TestAll.hx", lineNumber : 48, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "D", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 49, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 50, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1d", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 51, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1D", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 52, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1d6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 53, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1D6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 54, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d6", pos : { fileName : "TestAll.hx", lineNumber : 55, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "D6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 56, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : " d6 ", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 57, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d6 ", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 58, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : " d6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 59, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 100, t : "d%", pos : { fileName : "TestAll.hx", lineNumber : 60, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 300, t : "3d100", p : "3d%", pos : { fileName : "TestAll.hx", lineNumber : 61, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 8, t : "{d8}", pos : { fileName : "TestAll.hx", lineNumber : 63, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 2, t : "{2}", pos : { fileName : "TestAll.hx", lineNumber : 64, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, max : 5, t : "{2,3}", pos : { fileName : "TestAll.hx", lineNumber : 65, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 6, t : "{2d3}", pos : { fileName : "TestAll.hx", lineNumber : 66, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 14, t : "{d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 67, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 14, t : "{ d6 , d8 }", p : "{d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 68, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 18, t : "{d4,d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 69, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, max : 20, t : "{2,d4,d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 70, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 6, max : 30, t : "{2,d4,3d8}", pos : { fileName : "TestAll.hx", lineNumber : 71, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, max : 58, t : "{{2,d4,3d8},d4,3d8}", pos : { fileName : "TestAll.hx", lineNumber : 72, className : "TestAll", methodName : "testParseAndBoundaries"}}];
+		var tests = [{ min : 1, max : 1, t : "1", pos : { fileName : "TestAll.hx", lineNumber : 47, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 2, t : "2", pos : { fileName : "TestAll.hx", lineNumber : 48, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "D", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 49, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 50, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1d", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 51, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1D", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 52, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1d6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 53, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1D6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 54, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d6", pos : { fileName : "TestAll.hx", lineNumber : 55, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "D6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 56, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : " d6 ", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 57, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d6 ", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 58, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : " d6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 59, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 100, t : "d%", pos : { fileName : "TestAll.hx", lineNumber : 60, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 300, t : "3d100", p : "3d%", pos : { fileName : "TestAll.hx", lineNumber : 61, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 8, t : "{d8}", pos : { fileName : "TestAll.hx", lineNumber : 63, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 2, t : "{2}", pos : { fileName : "TestAll.hx", lineNumber : 64, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, max : 5, t : "{2,3}", pos : { fileName : "TestAll.hx", lineNumber : 65, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 6, t : "{2d3}", pos : { fileName : "TestAll.hx", lineNumber : 66, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 14, t : "{d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 67, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 14, t : "{ d6 , d8 }", p : "{d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 68, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 18, t : "{d4,d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 69, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, max : 20, t : "{2,d4,d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 70, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 6, max : 30, t : "{2,d4,3d8}", pos : { fileName : "TestAll.hx", lineNumber : 71, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, max : 58, t : "{{2,d4,3d8},d4,3d8}", pos : { fileName : "TestAll.hx", lineNumber : 72, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -6, max : -6, t : "-6", pos : { fileName : "TestAll.hx", lineNumber : 74, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -1, max : -6, t : "-d6", pos : { fileName : "TestAll.hx", lineNumber : 75, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -2, max : -10, t : "-{d6,d4}", pos : { fileName : "TestAll.hx", lineNumber : 76, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, max : 5, t : "2+3", p : "2 + 3", pos : { fileName : "TestAll.hx", lineNumber : 77, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 1, t : "2-1", p : "2 - 1", pos : { fileName : "TestAll.hx", lineNumber : 78, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 0, max : 0, t : "2-1-1", p : "2 - 1 - 1", pos : { fileName : "TestAll.hx", lineNumber : 79, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 6, max : 25, t : "3 + d6 + 2d8", pos : { fileName : "TestAll.hx", lineNumber : 80, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 0, max : 19, t : "-3 + d6 + 2d8", pos : { fileName : "TestAll.hx", lineNumber : 81, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -2, max : 7, t : "-3 + -d6 + 2d8", pos : { fileName : "TestAll.hx", lineNumber : 82, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, max : 24, t : "d6 + 2d8 + 2", pos : { fileName : "TestAll.hx", lineNumber : 83, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 48, t : "d6 * 2d8 / 2", pos : { fileName : "TestAll.hx", lineNumber : 84, className : "TestAll", methodName : "testParseAndBoundaries"}}];
 		tests.map($bind(this,this.assertParseAndBoundaries));
 	}
 	,assertParseAndBoundaries: function(t) {
@@ -641,11 +641,12 @@ Type["typeof"] = function(v) {
 		return ValueType.TUnknown;
 	}
 };
-var dr_DiceExpression = { __ename__ : ["dr","DiceExpression"], __constructs__ : ["Roll","RollBag","RollExpressions","BinaryOp"] };
+var dr_DiceExpression = { __ename__ : ["dr","DiceExpression"], __constructs__ : ["Roll","RollBag","RollExpressions","BinaryOp","UnaryOp"] };
 dr_DiceExpression.Roll = function(basic) { var $x = ["Roll",0,basic]; $x.__enum__ = dr_DiceExpression; return $x; };
 dr_DiceExpression.RollBag = function(dice,extractor,meta) { var $x = ["RollBag",1,dice,extractor,meta]; $x.__enum__ = dr_DiceExpression; return $x; };
 dr_DiceExpression.RollExpressions = function(exprs,extractor,meta) { var $x = ["RollExpressions",2,exprs,extractor,meta]; $x.__enum__ = dr_DiceExpression; return $x; };
 dr_DiceExpression.BinaryOp = function(op,a,b,meta) { var $x = ["BinaryOp",3,op,a,b,meta]; $x.__enum__ = dr_DiceExpression; return $x; };
+dr_DiceExpression.UnaryOp = function(op,a,meta) { var $x = ["UnaryOp",4,op,a,meta]; $x.__enum__ = dr_DiceExpression; return $x; };
 var dr_BagExtractor = { __ename__ : ["dr","BagExtractor"], __constructs__ : ["Sum","DropLow","KeepHigh","ExplodeOn"] };
 dr_BagExtractor.Sum = ["Sum",0];
 dr_BagExtractor.Sum.__enum__ = dr_BagExtractor;
@@ -665,11 +666,18 @@ dr_ExpressionExtractor.Sum = ["Sum",0];
 dr_ExpressionExtractor.Sum.__enum__ = dr_ExpressionExtractor;
 dr_ExpressionExtractor.DropLow = function(drop) { var $x = ["DropLow",1,drop]; $x.__enum__ = dr_ExpressionExtractor; return $x; };
 dr_ExpressionExtractor.KeepHigh = function(keep) { var $x = ["KeepHigh",2,keep]; $x.__enum__ = dr_ExpressionExtractor; return $x; };
-var dr_DiceOperator = { __ename__ : ["dr","DiceOperator"], __constructs__ : ["Sum","Difference"] };
-dr_DiceOperator.Sum = ["Sum",0];
-dr_DiceOperator.Sum.__enum__ = dr_DiceOperator;
-dr_DiceOperator.Difference = ["Difference",1];
-dr_DiceOperator.Difference.__enum__ = dr_DiceOperator;
+var dr_DiceBinOp = { __ename__ : ["dr","DiceBinOp"], __constructs__ : ["Sum","Difference","Division","Multiplication"] };
+dr_DiceBinOp.Sum = ["Sum",0];
+dr_DiceBinOp.Sum.__enum__ = dr_DiceBinOp;
+dr_DiceBinOp.Difference = ["Difference",1];
+dr_DiceBinOp.Difference.__enum__ = dr_DiceBinOp;
+dr_DiceBinOp.Division = ["Division",2];
+dr_DiceBinOp.Division.__enum__ = dr_DiceBinOp;
+dr_DiceBinOp.Multiplication = ["Multiplication",3];
+dr_DiceBinOp.Multiplication.__enum__ = dr_DiceBinOp;
+var dr_DiceUnOp = { __ename__ : ["dr","DiceUnOp"], __constructs__ : ["Negate"] };
+dr_DiceUnOp.Negate = ["Negate",0];
+dr_DiceUnOp.Negate.__enum__ = dr_DiceUnOp;
 var dr_DiceExpressionExtensions = function() { };
 dr_DiceExpressionExtensions.__name__ = ["dr","DiceExpressionExtensions"];
 dr_DiceExpressionExtensions.toString = function(expr) {
@@ -686,17 +694,29 @@ dr_DiceExpressionExtensions.toString = function(expr) {
 		var exprs = expr[2];
 		return dr_DiceExpressionExtensions.expressionBagToString(exprs,extractor1);
 	case 3:
-		switch(expr[2][1]) {
+		var b = expr[4];
+		var a = expr[3];
+		var op = expr[2];
+		var tmp = dr_DiceExpressionExtensions.toString(a) + " ";
+		var tmp1;
+		switch(op[1]) {
 		case 0:
-			var b = expr[4];
-			var a = expr[3];
-			return dr_DiceExpressionExtensions.toString(a) + " + " + dr_DiceExpressionExtensions.toString(b);
+			tmp1 = "+";
+			break;
 		case 1:
-			var b1 = expr[4];
-			var a1 = expr[3];
-			return dr_DiceExpressionExtensions.toString(a1) + " - " + dr_DiceExpressionExtensions.toString(b1);
+			tmp1 = "-";
+			break;
+		case 2:
+			tmp1 = "/";
+			break;
+		case 3:
+			tmp1 = "*";
+			break;
 		}
-		break;
+		return tmp + tmp1 + " " + dr_DiceExpressionExtensions.toString(b);
+	case 4:
+		var a1 = expr[3];
+		return "-" + dr_DiceExpressionExtensions.toString(a1);
 	}
 };
 dr_DiceExpressionExtensions.rollToString = function(roll) {
@@ -1522,1114 +1542,6 @@ dr_Die.prototype = {
 		return "d" + this.sides + " [" + f(this.meta) + "]";
 	}
 	,__class__: dr_Die
-};
-var dr_DiceParser = function() { };
-dr_DiceParser.__name__ = ["dr","DiceParser"];
-dr_DiceParser.parse = function(s) {
-	var _g = dr_DiceParser.grammar[0](s);
-	if(_g.status == true) {
-		var value = _g.value;
-		haxe_Log.trace(value,{ fileName : "DiceParser.hx", lineNumber : 16, className : "dr.DiceParser", methodName : "parse"});
-		return thx_Either.Right(value);
-	} else {
-		var v = _g;
-		var msg = parsihax_ParseUtil.formatError(v,s);
-		return thx_Either.Left(msg);
-	}
-};
-dr_DiceParser.SKIP_WS = function(parser) {
-	return parsihax_Parser.skip(parser,dr_DiceParser.WS);
-};
-dr_DiceParser.SKIP_OWS = function(parser) {
-	return parsihax_Parser.skip(parser,dr_DiceParser.OWS);
-};
-dr_DiceParser.toDie = function(sides) {
-	return new dr_Die(sides,thx_Unit.unit);
-};
-var dr_DiceResults = function() { };
-dr_DiceResults.__name__ = ["dr","DiceResults"];
-dr_DiceResults.extractResult = function(expr) {
-	switch(expr[1]) {
-	case 0:
-		switch(expr[2][1]) {
-		case 0:
-			var die = expr[2][2];
-			return die.meta.result;
-		case 1:
-			var meta = expr[2][3];
-			return meta.result;
-		case 2:
-			var meta1 = expr[2][4];
-			return meta1.result;
-		case 3:
-			var meta2 = expr[2][3];
-			return meta2.result;
-		}
-		break;
-	case 1:
-		var meta3 = expr[4];
-		return meta3.result;
-	case 2:
-		var meta4 = expr[4];
-		return meta4.result;
-	case 3:
-		var meta5 = expr[5];
-		return meta5.result;
-	}
-};
-var dr_Roller = function(random) {
-	this.random = random;
-};
-dr_Roller.__name__ = ["dr","Roller"];
-dr_Roller.prototype = {
-	random: null
-	,roll: function(expr) {
-		switch(expr[1]) {
-		case 0:
-			var roll = expr[2];
-			return dr_DiceExpression.Roll(this.basicRoll(roll));
-		case 1:
-			var meta = expr[4];
-			var extractor = expr[3];
-			var dice = expr[2];
-			var rolls = this.extractRolls(dice,extractor);
-			var result = this.extractResult(rolls,extractor);
-			return dr_DiceExpression.RollBag(dr_DiceBag.DiceSet(rolls),extractor,{ result : result, meta : meta});
-		case 2:
-			var meta1 = expr[4];
-			var extractor1 = expr[3];
-			var exprs = expr[2];
-			var exaluatedExpressions = exprs.map($bind(this,this.roll));
-			var result1 = this.extractExpressionResults(exaluatedExpressions,extractor1);
-			return dr_DiceExpression.RollExpressions(exaluatedExpressions,extractor1,{ result : result1, meta : meta1});
-		case 3:
-			var meta2 = expr[5];
-			var b = expr[4];
-			var a = expr[3];
-			var op = expr[2];
-			var ra = this.roll(a);
-			var rb = this.roll(b);
-			switch(op[1]) {
-			case 0:
-				return dr_DiceExpression.BinaryOp(dr_DiceOperator.Sum,ra,rb,{ result : dr_DiceResults.extractResult(ra) + dr_DiceResults.extractResult(rb), meta : meta2});
-			case 1:
-				return dr_DiceExpression.BinaryOp(dr_DiceOperator.Difference,ra,rb,{ result : dr_DiceResults.extractResult(ra) + dr_DiceResults.extractResult(rb), meta : meta2});
-			}
-			break;
-		}
-	}
-	,basicRoll: function(roll) {
-		switch(roll[1]) {
-		case 0:
-			var die = roll[2];
-			return dr_BasicRoll.One(die.roll(this.random));
-		case 1:
-			var meta = roll[3];
-			var list = roll[2];
-			var rolls = list.map($bind(this,this.basicRoll));
-			var result = this.sumBasicRoll(rolls);
-			return dr_BasicRoll.Bag(rolls,{ result : result, meta : meta});
-		case 2:
-			var meta1 = roll[4];
-			var die1 = roll[3];
-			var times = roll[2];
-			var _g = [];
-			var _g2 = 0;
-			var _g1 = times;
-			while(_g2 < _g1) {
-				var i = _g2++;
-				_g.push(die1.roll(this.random));
-			}
-			var rolls1 = _g;
-			var result1 = this.sumDice(rolls1);
-			return dr_BasicRoll.Bag(rolls1.map(dr_BasicRoll.One),{ result : result1, meta : meta1});
-		case 3:
-			var meta2 = roll[3];
-			var value = roll[2];
-			return dr_BasicRoll.Literal(value,{ result : value, meta : meta2});
-		}
-	}
-	,extractRolls: function(dice,extractor) {
-		var _gthis = this;
-		switch(extractor[1]) {
-		case 0:case 1:case 2:
-			return this.diceBagToArrayOfDice(dice).map(function(_) {
-				return _.roll(_gthis.random);
-			});
-		case 3:
-			var explodeOne = extractor[2];
-			return this.explodeRolls(this.diceBagToArrayOfDice(dice),explodeOne);
-		}
-	}
-	,sumDice: function(rolls) {
-		return thx_Arrays.reduce(rolls,function(acc,roll) {
-			return acc + roll.meta.result;
-		},0);
-	}
-	,sumBasicRoll: function(rolls) {
-		return thx_Arrays.reduce(rolls,function(acc,roll) {
-			var tmp;
-			switch(roll[1]) {
-			case 0:
-				var die = roll[2];
-				tmp = die.meta.result;
-				break;
-			case 1:
-				var meta = roll[3];
-				tmp = meta.result;
-				break;
-			case 2:
-				var meta1 = roll[4];
-				tmp = meta1.result;
-				break;
-			case 3:
-				var meta2 = roll[3];
-				tmp = meta2.result;
-				break;
-			}
-			return acc + tmp;
-		},0);
-	}
-	,sumResults: function(rolls) {
-		return thx_Arrays.reduce(rolls,function(acc,roll) {
-			return acc + dr_DiceResults.extractResult(roll);
-		},0);
-	}
-	,extractResult: function(rolls,extractor) {
-		switch(extractor[1]) {
-		case 0:
-			return thx_Arrays.reduce(rolls,function(acc,roll) {
-				return acc + roll.meta.result;
-			},0);
-		case 1:
-			var drop = extractor[2];
-			return thx_ArrayInts.sum(thx_Arrays.order(rolls.map(function(_) {
-				return _.meta.result;
-			}),thx_Ints.compare).slice(drop));
-		case 2:
-			var keep = extractor[2];
-			var result = thx_Arrays.order(rolls.map(function(_1) {
-				return _1.meta.result;
-			}),thx_Ints.compare).slice();
-			result.reverse();
-			return thx_ArrayInts.sum(result.slice(0,keep));
-		case 3:
-			var explodeOn = extractor[2];
-			return thx_Arrays.reduce(rolls,function(acc1,roll1) {
-				return acc1 + roll1.meta.result;
-			},0);
-		}
-	}
-	,extractExpressionResults: function(exprs,extractor) {
-		switch(extractor[1]) {
-		case 0:
-			return thx_Arrays.reduce(exprs,function(acc,expr) {
-				return acc + dr_DiceResults.extractResult(expr);
-			},0);
-		case 1:
-			var drop = extractor[2];
-			return thx_ArrayInts.sum(thx_Arrays.order(exprs.map(dr_DiceResults.extractResult),thx_Ints.compare).slice(drop));
-		case 2:
-			var keep = extractor[2];
-			var result = thx_Arrays.order(exprs.map(dr_DiceResults.extractResult),thx_Ints.compare).slice();
-			result.reverse();
-			return thx_ArrayInts.sum(result.slice(0,keep));
-		}
-	}
-	,diceBagToArrayOfDice: function(group) {
-		switch(group[1]) {
-		case 0:
-			var dice = group[2];
-			return dice;
-		case 1:
-			var die = group[3];
-			var times = group[2];
-			var _g = [];
-			var _g2 = 0;
-			var _g1 = times;
-			while(_g2 < _g1) {
-				var i = _g2++;
-				_g.push(die);
-			}
-			return _g;
-		}
-	}
-	,explodeRolls: function(dice,explodeOn) {
-		var _gthis = this;
-		var rolls = dice.map(function(_) {
-			return _.roll(_gthis.random);
-		});
-		var explosives = rolls.filter(function(_1) {
-			return _1.meta.result >= explodeOn;
-		}).map(function(_2) {
-			return new dr_Die(_2.sides,_2.meta.meta);
-		});
-		return rolls.concat(explosives.length == 0 ? [] : this.explodeRolls(explosives,explodeOn));
-	}
-	,rollDice: function(dice,sides) {
-		return this.roll(dr_DiceExpression.RollBag(dr_DiceBag.RepeatDie(dice,new dr_Die(sides,thx_Unit.unit)),dr_BagExtractor.Sum,thx_Unit.unit));
-	}
-	,rollOne: function(sides) {
-		return this.roll(dr_DiceExpression.Roll(dr_BasicRoll.One(dr_Die.withSides(sides))));
-	}
-	,rollDiceAndDropLow: function(dice,sides,drop) {
-		return this.roll(dr_DiceExpression.RollBag(dr_DiceBag.RepeatDie(dice,new dr_Die(sides,thx_Unit.unit)),dr_BagExtractor.DropLow(drop),thx_Unit.unit));
-	}
-	,rollDiceAndKeepHigh: function(dice,sides,keep) {
-		return this.roll(dr_DiceExpression.RollBag(dr_DiceBag.RepeatDie(dice,new dr_Die(sides,thx_Unit.unit)),dr_BagExtractor.KeepHigh(keep),thx_Unit.unit));
-	}
-	,rollDiceAndExplode: function(dice,sides,explodeOn) {
-		return this.roll(dr_DiceExpression.RollBag(dr_DiceBag.RepeatDie(dice,new dr_Die(sides,thx_Unit.unit)),dr_BagExtractor.ExplodeOn(explodeOn),thx_Unit.unit));
-	}
-	,__class__: dr_Roller
-};
-var haxe_StackItem = { __ename__ : ["haxe","StackItem"], __constructs__ : ["CFunction","Module","FilePos","Method","LocalFunction"] };
-haxe_StackItem.CFunction = ["CFunction",0];
-haxe_StackItem.CFunction.__enum__ = haxe_StackItem;
-haxe_StackItem.Module = function(m) { var $x = ["Module",1,m]; $x.__enum__ = haxe_StackItem; return $x; };
-haxe_StackItem.FilePos = function(s,file,line) { var $x = ["FilePos",2,s,file,line]; $x.__enum__ = haxe_StackItem; return $x; };
-haxe_StackItem.Method = function(classname,method) { var $x = ["Method",3,classname,method]; $x.__enum__ = haxe_StackItem; return $x; };
-haxe_StackItem.LocalFunction = function(v) { var $x = ["LocalFunction",4,v]; $x.__enum__ = haxe_StackItem; return $x; };
-var haxe_CallStack = function() { };
-haxe_CallStack.__name__ = ["haxe","CallStack"];
-haxe_CallStack.getStack = function(e) {
-	if(e == null) {
-		return [];
-	}
-	var oldValue = Error.prepareStackTrace;
-	Error.prepareStackTrace = function(error,callsites) {
-		var stack = [];
-		var _g = 0;
-		while(_g < callsites.length) {
-			var site = callsites[_g];
-			++_g;
-			if(haxe_CallStack.wrapCallSite != null) {
-				site = haxe_CallStack.wrapCallSite(site);
-			}
-			var method = null;
-			var fullName = site.getFunctionName();
-			if(fullName != null) {
-				var idx = fullName.lastIndexOf(".");
-				if(idx >= 0) {
-					var className = HxOverrides.substr(fullName,0,idx);
-					var methodName = HxOverrides.substr(fullName,idx + 1,null);
-					method = haxe_StackItem.Method(className,methodName);
-				}
-			}
-			stack.push(haxe_StackItem.FilePos(method,site.getFileName(),site.getLineNumber()));
-		}
-		return stack;
-	};
-	var a = haxe_CallStack.makeStack(e.stack);
-	Error.prepareStackTrace = oldValue;
-	return a;
-};
-haxe_CallStack.callStack = function() {
-	try {
-		throw new Error();
-	} catch( e ) {
-		haxe_CallStack.lastException = e;
-		if (e instanceof js__$Boot_HaxeError) e = e.val;
-		var a = haxe_CallStack.getStack(e);
-		a.shift();
-		return a;
-	}
-};
-haxe_CallStack.exceptionStack = function() {
-	return haxe_CallStack.getStack(haxe_CallStack.lastException);
-};
-haxe_CallStack.toString = function(stack) {
-	var b = new StringBuf();
-	var _g = 0;
-	while(_g < stack.length) {
-		var s = stack[_g];
-		++_g;
-		b.b += "\nCalled from ";
-		haxe_CallStack.itemToString(b,s);
-	}
-	return b.b;
-};
-haxe_CallStack.itemToString = function(b,s) {
-	switch(s[1]) {
-	case 0:
-		b.b += "a C function";
-		break;
-	case 1:
-		var m = s[2];
-		b.b += "module ";
-		b.b += m == null ? "null" : "" + m;
-		break;
-	case 2:
-		var line = s[4];
-		var file = s[3];
-		var s1 = s[2];
-		if(s1 != null) {
-			haxe_CallStack.itemToString(b,s1);
-			b.b += " (";
-		}
-		b.b += file == null ? "null" : "" + file;
-		b.b += " line ";
-		b.b += line == null ? "null" : "" + line;
-		if(s1 != null) {
-			b.b += ")";
-		}
-		break;
-	case 3:
-		var meth = s[3];
-		var cname = s[2];
-		b.b += cname == null ? "null" : "" + cname;
-		b.b += ".";
-		b.b += meth == null ? "null" : "" + meth;
-		break;
-	case 4:
-		var n = s[2];
-		b.b += "local function #";
-		b.b += n == null ? "null" : "" + n;
-		break;
-	}
-};
-haxe_CallStack.makeStack = function(s) {
-	if(s == null) {
-		return [];
-	} else if(typeof(s) == "string") {
-		var stack = s.split("\n");
-		if(stack[0] == "Error") {
-			stack.shift();
-		}
-		var m = [];
-		var rie10 = new EReg("^   at ([A-Za-z0-9_. ]+) \\(([^)]+):([0-9]+):([0-9]+)\\)$","");
-		var _g = 0;
-		while(_g < stack.length) {
-			var line = stack[_g];
-			++_g;
-			if(rie10.match(line)) {
-				var path = rie10.matched(1).split(".");
-				var meth = path.pop();
-				var file = rie10.matched(2);
-				var line1 = Std.parseInt(rie10.matched(3));
-				m.push(haxe_StackItem.FilePos(meth == "Anonymous function" ? haxe_StackItem.LocalFunction() : meth == "Global code" ? null : haxe_StackItem.Method(path.join("."),meth),file,line1));
-			} else {
-				m.push(haxe_StackItem.Module(StringTools.trim(line)));
-			}
-		}
-		return m;
-	} else {
-		return s;
-	}
-};
-var haxe_IMap = function() { };
-haxe_IMap.__name__ = ["haxe","IMap"];
-haxe_IMap.prototype = {
-	get: null
-	,set: null
-	,exists: null
-	,remove: null
-	,keys: null
-	,iterator: null
-	,__class__: haxe_IMap
-};
-var haxe__$Int32_Int32_$Impl_$ = {};
-haxe__$Int32_Int32_$Impl_$.__name__ = ["haxe","_Int32","Int32_Impl_"];
-var haxe_Log = function() { };
-haxe_Log.__name__ = ["haxe","Log"];
-haxe_Log.trace = function(v,infos) {
-	js_Boot.__trace(v,infos);
-};
-var haxe_Timer = function(time_ms) {
-	var me = this;
-	this.id = setInterval(function() {
-		me.run();
-	},time_ms);
-};
-haxe_Timer.__name__ = ["haxe","Timer"];
-haxe_Timer.delay = function(f,time_ms) {
-	var t = new haxe_Timer(time_ms);
-	t.run = function() {
-		t.stop();
-		f();
-	};
-	return t;
-};
-haxe_Timer.prototype = {
-	id: null
-	,stop: function() {
-		if(this.id == null) {
-			return;
-		}
-		clearInterval(this.id);
-		this.id = null;
-	}
-	,run: function() {
-	}
-	,__class__: haxe_Timer
-};
-var haxe_Utf8 = function() { };
-haxe_Utf8.__name__ = ["haxe","Utf8"];
-haxe_Utf8.compare = function(a,b) {
-	if(a > b) {
-		return 1;
-	} else if(a == b) {
-		return 0;
-	} else {
-		return -1;
-	}
-};
-var haxe_io_Bytes = function(data) {
-	this.length = data.byteLength;
-	this.b = new Uint8Array(data);
-	this.b.bufferValue = data;
-	data.hxBytes = this;
-	data.bytes = this.b;
-};
-haxe_io_Bytes.__name__ = ["haxe","io","Bytes"];
-haxe_io_Bytes.alloc = function(length) {
-	return new haxe_io_Bytes(new ArrayBuffer(length));
-};
-haxe_io_Bytes.ofString = function(s) {
-	var a = [];
-	var i = 0;
-	while(i < s.length) {
-		var c = s.charCodeAt(i++);
-		if(55296 <= c && c <= 56319) {
-			c = c - 55232 << 10 | s.charCodeAt(i++) & 1023;
-		}
-		if(c <= 127) {
-			a.push(c);
-		} else if(c <= 2047) {
-			a.push(192 | c >> 6);
-			a.push(128 | c & 63);
-		} else if(c <= 65535) {
-			a.push(224 | c >> 12);
-			a.push(128 | c >> 6 & 63);
-			a.push(128 | c & 63);
-		} else {
-			a.push(240 | c >> 18);
-			a.push(128 | c >> 12 & 63);
-			a.push(128 | c >> 6 & 63);
-			a.push(128 | c & 63);
-		}
-	}
-	return new haxe_io_Bytes(new Uint8Array(a).buffer);
-};
-haxe_io_Bytes.ofData = function(b) {
-	var hb = b.hxBytes;
-	if(hb != null) {
-		return hb;
-	}
-	return new haxe_io_Bytes(b);
-};
-haxe_io_Bytes.fastGet = function(b,pos) {
-	return b.bytes[pos];
-};
-haxe_io_Bytes.prototype = {
-	length: null
-	,b: null
-	,__class__: haxe_io_Bytes
-};
-var haxe_crypto_Base64 = function() { };
-haxe_crypto_Base64.__name__ = ["haxe","crypto","Base64"];
-var haxe_ds_BalancedTree = function() {
-};
-haxe_ds_BalancedTree.__name__ = ["haxe","ds","BalancedTree"];
-haxe_ds_BalancedTree.prototype = {
-	root: null
-	,set: function(key,value) {
-		this.root = this.setLoop(key,value,this.root);
-	}
-	,get: function(key) {
-		var node = this.root;
-		while(node != null) {
-			var c = this.compare(key,node.key);
-			if(c == 0) {
-				return node.value;
-			}
-			if(c < 0) {
-				node = node.left;
-			} else {
-				node = node.right;
-			}
-		}
-		return null;
-	}
-	,remove: function(key) {
-		try {
-			this.root = this.removeLoop(key,this.root);
-			return true;
-		} catch( e ) {
-			haxe_CallStack.lastException = e;
-			if (e instanceof js__$Boot_HaxeError) e = e.val;
-			if( js_Boot.__instanceof(e,String) ) {
-				return false;
-			} else throw(e);
-		}
-	}
-	,exists: function(key) {
-		var node = this.root;
-		while(node != null) {
-			var c = this.compare(key,node.key);
-			if(c == 0) {
-				return true;
-			} else if(c < 0) {
-				node = node.left;
-			} else {
-				node = node.right;
-			}
-		}
-		return false;
-	}
-	,iterator: function() {
-		var ret = [];
-		this.iteratorLoop(this.root,ret);
-		return HxOverrides.iter(ret);
-	}
-	,keys: function() {
-		var ret = [];
-		this.keysLoop(this.root,ret);
-		return HxOverrides.iter(ret);
-	}
-	,setLoop: function(k,v,node) {
-		if(node == null) {
-			return new haxe_ds_TreeNode(null,k,v,null);
-		}
-		var c = this.compare(k,node.key);
-		if(c == 0) {
-			return new haxe_ds_TreeNode(node.left,k,v,node.right,node == null ? 0 : node._height);
-		} else if(c < 0) {
-			var nl = this.setLoop(k,v,node.left);
-			return this.balance(nl,node.key,node.value,node.right);
-		} else {
-			var nr = this.setLoop(k,v,node.right);
-			return this.balance(node.left,node.key,node.value,nr);
-		}
-	}
-	,removeLoop: function(k,node) {
-		if(node == null) {
-			throw new js__$Boot_HaxeError("Not_found");
-		}
-		var c = this.compare(k,node.key);
-		if(c == 0) {
-			return this.merge(node.left,node.right);
-		} else if(c < 0) {
-			return this.balance(this.removeLoop(k,node.left),node.key,node.value,node.right);
-		} else {
-			return this.balance(node.left,node.key,node.value,this.removeLoop(k,node.right));
-		}
-	}
-	,iteratorLoop: function(node,acc) {
-		if(node != null) {
-			this.iteratorLoop(node.left,acc);
-			acc.push(node.value);
-			this.iteratorLoop(node.right,acc);
-		}
-	}
-	,keysLoop: function(node,acc) {
-		if(node != null) {
-			this.keysLoop(node.left,acc);
-			acc.push(node.key);
-			this.keysLoop(node.right,acc);
-		}
-	}
-	,merge: function(t1,t2) {
-		if(t1 == null) {
-			return t2;
-		}
-		if(t2 == null) {
-			return t1;
-		}
-		var t = this.minBinding(t2);
-		return this.balance(t1,t.key,t.value,this.removeMinBinding(t2));
-	}
-	,minBinding: function(t) {
-		if(t == null) {
-			throw new js__$Boot_HaxeError("Not_found");
-		} else if(t.left == null) {
-			return t;
-		} else {
-			return this.minBinding(t.left);
-		}
-	}
-	,removeMinBinding: function(t) {
-		if(t.left == null) {
-			return t.right;
-		} else {
-			return this.balance(this.removeMinBinding(t.left),t.key,t.value,t.right);
-		}
-	}
-	,balance: function(l,k,v,r) {
-		var hl = l == null ? 0 : l._height;
-		var hr = r == null ? 0 : r._height;
-		if(hl > hr + 2) {
-			var _this = l.left;
-			var _this1 = l.right;
-			if((_this == null ? 0 : _this._height) >= (_this1 == null ? 0 : _this1._height)) {
-				return new haxe_ds_TreeNode(l.left,l.key,l.value,new haxe_ds_TreeNode(l.right,k,v,r));
-			} else {
-				return new haxe_ds_TreeNode(new haxe_ds_TreeNode(l.left,l.key,l.value,l.right.left),l.right.key,l.right.value,new haxe_ds_TreeNode(l.right.right,k,v,r));
-			}
-		} else if(hr > hl + 2) {
-			var _this2 = r.right;
-			var _this3 = r.left;
-			if((_this2 == null ? 0 : _this2._height) > (_this3 == null ? 0 : _this3._height)) {
-				return new haxe_ds_TreeNode(new haxe_ds_TreeNode(l,k,v,r.left),r.key,r.value,r.right);
-			} else {
-				return new haxe_ds_TreeNode(new haxe_ds_TreeNode(l,k,v,r.left.left),r.left.key,r.left.value,new haxe_ds_TreeNode(r.left.right,r.key,r.value,r.right));
-			}
-		} else {
-			return new haxe_ds_TreeNode(l,k,v,r,(hl > hr ? hl : hr) + 1);
-		}
-	}
-	,compare: function(k1,k2) {
-		return Reflect.compare(k1,k2);
-	}
-	,__class__: haxe_ds_BalancedTree
-};
-var haxe_ds_TreeNode = function(l,k,v,r,h) {
-	if(h == null) {
-		h = -1;
-	}
-	this.left = l;
-	this.key = k;
-	this.value = v;
-	this.right = r;
-	if(h == -1) {
-		var tmp;
-		var _this = this.left;
-		var _this1 = this.right;
-		if((_this == null ? 0 : _this._height) > (_this1 == null ? 0 : _this1._height)) {
-			var _this2 = this.left;
-			if(_this2 == null) {
-				tmp = 0;
-			} else {
-				tmp = _this2._height;
-			}
-		} else {
-			var _this3 = this.right;
-			if(_this3 == null) {
-				tmp = 0;
-			} else {
-				tmp = _this3._height;
-			}
-		}
-		this._height = tmp + 1;
-	} else {
-		this._height = h;
-	}
-};
-haxe_ds_TreeNode.__name__ = ["haxe","ds","TreeNode"];
-haxe_ds_TreeNode.prototype = {
-	left: null
-	,right: null
-	,key: null
-	,value: null
-	,_height: null
-	,__class__: haxe_ds_TreeNode
-};
-var haxe_ds_EnumValueMap = function() {
-	haxe_ds_BalancedTree.call(this);
-};
-haxe_ds_EnumValueMap.__name__ = ["haxe","ds","EnumValueMap"];
-haxe_ds_EnumValueMap.__interfaces__ = [haxe_IMap];
-haxe_ds_EnumValueMap.__super__ = haxe_ds_BalancedTree;
-haxe_ds_EnumValueMap.prototype = $extend(haxe_ds_BalancedTree.prototype,{
-	compare: function(k1,k2) {
-		var d = k1[1] - k2[1];
-		if(d != 0) {
-			return d;
-		}
-		var p1 = k1.slice(2);
-		var p2 = k2.slice(2);
-		if(p1.length == 0 && p2.length == 0) {
-			return 0;
-		}
-		return this.compareArgs(p1,p2);
-	}
-	,compareArgs: function(a1,a2) {
-		var ld = a1.length - a2.length;
-		if(ld != 0) {
-			return ld;
-		}
-		var _g1 = 0;
-		var _g = a1.length;
-		while(_g1 < _g) {
-			var i = _g1++;
-			var d = this.compareArg(a1[i],a2[i]);
-			if(d != 0) {
-				return d;
-			}
-		}
-		return 0;
-	}
-	,compareArg: function(v1,v2) {
-		if(Reflect.isEnumValue(v1) && Reflect.isEnumValue(v2)) {
-			return this.compare(v1,v2);
-		} else if((v1 instanceof Array) && v1.__enum__ == null && ((v2 instanceof Array) && v2.__enum__ == null)) {
-			return this.compareArgs(v1,v2);
-		} else {
-			return Reflect.compare(v1,v2);
-		}
-	}
-	,__class__: haxe_ds_EnumValueMap
-});
-var haxe_ds_IntMap = function() {
-	this.h = { };
-};
-haxe_ds_IntMap.__name__ = ["haxe","ds","IntMap"];
-haxe_ds_IntMap.__interfaces__ = [haxe_IMap];
-haxe_ds_IntMap.prototype = {
-	h: null
-	,set: function(key,value) {
-		this.h[key] = value;
-	}
-	,get: function(key) {
-		return this.h[key];
-	}
-	,exists: function(key) {
-		return this.h.hasOwnProperty(key);
-	}
-	,remove: function(key) {
-		if(!this.h.hasOwnProperty(key)) {
-			return false;
-		}
-		delete(this.h[key]);
-		return true;
-	}
-	,keys: function() {
-		var a = [];
-		for( var key in this.h ) if(this.h.hasOwnProperty(key)) {
-			a.push(key | 0);
-		}
-		return HxOverrides.iter(a);
-	}
-	,iterator: function() {
-		return { ref : this.h, it : this.keys(), hasNext : function() {
-			return this.it.hasNext();
-		}, next : function() {
-			var i = this.it.next();
-			return this.ref[i];
-		}};
-	}
-	,__class__: haxe_ds_IntMap
-};
-var haxe_ds_ObjectMap = function() {
-	this.h = { __keys__ : { }};
-};
-haxe_ds_ObjectMap.__name__ = ["haxe","ds","ObjectMap"];
-haxe_ds_ObjectMap.__interfaces__ = [haxe_IMap];
-haxe_ds_ObjectMap.prototype = {
-	h: null
-	,set: function(key,value) {
-		var id = key.__id__ || (key.__id__ = ++haxe_ds_ObjectMap.count);
-		this.h[id] = value;
-		this.h.__keys__[id] = key;
-	}
-	,get: function(key) {
-		return this.h[key.__id__];
-	}
-	,exists: function(key) {
-		return this.h.__keys__[key.__id__] != null;
-	}
-	,remove: function(key) {
-		var id = key.__id__;
-		if(this.h.__keys__[id] == null) {
-			return false;
-		}
-		delete(this.h[id]);
-		delete(this.h.__keys__[id]);
-		return true;
-	}
-	,keys: function() {
-		var a = [];
-		for( var key in this.h.__keys__ ) {
-		if(this.h.hasOwnProperty(key)) {
-			a.push(this.h.__keys__[key]);
-		}
-		}
-		return HxOverrides.iter(a);
-	}
-	,iterator: function() {
-		return { ref : this.h, it : this.keys(), hasNext : function() {
-			return this.it.hasNext();
-		}, next : function() {
-			var i = this.it.next();
-			return this.ref[i.__id__];
-		}};
-	}
-	,__class__: haxe_ds_ObjectMap
-};
-var haxe_ds_Option = { __ename__ : ["haxe","ds","Option"], __constructs__ : ["Some","None"] };
-haxe_ds_Option.Some = function(v) { var $x = ["Some",0,v]; $x.__enum__ = haxe_ds_Option; return $x; };
-haxe_ds_Option.None = ["None",1];
-haxe_ds_Option.None.__enum__ = haxe_ds_Option;
-var haxe_ds__$StringMap_StringMapIterator = function(map,keys) {
-	this.map = map;
-	this.keys = keys;
-	this.index = 0;
-	this.count = keys.length;
-};
-haxe_ds__$StringMap_StringMapIterator.__name__ = ["haxe","ds","_StringMap","StringMapIterator"];
-haxe_ds__$StringMap_StringMapIterator.prototype = {
-	map: null
-	,keys: null
-	,index: null
-	,count: null
-	,hasNext: function() {
-		return this.index < this.count;
-	}
-	,next: function() {
-		var _this = this.map;
-		var key = this.keys[this.index++];
-		if(__map_reserved[key] != null) {
-			return _this.getReserved(key);
-		} else {
-			return _this.h[key];
-		}
-	}
-	,__class__: haxe_ds__$StringMap_StringMapIterator
-};
-var haxe_ds_StringMap = function() {
-	this.h = { };
-};
-haxe_ds_StringMap.__name__ = ["haxe","ds","StringMap"];
-haxe_ds_StringMap.__interfaces__ = [haxe_IMap];
-haxe_ds_StringMap.prototype = {
-	h: null
-	,rh: null
-	,set: function(key,value) {
-		if(__map_reserved[key] != null) {
-			this.setReserved(key,value);
-		} else {
-			this.h[key] = value;
-		}
-	}
-	,get: function(key) {
-		if(__map_reserved[key] != null) {
-			return this.getReserved(key);
-		}
-		return this.h[key];
-	}
-	,exists: function(key) {
-		if(__map_reserved[key] != null) {
-			return this.existsReserved(key);
-		}
-		return this.h.hasOwnProperty(key);
-	}
-	,setReserved: function(key,value) {
-		if(this.rh == null) {
-			this.rh = { };
-		}
-		this.rh["$" + key] = value;
-	}
-	,getReserved: function(key) {
-		if(this.rh == null) {
-			return null;
-		} else {
-			return this.rh["$" + key];
-		}
-	}
-	,existsReserved: function(key) {
-		if(this.rh == null) {
-			return false;
-		}
-		return this.rh.hasOwnProperty("$" + key);
-	}
-	,remove: function(key) {
-		if(__map_reserved[key] != null) {
-			key = "$" + key;
-			if(this.rh == null || !this.rh.hasOwnProperty(key)) {
-				return false;
-			}
-			delete(this.rh[key]);
-			return true;
-		} else {
-			if(!this.h.hasOwnProperty(key)) {
-				return false;
-			}
-			delete(this.h[key]);
-			return true;
-		}
-	}
-	,keys: function() {
-		return HxOverrides.iter(this.arrayKeys());
-	}
-	,arrayKeys: function() {
-		var out = [];
-		for( var key in this.h ) {
-		if(this.h.hasOwnProperty(key)) {
-			out.push(key);
-		}
-		}
-		if(this.rh != null) {
-			for( var key in this.rh ) {
-			if(key.charCodeAt(0) == 36) {
-				out.push(key.substr(1));
-			}
-			}
-		}
-		return out;
-	}
-	,iterator: function() {
-		return new haxe_ds__$StringMap_StringMapIterator(this,this.arrayKeys());
-	}
-	,__class__: haxe_ds_StringMap
-};
-var js__$Boot_HaxeError = function(val) {
-	Error.call(this);
-	this.val = val;
-	this.message = String(val);
-	if(Error.captureStackTrace) {
-		Error.captureStackTrace(this,js__$Boot_HaxeError);
-	}
-};
-js__$Boot_HaxeError.__name__ = ["js","_Boot","HaxeError"];
-js__$Boot_HaxeError.wrap = function(val) {
-	if((val instanceof Error)) {
-		return val;
-	} else {
-		return new js__$Boot_HaxeError(val);
-	}
-};
-js__$Boot_HaxeError.__super__ = Error;
-js__$Boot_HaxeError.prototype = $extend(Error.prototype,{
-	val: null
-	,__class__: js__$Boot_HaxeError
-});
-var js_html_compat_ArrayBuffer = function(a) {
-	if((a instanceof Array) && a.__enum__ == null) {
-		this.a = a;
-		this.byteLength = a.length;
-	} else {
-		var len = a;
-		this.a = [];
-		var _g1 = 0;
-		var _g = len;
-		while(_g1 < _g) {
-			var i = _g1++;
-			this.a[i] = 0;
-		}
-		this.byteLength = len;
-	}
-};
-js_html_compat_ArrayBuffer.__name__ = ["js","html","compat","ArrayBuffer"];
-js_html_compat_ArrayBuffer.sliceImpl = function(begin,end) {
-	var u = new Uint8Array(this,begin,end == null ? null : end - begin);
-	var result = new ArrayBuffer(u.byteLength);
-	var resultArray = new Uint8Array(result);
-	resultArray.set(u);
-	return result;
-};
-js_html_compat_ArrayBuffer.prototype = {
-	byteLength: null
-	,a: null
-	,slice: function(begin,end) {
-		return new js_html_compat_ArrayBuffer(this.a.slice(begin,end));
-	}
-	,__class__: js_html_compat_ArrayBuffer
-};
-var js_html_compat_Uint8Array = function() { };
-js_html_compat_Uint8Array.__name__ = ["js","html","compat","Uint8Array"];
-js_html_compat_Uint8Array._new = function(arg1,offset,length) {
-	var arr;
-	if(typeof(arg1) == "number") {
-		arr = [];
-		var _g1 = 0;
-		var _g = arg1;
-		while(_g1 < _g) {
-			var i = _g1++;
-			arr[i] = 0;
-		}
-		arr.byteLength = arr.length;
-		arr.byteOffset = 0;
-		arr.buffer = new js_html_compat_ArrayBuffer(arr);
-	} else if(js_Boot.__instanceof(arg1,js_html_compat_ArrayBuffer)) {
-		var buffer = arg1;
-		if(offset == null) {
-			offset = 0;
-		}
-		if(length == null) {
-			length = buffer.byteLength - offset;
-		}
-		if(offset == 0) {
-			arr = buffer.a;
-		} else {
-			arr = buffer.a.slice(offset,offset + length);
-		}
-		arr.byteLength = arr.length;
-		arr.byteOffset = offset;
-		arr.buffer = buffer;
-	} else if((arg1 instanceof Array) && arg1.__enum__ == null) {
-		arr = arg1.slice();
-		arr.byteLength = arr.length;
-		arr.byteOffset = 0;
-		arr.buffer = new js_html_compat_ArrayBuffer(arr);
-	} else {
-		throw new js__$Boot_HaxeError("TODO " + Std.string(arg1));
-	}
-	arr.subarray = js_html_compat_Uint8Array._subarray;
-	arr.set = js_html_compat_Uint8Array._set;
-	return arr;
-};
-js_html_compat_Uint8Array._set = function(arg,offset) {
-	if(js_Boot.__instanceof(arg.buffer,js_html_compat_ArrayBuffer)) {
-		var a = arg;
-		if(arg.byteLength + offset > this.byteLength) {
-			throw new js__$Boot_HaxeError("set() outside of range");
-		}
-		var _g1 = 0;
-		var _g = arg.byteLength;
-		while(_g1 < _g) {
-			var i = _g1++;
-			this[i + offset] = a[i];
-		}
-	} else if((arg instanceof Array) && arg.__enum__ == null) {
-		var a1 = arg;
-		if(a1.length + offset > this.byteLength) {
-			throw new js__$Boot_HaxeError("set() outside of range");
-		}
-		var _g11 = 0;
-		var _g2 = a1.length;
-		while(_g11 < _g2) {
-			var i1 = _g11++;
-			this[i1 + offset] = a1[i1];
-		}
-	} else {
-		throw new js__$Boot_HaxeError("TODO");
-	}
-};
-js_html_compat_Uint8Array._subarray = function(start,end) {
-	var a = js_html_compat_Uint8Array._new(this.slice(start,end));
-	a.byteOffset = start;
-	return a;
-};
-var parsihax__$ParseObject_ParseObject_$Impl_$ = {};
-parsihax__$ParseObject_ParseObject_$Impl_$.__name__ = ["parsihax","_ParseObject","ParseObject_Impl_"];
-parsihax__$ParseObject_ParseObject_$Impl_$._new = function() {
-	var this1;
-	var this2 = new Array(1);
-	this1 = this2;
-	return this1;
-};
-parsihax__$ParseObject_ParseObject_$Impl_$.get_apply = function(this1) {
-	return this1[0];
-};
-parsihax__$ParseObject_ParseObject_$Impl_$.set_apply = function(this1,param) {
-	return this1[0] = param;
-};
-parsihax__$ParseObject_ParseObject_$Impl_$.to = function(v) {
-	var this1;
-	var this2 = new Array(1);
-	this1 = this2;
-	var ret = this1;
-	ret[0] = v;
-	return ret;
-};
-parsihax__$ParseObject_ParseObject_$Impl_$.opAdd = function(l,r) {
-	return parsihax_Parser.then(l,r);
-};
-parsihax__$ParseObject_ParseObject_$Impl_$.opOr = function(l,r) {
-	return parsihax_Parser.or(l,r);
-};
-parsihax__$ParseObject_ParseObject_$Impl_$.opDiv = function(l,r) {
-	return parsihax_Parser["as"](l,r);
 };
 var thx_Arrays = function() { };
 thx_Arrays.__name__ = ["thx","Arrays"];
@@ -3795,6 +2707,1126 @@ thx_Arrays.fill = function(arr,def) {
 			return x;
 		}
 	});
+};
+var dr_DiceParser = function() { };
+dr_DiceParser.__name__ = ["dr","DiceParser"];
+dr_DiceParser.parse = function(s) {
+	var _g = dr_DiceParser.grammar[0](s);
+	if(_g.status == true) {
+		var value = _g.value;
+		haxe_Log.trace(value,{ fileName : "DiceParser.hx", lineNumber : 17, className : "dr.DiceParser", methodName : "parse"});
+		return thx_Either.Right(value);
+	} else {
+		var v = _g;
+		var msg = parsihax_ParseUtil.formatError(v,s);
+		return thx_Either.Left(msg);
+	}
+};
+dr_DiceParser.SKIP_WS = function(parser) {
+	return parsihax_Parser.skip(parser,dr_DiceParser.WS);
+};
+dr_DiceParser.SKIP_OWS = function(parser) {
+	return parsihax_Parser.skip(parser,dr_DiceParser.OWS);
+};
+dr_DiceParser.toDie = function(sides) {
+	return new dr_Die(sides,thx_Unit.unit);
+};
+var dr_DiceResults = function() { };
+dr_DiceResults.__name__ = ["dr","DiceResults"];
+dr_DiceResults.extractResult = function(expr) {
+	switch(expr[1]) {
+	case 0:
+		switch(expr[2][1]) {
+		case 0:
+			var die = expr[2][2];
+			return die.meta.result;
+		case 1:
+			var meta = expr[2][3];
+			return meta.result;
+		case 2:
+			var meta1 = expr[2][4];
+			return meta1.result;
+		case 3:
+			var meta2 = expr[2][3];
+			return meta2.result;
+		}
+		break;
+	case 1:
+		var meta3 = expr[4];
+		return meta3.result;
+	case 2:
+		var meta4 = expr[4];
+		return meta4.result;
+	case 3:
+		var meta5 = expr[5];
+		return meta5.result;
+	case 4:
+		var meta6 = expr[4];
+		return meta6.result;
+	}
+};
+var dr_Roller = function(random) {
+	this.random = random;
+};
+dr_Roller.__name__ = ["dr","Roller"];
+dr_Roller.prototype = {
+	random: null
+	,roll: function(expr) {
+		switch(expr[1]) {
+		case 0:
+			var roll = expr[2];
+			return dr_DiceExpression.Roll(this.basicRoll(roll));
+		case 1:
+			var meta = expr[4];
+			var extractor = expr[3];
+			var dice = expr[2];
+			var rolls = this.extractRolls(dice,extractor);
+			var result = this.extractResult(rolls,extractor);
+			return dr_DiceExpression.RollBag(dr_DiceBag.DiceSet(rolls),extractor,{ result : result, meta : meta});
+		case 2:
+			var meta1 = expr[4];
+			var extractor1 = expr[3];
+			var exprs = expr[2];
+			var exaluatedExpressions = exprs.map($bind(this,this.roll));
+			var result1 = this.extractExpressionResults(exaluatedExpressions,extractor1);
+			return dr_DiceExpression.RollExpressions(exaluatedExpressions,extractor1,{ result : result1, meta : meta1});
+		case 3:
+			var meta2 = expr[5];
+			var b = expr[4];
+			var a = expr[3];
+			var op = expr[2];
+			var ra = this.roll(a);
+			var rb = this.roll(b);
+			switch(op[1]) {
+			case 0:
+				return dr_DiceExpression.BinaryOp(dr_DiceBinOp.Sum,ra,rb,{ result : dr_DiceResults.extractResult(ra) + dr_DiceResults.extractResult(rb), meta : meta2});
+			case 1:
+				return dr_DiceExpression.BinaryOp(dr_DiceBinOp.Difference,ra,rb,{ result : dr_DiceResults.extractResult(ra) - dr_DiceResults.extractResult(rb), meta : meta2});
+			case 2:
+				return dr_DiceExpression.BinaryOp(dr_DiceBinOp.Difference,ra,rb,{ result : dr_DiceResults.extractResult(ra) / dr_DiceResults.extractResult(rb) | 0, meta : meta2});
+			case 3:
+				return dr_DiceExpression.BinaryOp(dr_DiceBinOp.Difference,ra,rb,{ result : dr_DiceResults.extractResult(ra) * dr_DiceResults.extractResult(rb), meta : meta2});
+			}
+			break;
+		case 4:
+			var meta3 = expr[4];
+			var a1 = expr[3];
+			var ra1 = this.roll(a1);
+			return dr_DiceExpression.UnaryOp(dr_DiceUnOp.Negate,ra1,{ result : -dr_DiceResults.extractResult(ra1), meta : meta3});
+		}
+	}
+	,basicRoll: function(roll) {
+		switch(roll[1]) {
+		case 0:
+			var die = roll[2];
+			return dr_BasicRoll.One(die.roll(this.random));
+		case 1:
+			var meta = roll[3];
+			var list = roll[2];
+			var rolls = list.map($bind(this,this.basicRoll));
+			var result = this.sumBasicRoll(rolls);
+			return dr_BasicRoll.Bag(rolls,{ result : result, meta : meta});
+		case 2:
+			var meta1 = roll[4];
+			var die1 = roll[3];
+			var times = roll[2];
+			var _g = [];
+			var _g2 = 0;
+			var _g1 = times;
+			while(_g2 < _g1) {
+				var i = _g2++;
+				_g.push(die1.roll(this.random));
+			}
+			var rolls1 = _g;
+			var result1 = this.sumDice(rolls1);
+			return dr_BasicRoll.Bag(rolls1.map(dr_BasicRoll.One),{ result : result1, meta : meta1});
+		case 3:
+			var meta2 = roll[3];
+			var value = roll[2];
+			return dr_BasicRoll.Literal(value,{ result : value, meta : meta2});
+		}
+	}
+	,extractRolls: function(dice,extractor) {
+		var _gthis = this;
+		switch(extractor[1]) {
+		case 0:case 1:case 2:
+			return this.diceBagToArrayOfDice(dice).map(function(_) {
+				return _.roll(_gthis.random);
+			});
+		case 3:
+			var explodeOne = extractor[2];
+			return this.explodeRolls(this.diceBagToArrayOfDice(dice),explodeOne);
+		}
+	}
+	,sumDice: function(rolls) {
+		return thx_Arrays.reduce(rolls,function(acc,roll) {
+			return acc + roll.meta.result;
+		},0);
+	}
+	,sumBasicRoll: function(rolls) {
+		return thx_Arrays.reduce(rolls,function(acc,roll) {
+			var tmp;
+			switch(roll[1]) {
+			case 0:
+				var die = roll[2];
+				tmp = die.meta.result;
+				break;
+			case 1:
+				var meta = roll[3];
+				tmp = meta.result;
+				break;
+			case 2:
+				var meta1 = roll[4];
+				tmp = meta1.result;
+				break;
+			case 3:
+				var meta2 = roll[3];
+				tmp = meta2.result;
+				break;
+			}
+			return acc + tmp;
+		},0);
+	}
+	,sumResults: function(rolls) {
+		return thx_Arrays.reduce(rolls,function(acc,roll) {
+			return acc + dr_DiceResults.extractResult(roll);
+		},0);
+	}
+	,extractResult: function(rolls,extractor) {
+		switch(extractor[1]) {
+		case 0:
+			return thx_Arrays.reduce(rolls,function(acc,roll) {
+				return acc + roll.meta.result;
+			},0);
+		case 1:
+			var drop = extractor[2];
+			return thx_ArrayInts.sum(thx_Arrays.order(rolls.map(function(_) {
+				return _.meta.result;
+			}),thx_Ints.compare).slice(drop));
+		case 2:
+			var keep = extractor[2];
+			var result = thx_Arrays.order(rolls.map(function(_1) {
+				return _1.meta.result;
+			}),thx_Ints.compare).slice();
+			result.reverse();
+			return thx_ArrayInts.sum(result.slice(0,keep));
+		case 3:
+			var explodeOn = extractor[2];
+			return thx_Arrays.reduce(rolls,function(acc1,roll1) {
+				return acc1 + roll1.meta.result;
+			},0);
+		}
+	}
+	,extractExpressionResults: function(exprs,extractor) {
+		switch(extractor[1]) {
+		case 0:
+			return thx_Arrays.reduce(exprs,function(acc,expr) {
+				return acc + dr_DiceResults.extractResult(expr);
+			},0);
+		case 1:
+			var drop = extractor[2];
+			return thx_ArrayInts.sum(thx_Arrays.order(exprs.map(dr_DiceResults.extractResult),thx_Ints.compare).slice(drop));
+		case 2:
+			var keep = extractor[2];
+			var result = thx_Arrays.order(exprs.map(dr_DiceResults.extractResult),thx_Ints.compare).slice();
+			result.reverse();
+			return thx_ArrayInts.sum(result.slice(0,keep));
+		}
+	}
+	,diceBagToArrayOfDice: function(group) {
+		switch(group[1]) {
+		case 0:
+			var dice = group[2];
+			return dice;
+		case 1:
+			var die = group[3];
+			var times = group[2];
+			var _g = [];
+			var _g2 = 0;
+			var _g1 = times;
+			while(_g2 < _g1) {
+				var i = _g2++;
+				_g.push(die);
+			}
+			return _g;
+		}
+	}
+	,explodeRolls: function(dice,explodeOn) {
+		var _gthis = this;
+		var rolls = dice.map(function(_) {
+			return _.roll(_gthis.random);
+		});
+		var explosives = rolls.filter(function(_1) {
+			return _1.meta.result >= explodeOn;
+		}).map(function(_2) {
+			return new dr_Die(_2.sides,_2.meta.meta);
+		});
+		return rolls.concat(explosives.length == 0 ? [] : this.explodeRolls(explosives,explodeOn));
+	}
+	,rollDice: function(dice,sides) {
+		return this.roll(dr_DiceExpression.RollBag(dr_DiceBag.RepeatDie(dice,new dr_Die(sides,thx_Unit.unit)),dr_BagExtractor.Sum,thx_Unit.unit));
+	}
+	,rollOne: function(sides) {
+		return this.roll(dr_DiceExpression.Roll(dr_BasicRoll.One(dr_Die.withSides(sides))));
+	}
+	,rollDiceAndDropLow: function(dice,sides,drop) {
+		return this.roll(dr_DiceExpression.RollBag(dr_DiceBag.RepeatDie(dice,new dr_Die(sides,thx_Unit.unit)),dr_BagExtractor.DropLow(drop),thx_Unit.unit));
+	}
+	,rollDiceAndKeepHigh: function(dice,sides,keep) {
+		return this.roll(dr_DiceExpression.RollBag(dr_DiceBag.RepeatDie(dice,new dr_Die(sides,thx_Unit.unit)),dr_BagExtractor.KeepHigh(keep),thx_Unit.unit));
+	}
+	,rollDiceAndExplode: function(dice,sides,explodeOn) {
+		return this.roll(dr_DiceExpression.RollBag(dr_DiceBag.RepeatDie(dice,new dr_Die(sides,thx_Unit.unit)),dr_BagExtractor.ExplodeOn(explodeOn),thx_Unit.unit));
+	}
+	,__class__: dr_Roller
+};
+var haxe_StackItem = { __ename__ : ["haxe","StackItem"], __constructs__ : ["CFunction","Module","FilePos","Method","LocalFunction"] };
+haxe_StackItem.CFunction = ["CFunction",0];
+haxe_StackItem.CFunction.__enum__ = haxe_StackItem;
+haxe_StackItem.Module = function(m) { var $x = ["Module",1,m]; $x.__enum__ = haxe_StackItem; return $x; };
+haxe_StackItem.FilePos = function(s,file,line) { var $x = ["FilePos",2,s,file,line]; $x.__enum__ = haxe_StackItem; return $x; };
+haxe_StackItem.Method = function(classname,method) { var $x = ["Method",3,classname,method]; $x.__enum__ = haxe_StackItem; return $x; };
+haxe_StackItem.LocalFunction = function(v) { var $x = ["LocalFunction",4,v]; $x.__enum__ = haxe_StackItem; return $x; };
+var haxe_CallStack = function() { };
+haxe_CallStack.__name__ = ["haxe","CallStack"];
+haxe_CallStack.getStack = function(e) {
+	if(e == null) {
+		return [];
+	}
+	var oldValue = Error.prepareStackTrace;
+	Error.prepareStackTrace = function(error,callsites) {
+		var stack = [];
+		var _g = 0;
+		while(_g < callsites.length) {
+			var site = callsites[_g];
+			++_g;
+			if(haxe_CallStack.wrapCallSite != null) {
+				site = haxe_CallStack.wrapCallSite(site);
+			}
+			var method = null;
+			var fullName = site.getFunctionName();
+			if(fullName != null) {
+				var idx = fullName.lastIndexOf(".");
+				if(idx >= 0) {
+					var className = HxOverrides.substr(fullName,0,idx);
+					var methodName = HxOverrides.substr(fullName,idx + 1,null);
+					method = haxe_StackItem.Method(className,methodName);
+				}
+			}
+			stack.push(haxe_StackItem.FilePos(method,site.getFileName(),site.getLineNumber()));
+		}
+		return stack;
+	};
+	var a = haxe_CallStack.makeStack(e.stack);
+	Error.prepareStackTrace = oldValue;
+	return a;
+};
+haxe_CallStack.callStack = function() {
+	try {
+		throw new Error();
+	} catch( e ) {
+		haxe_CallStack.lastException = e;
+		if (e instanceof js__$Boot_HaxeError) e = e.val;
+		var a = haxe_CallStack.getStack(e);
+		a.shift();
+		return a;
+	}
+};
+haxe_CallStack.exceptionStack = function() {
+	return haxe_CallStack.getStack(haxe_CallStack.lastException);
+};
+haxe_CallStack.toString = function(stack) {
+	var b = new StringBuf();
+	var _g = 0;
+	while(_g < stack.length) {
+		var s = stack[_g];
+		++_g;
+		b.b += "\nCalled from ";
+		haxe_CallStack.itemToString(b,s);
+	}
+	return b.b;
+};
+haxe_CallStack.itemToString = function(b,s) {
+	switch(s[1]) {
+	case 0:
+		b.b += "a C function";
+		break;
+	case 1:
+		var m = s[2];
+		b.b += "module ";
+		b.b += m == null ? "null" : "" + m;
+		break;
+	case 2:
+		var line = s[4];
+		var file = s[3];
+		var s1 = s[2];
+		if(s1 != null) {
+			haxe_CallStack.itemToString(b,s1);
+			b.b += " (";
+		}
+		b.b += file == null ? "null" : "" + file;
+		b.b += " line ";
+		b.b += line == null ? "null" : "" + line;
+		if(s1 != null) {
+			b.b += ")";
+		}
+		break;
+	case 3:
+		var meth = s[3];
+		var cname = s[2];
+		b.b += cname == null ? "null" : "" + cname;
+		b.b += ".";
+		b.b += meth == null ? "null" : "" + meth;
+		break;
+	case 4:
+		var n = s[2];
+		b.b += "local function #";
+		b.b += n == null ? "null" : "" + n;
+		break;
+	}
+};
+haxe_CallStack.makeStack = function(s) {
+	if(s == null) {
+		return [];
+	} else if(typeof(s) == "string") {
+		var stack = s.split("\n");
+		if(stack[0] == "Error") {
+			stack.shift();
+		}
+		var m = [];
+		var rie10 = new EReg("^   at ([A-Za-z0-9_. ]+) \\(([^)]+):([0-9]+):([0-9]+)\\)$","");
+		var _g = 0;
+		while(_g < stack.length) {
+			var line = stack[_g];
+			++_g;
+			if(rie10.match(line)) {
+				var path = rie10.matched(1).split(".");
+				var meth = path.pop();
+				var file = rie10.matched(2);
+				var line1 = Std.parseInt(rie10.matched(3));
+				m.push(haxe_StackItem.FilePos(meth == "Anonymous function" ? haxe_StackItem.LocalFunction() : meth == "Global code" ? null : haxe_StackItem.Method(path.join("."),meth),file,line1));
+			} else {
+				m.push(haxe_StackItem.Module(StringTools.trim(line)));
+			}
+		}
+		return m;
+	} else {
+		return s;
+	}
+};
+var haxe_IMap = function() { };
+haxe_IMap.__name__ = ["haxe","IMap"];
+haxe_IMap.prototype = {
+	get: null
+	,set: null
+	,exists: null
+	,remove: null
+	,keys: null
+	,iterator: null
+	,__class__: haxe_IMap
+};
+var haxe__$Int32_Int32_$Impl_$ = {};
+haxe__$Int32_Int32_$Impl_$.__name__ = ["haxe","_Int32","Int32_Impl_"];
+var haxe_Log = function() { };
+haxe_Log.__name__ = ["haxe","Log"];
+haxe_Log.trace = function(v,infos) {
+	js_Boot.__trace(v,infos);
+};
+var haxe_Timer = function(time_ms) {
+	var me = this;
+	this.id = setInterval(function() {
+		me.run();
+	},time_ms);
+};
+haxe_Timer.__name__ = ["haxe","Timer"];
+haxe_Timer.delay = function(f,time_ms) {
+	var t = new haxe_Timer(time_ms);
+	t.run = function() {
+		t.stop();
+		f();
+	};
+	return t;
+};
+haxe_Timer.prototype = {
+	id: null
+	,stop: function() {
+		if(this.id == null) {
+			return;
+		}
+		clearInterval(this.id);
+		this.id = null;
+	}
+	,run: function() {
+	}
+	,__class__: haxe_Timer
+};
+var haxe_Utf8 = function() { };
+haxe_Utf8.__name__ = ["haxe","Utf8"];
+haxe_Utf8.compare = function(a,b) {
+	if(a > b) {
+		return 1;
+	} else if(a == b) {
+		return 0;
+	} else {
+		return -1;
+	}
+};
+var haxe_io_Bytes = function(data) {
+	this.length = data.byteLength;
+	this.b = new Uint8Array(data);
+	this.b.bufferValue = data;
+	data.hxBytes = this;
+	data.bytes = this.b;
+};
+haxe_io_Bytes.__name__ = ["haxe","io","Bytes"];
+haxe_io_Bytes.alloc = function(length) {
+	return new haxe_io_Bytes(new ArrayBuffer(length));
+};
+haxe_io_Bytes.ofString = function(s) {
+	var a = [];
+	var i = 0;
+	while(i < s.length) {
+		var c = s.charCodeAt(i++);
+		if(55296 <= c && c <= 56319) {
+			c = c - 55232 << 10 | s.charCodeAt(i++) & 1023;
+		}
+		if(c <= 127) {
+			a.push(c);
+		} else if(c <= 2047) {
+			a.push(192 | c >> 6);
+			a.push(128 | c & 63);
+		} else if(c <= 65535) {
+			a.push(224 | c >> 12);
+			a.push(128 | c >> 6 & 63);
+			a.push(128 | c & 63);
+		} else {
+			a.push(240 | c >> 18);
+			a.push(128 | c >> 12 & 63);
+			a.push(128 | c >> 6 & 63);
+			a.push(128 | c & 63);
+		}
+	}
+	return new haxe_io_Bytes(new Uint8Array(a).buffer);
+};
+haxe_io_Bytes.ofData = function(b) {
+	var hb = b.hxBytes;
+	if(hb != null) {
+		return hb;
+	}
+	return new haxe_io_Bytes(b);
+};
+haxe_io_Bytes.fastGet = function(b,pos) {
+	return b.bytes[pos];
+};
+haxe_io_Bytes.prototype = {
+	length: null
+	,b: null
+	,__class__: haxe_io_Bytes
+};
+var haxe_crypto_Base64 = function() { };
+haxe_crypto_Base64.__name__ = ["haxe","crypto","Base64"];
+var haxe_ds_BalancedTree = function() {
+};
+haxe_ds_BalancedTree.__name__ = ["haxe","ds","BalancedTree"];
+haxe_ds_BalancedTree.prototype = {
+	root: null
+	,set: function(key,value) {
+		this.root = this.setLoop(key,value,this.root);
+	}
+	,get: function(key) {
+		var node = this.root;
+		while(node != null) {
+			var c = this.compare(key,node.key);
+			if(c == 0) {
+				return node.value;
+			}
+			if(c < 0) {
+				node = node.left;
+			} else {
+				node = node.right;
+			}
+		}
+		return null;
+	}
+	,remove: function(key) {
+		try {
+			this.root = this.removeLoop(key,this.root);
+			return true;
+		} catch( e ) {
+			haxe_CallStack.lastException = e;
+			if (e instanceof js__$Boot_HaxeError) e = e.val;
+			if( js_Boot.__instanceof(e,String) ) {
+				return false;
+			} else throw(e);
+		}
+	}
+	,exists: function(key) {
+		var node = this.root;
+		while(node != null) {
+			var c = this.compare(key,node.key);
+			if(c == 0) {
+				return true;
+			} else if(c < 0) {
+				node = node.left;
+			} else {
+				node = node.right;
+			}
+		}
+		return false;
+	}
+	,iterator: function() {
+		var ret = [];
+		this.iteratorLoop(this.root,ret);
+		return HxOverrides.iter(ret);
+	}
+	,keys: function() {
+		var ret = [];
+		this.keysLoop(this.root,ret);
+		return HxOverrides.iter(ret);
+	}
+	,setLoop: function(k,v,node) {
+		if(node == null) {
+			return new haxe_ds_TreeNode(null,k,v,null);
+		}
+		var c = this.compare(k,node.key);
+		if(c == 0) {
+			return new haxe_ds_TreeNode(node.left,k,v,node.right,node == null ? 0 : node._height);
+		} else if(c < 0) {
+			var nl = this.setLoop(k,v,node.left);
+			return this.balance(nl,node.key,node.value,node.right);
+		} else {
+			var nr = this.setLoop(k,v,node.right);
+			return this.balance(node.left,node.key,node.value,nr);
+		}
+	}
+	,removeLoop: function(k,node) {
+		if(node == null) {
+			throw new js__$Boot_HaxeError("Not_found");
+		}
+		var c = this.compare(k,node.key);
+		if(c == 0) {
+			return this.merge(node.left,node.right);
+		} else if(c < 0) {
+			return this.balance(this.removeLoop(k,node.left),node.key,node.value,node.right);
+		} else {
+			return this.balance(node.left,node.key,node.value,this.removeLoop(k,node.right));
+		}
+	}
+	,iteratorLoop: function(node,acc) {
+		if(node != null) {
+			this.iteratorLoop(node.left,acc);
+			acc.push(node.value);
+			this.iteratorLoop(node.right,acc);
+		}
+	}
+	,keysLoop: function(node,acc) {
+		if(node != null) {
+			this.keysLoop(node.left,acc);
+			acc.push(node.key);
+			this.keysLoop(node.right,acc);
+		}
+	}
+	,merge: function(t1,t2) {
+		if(t1 == null) {
+			return t2;
+		}
+		if(t2 == null) {
+			return t1;
+		}
+		var t = this.minBinding(t2);
+		return this.balance(t1,t.key,t.value,this.removeMinBinding(t2));
+	}
+	,minBinding: function(t) {
+		if(t == null) {
+			throw new js__$Boot_HaxeError("Not_found");
+		} else if(t.left == null) {
+			return t;
+		} else {
+			return this.minBinding(t.left);
+		}
+	}
+	,removeMinBinding: function(t) {
+		if(t.left == null) {
+			return t.right;
+		} else {
+			return this.balance(this.removeMinBinding(t.left),t.key,t.value,t.right);
+		}
+	}
+	,balance: function(l,k,v,r) {
+		var hl = l == null ? 0 : l._height;
+		var hr = r == null ? 0 : r._height;
+		if(hl > hr + 2) {
+			var _this = l.left;
+			var _this1 = l.right;
+			if((_this == null ? 0 : _this._height) >= (_this1 == null ? 0 : _this1._height)) {
+				return new haxe_ds_TreeNode(l.left,l.key,l.value,new haxe_ds_TreeNode(l.right,k,v,r));
+			} else {
+				return new haxe_ds_TreeNode(new haxe_ds_TreeNode(l.left,l.key,l.value,l.right.left),l.right.key,l.right.value,new haxe_ds_TreeNode(l.right.right,k,v,r));
+			}
+		} else if(hr > hl + 2) {
+			var _this2 = r.right;
+			var _this3 = r.left;
+			if((_this2 == null ? 0 : _this2._height) > (_this3 == null ? 0 : _this3._height)) {
+				return new haxe_ds_TreeNode(new haxe_ds_TreeNode(l,k,v,r.left),r.key,r.value,r.right);
+			} else {
+				return new haxe_ds_TreeNode(new haxe_ds_TreeNode(l,k,v,r.left.left),r.left.key,r.left.value,new haxe_ds_TreeNode(r.left.right,r.key,r.value,r.right));
+			}
+		} else {
+			return new haxe_ds_TreeNode(l,k,v,r,(hl > hr ? hl : hr) + 1);
+		}
+	}
+	,compare: function(k1,k2) {
+		return Reflect.compare(k1,k2);
+	}
+	,__class__: haxe_ds_BalancedTree
+};
+var haxe_ds_TreeNode = function(l,k,v,r,h) {
+	if(h == null) {
+		h = -1;
+	}
+	this.left = l;
+	this.key = k;
+	this.value = v;
+	this.right = r;
+	if(h == -1) {
+		var tmp;
+		var _this = this.left;
+		var _this1 = this.right;
+		if((_this == null ? 0 : _this._height) > (_this1 == null ? 0 : _this1._height)) {
+			var _this2 = this.left;
+			if(_this2 == null) {
+				tmp = 0;
+			} else {
+				tmp = _this2._height;
+			}
+		} else {
+			var _this3 = this.right;
+			if(_this3 == null) {
+				tmp = 0;
+			} else {
+				tmp = _this3._height;
+			}
+		}
+		this._height = tmp + 1;
+	} else {
+		this._height = h;
+	}
+};
+haxe_ds_TreeNode.__name__ = ["haxe","ds","TreeNode"];
+haxe_ds_TreeNode.prototype = {
+	left: null
+	,right: null
+	,key: null
+	,value: null
+	,_height: null
+	,__class__: haxe_ds_TreeNode
+};
+var haxe_ds_EnumValueMap = function() {
+	haxe_ds_BalancedTree.call(this);
+};
+haxe_ds_EnumValueMap.__name__ = ["haxe","ds","EnumValueMap"];
+haxe_ds_EnumValueMap.__interfaces__ = [haxe_IMap];
+haxe_ds_EnumValueMap.__super__ = haxe_ds_BalancedTree;
+haxe_ds_EnumValueMap.prototype = $extend(haxe_ds_BalancedTree.prototype,{
+	compare: function(k1,k2) {
+		var d = k1[1] - k2[1];
+		if(d != 0) {
+			return d;
+		}
+		var p1 = k1.slice(2);
+		var p2 = k2.slice(2);
+		if(p1.length == 0 && p2.length == 0) {
+			return 0;
+		}
+		return this.compareArgs(p1,p2);
+	}
+	,compareArgs: function(a1,a2) {
+		var ld = a1.length - a2.length;
+		if(ld != 0) {
+			return ld;
+		}
+		var _g1 = 0;
+		var _g = a1.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			var d = this.compareArg(a1[i],a2[i]);
+			if(d != 0) {
+				return d;
+			}
+		}
+		return 0;
+	}
+	,compareArg: function(v1,v2) {
+		if(Reflect.isEnumValue(v1) && Reflect.isEnumValue(v2)) {
+			return this.compare(v1,v2);
+		} else if((v1 instanceof Array) && v1.__enum__ == null && ((v2 instanceof Array) && v2.__enum__ == null)) {
+			return this.compareArgs(v1,v2);
+		} else {
+			return Reflect.compare(v1,v2);
+		}
+	}
+	,__class__: haxe_ds_EnumValueMap
+});
+var haxe_ds_IntMap = function() {
+	this.h = { };
+};
+haxe_ds_IntMap.__name__ = ["haxe","ds","IntMap"];
+haxe_ds_IntMap.__interfaces__ = [haxe_IMap];
+haxe_ds_IntMap.prototype = {
+	h: null
+	,set: function(key,value) {
+		this.h[key] = value;
+	}
+	,get: function(key) {
+		return this.h[key];
+	}
+	,exists: function(key) {
+		return this.h.hasOwnProperty(key);
+	}
+	,remove: function(key) {
+		if(!this.h.hasOwnProperty(key)) {
+			return false;
+		}
+		delete(this.h[key]);
+		return true;
+	}
+	,keys: function() {
+		var a = [];
+		for( var key in this.h ) if(this.h.hasOwnProperty(key)) {
+			a.push(key | 0);
+		}
+		return HxOverrides.iter(a);
+	}
+	,iterator: function() {
+		return { ref : this.h, it : this.keys(), hasNext : function() {
+			return this.it.hasNext();
+		}, next : function() {
+			var i = this.it.next();
+			return this.ref[i];
+		}};
+	}
+	,__class__: haxe_ds_IntMap
+};
+var haxe_ds_ObjectMap = function() {
+	this.h = { __keys__ : { }};
+};
+haxe_ds_ObjectMap.__name__ = ["haxe","ds","ObjectMap"];
+haxe_ds_ObjectMap.__interfaces__ = [haxe_IMap];
+haxe_ds_ObjectMap.prototype = {
+	h: null
+	,set: function(key,value) {
+		var id = key.__id__ || (key.__id__ = ++haxe_ds_ObjectMap.count);
+		this.h[id] = value;
+		this.h.__keys__[id] = key;
+	}
+	,get: function(key) {
+		return this.h[key.__id__];
+	}
+	,exists: function(key) {
+		return this.h.__keys__[key.__id__] != null;
+	}
+	,remove: function(key) {
+		var id = key.__id__;
+		if(this.h.__keys__[id] == null) {
+			return false;
+		}
+		delete(this.h[id]);
+		delete(this.h.__keys__[id]);
+		return true;
+	}
+	,keys: function() {
+		var a = [];
+		for( var key in this.h.__keys__ ) {
+		if(this.h.hasOwnProperty(key)) {
+			a.push(this.h.__keys__[key]);
+		}
+		}
+		return HxOverrides.iter(a);
+	}
+	,iterator: function() {
+		return { ref : this.h, it : this.keys(), hasNext : function() {
+			return this.it.hasNext();
+		}, next : function() {
+			var i = this.it.next();
+			return this.ref[i.__id__];
+		}};
+	}
+	,__class__: haxe_ds_ObjectMap
+};
+var haxe_ds_Option = { __ename__ : ["haxe","ds","Option"], __constructs__ : ["Some","None"] };
+haxe_ds_Option.Some = function(v) { var $x = ["Some",0,v]; $x.__enum__ = haxe_ds_Option; return $x; };
+haxe_ds_Option.None = ["None",1];
+haxe_ds_Option.None.__enum__ = haxe_ds_Option;
+var haxe_ds__$StringMap_StringMapIterator = function(map,keys) {
+	this.map = map;
+	this.keys = keys;
+	this.index = 0;
+	this.count = keys.length;
+};
+haxe_ds__$StringMap_StringMapIterator.__name__ = ["haxe","ds","_StringMap","StringMapIterator"];
+haxe_ds__$StringMap_StringMapIterator.prototype = {
+	map: null
+	,keys: null
+	,index: null
+	,count: null
+	,hasNext: function() {
+		return this.index < this.count;
+	}
+	,next: function() {
+		var _this = this.map;
+		var key = this.keys[this.index++];
+		if(__map_reserved[key] != null) {
+			return _this.getReserved(key);
+		} else {
+			return _this.h[key];
+		}
+	}
+	,__class__: haxe_ds__$StringMap_StringMapIterator
+};
+var haxe_ds_StringMap = function() {
+	this.h = { };
+};
+haxe_ds_StringMap.__name__ = ["haxe","ds","StringMap"];
+haxe_ds_StringMap.__interfaces__ = [haxe_IMap];
+haxe_ds_StringMap.prototype = {
+	h: null
+	,rh: null
+	,set: function(key,value) {
+		if(__map_reserved[key] != null) {
+			this.setReserved(key,value);
+		} else {
+			this.h[key] = value;
+		}
+	}
+	,get: function(key) {
+		if(__map_reserved[key] != null) {
+			return this.getReserved(key);
+		}
+		return this.h[key];
+	}
+	,exists: function(key) {
+		if(__map_reserved[key] != null) {
+			return this.existsReserved(key);
+		}
+		return this.h.hasOwnProperty(key);
+	}
+	,setReserved: function(key,value) {
+		if(this.rh == null) {
+			this.rh = { };
+		}
+		this.rh["$" + key] = value;
+	}
+	,getReserved: function(key) {
+		if(this.rh == null) {
+			return null;
+		} else {
+			return this.rh["$" + key];
+		}
+	}
+	,existsReserved: function(key) {
+		if(this.rh == null) {
+			return false;
+		}
+		return this.rh.hasOwnProperty("$" + key);
+	}
+	,remove: function(key) {
+		if(__map_reserved[key] != null) {
+			key = "$" + key;
+			if(this.rh == null || !this.rh.hasOwnProperty(key)) {
+				return false;
+			}
+			delete(this.rh[key]);
+			return true;
+		} else {
+			if(!this.h.hasOwnProperty(key)) {
+				return false;
+			}
+			delete(this.h[key]);
+			return true;
+		}
+	}
+	,keys: function() {
+		return HxOverrides.iter(this.arrayKeys());
+	}
+	,arrayKeys: function() {
+		var out = [];
+		for( var key in this.h ) {
+		if(this.h.hasOwnProperty(key)) {
+			out.push(key);
+		}
+		}
+		if(this.rh != null) {
+			for( var key in this.rh ) {
+			if(key.charCodeAt(0) == 36) {
+				out.push(key.substr(1));
+			}
+			}
+		}
+		return out;
+	}
+	,iterator: function() {
+		return new haxe_ds__$StringMap_StringMapIterator(this,this.arrayKeys());
+	}
+	,__class__: haxe_ds_StringMap
+};
+var js__$Boot_HaxeError = function(val) {
+	Error.call(this);
+	this.val = val;
+	this.message = String(val);
+	if(Error.captureStackTrace) {
+		Error.captureStackTrace(this,js__$Boot_HaxeError);
+	}
+};
+js__$Boot_HaxeError.__name__ = ["js","_Boot","HaxeError"];
+js__$Boot_HaxeError.wrap = function(val) {
+	if((val instanceof Error)) {
+		return val;
+	} else {
+		return new js__$Boot_HaxeError(val);
+	}
+};
+js__$Boot_HaxeError.__super__ = Error;
+js__$Boot_HaxeError.prototype = $extend(Error.prototype,{
+	val: null
+	,__class__: js__$Boot_HaxeError
+});
+var js_html_compat_ArrayBuffer = function(a) {
+	if((a instanceof Array) && a.__enum__ == null) {
+		this.a = a;
+		this.byteLength = a.length;
+	} else {
+		var len = a;
+		this.a = [];
+		var _g1 = 0;
+		var _g = len;
+		while(_g1 < _g) {
+			var i = _g1++;
+			this.a[i] = 0;
+		}
+		this.byteLength = len;
+	}
+};
+js_html_compat_ArrayBuffer.__name__ = ["js","html","compat","ArrayBuffer"];
+js_html_compat_ArrayBuffer.sliceImpl = function(begin,end) {
+	var u = new Uint8Array(this,begin,end == null ? null : end - begin);
+	var result = new ArrayBuffer(u.byteLength);
+	var resultArray = new Uint8Array(result);
+	resultArray.set(u);
+	return result;
+};
+js_html_compat_ArrayBuffer.prototype = {
+	byteLength: null
+	,a: null
+	,slice: function(begin,end) {
+		return new js_html_compat_ArrayBuffer(this.a.slice(begin,end));
+	}
+	,__class__: js_html_compat_ArrayBuffer
+};
+var js_html_compat_Uint8Array = function() { };
+js_html_compat_Uint8Array.__name__ = ["js","html","compat","Uint8Array"];
+js_html_compat_Uint8Array._new = function(arg1,offset,length) {
+	var arr;
+	if(typeof(arg1) == "number") {
+		arr = [];
+		var _g1 = 0;
+		var _g = arg1;
+		while(_g1 < _g) {
+			var i = _g1++;
+			arr[i] = 0;
+		}
+		arr.byteLength = arr.length;
+		arr.byteOffset = 0;
+		arr.buffer = new js_html_compat_ArrayBuffer(arr);
+	} else if(js_Boot.__instanceof(arg1,js_html_compat_ArrayBuffer)) {
+		var buffer = arg1;
+		if(offset == null) {
+			offset = 0;
+		}
+		if(length == null) {
+			length = buffer.byteLength - offset;
+		}
+		if(offset == 0) {
+			arr = buffer.a;
+		} else {
+			arr = buffer.a.slice(offset,offset + length);
+		}
+		arr.byteLength = arr.length;
+		arr.byteOffset = offset;
+		arr.buffer = buffer;
+	} else if((arg1 instanceof Array) && arg1.__enum__ == null) {
+		arr = arg1.slice();
+		arr.byteLength = arr.length;
+		arr.byteOffset = 0;
+		arr.buffer = new js_html_compat_ArrayBuffer(arr);
+	} else {
+		throw new js__$Boot_HaxeError("TODO " + Std.string(arg1));
+	}
+	arr.subarray = js_html_compat_Uint8Array._subarray;
+	arr.set = js_html_compat_Uint8Array._set;
+	return arr;
+};
+js_html_compat_Uint8Array._set = function(arg,offset) {
+	if(js_Boot.__instanceof(arg.buffer,js_html_compat_ArrayBuffer)) {
+		var a = arg;
+		if(arg.byteLength + offset > this.byteLength) {
+			throw new js__$Boot_HaxeError("set() outside of range");
+		}
+		var _g1 = 0;
+		var _g = arg.byteLength;
+		while(_g1 < _g) {
+			var i = _g1++;
+			this[i + offset] = a[i];
+		}
+	} else if((arg instanceof Array) && arg.__enum__ == null) {
+		var a1 = arg;
+		if(a1.length + offset > this.byteLength) {
+			throw new js__$Boot_HaxeError("set() outside of range");
+		}
+		var _g11 = 0;
+		var _g2 = a1.length;
+		while(_g11 < _g2) {
+			var i1 = _g11++;
+			this[i1 + offset] = a1[i1];
+		}
+	} else {
+		throw new js__$Boot_HaxeError("TODO");
+	}
+};
+js_html_compat_Uint8Array._subarray = function(start,end) {
+	var a = js_html_compat_Uint8Array._new(this.slice(start,end));
+	a.byteOffset = start;
+	return a;
+};
+var parsihax__$ParseObject_ParseObject_$Impl_$ = {};
+parsihax__$ParseObject_ParseObject_$Impl_$.__name__ = ["parsihax","_ParseObject","ParseObject_Impl_"];
+parsihax__$ParseObject_ParseObject_$Impl_$._new = function() {
+	var this1;
+	var this2 = new Array(1);
+	this1 = this2;
+	return this1;
+};
+parsihax__$ParseObject_ParseObject_$Impl_$.get_apply = function(this1) {
+	return this1[0];
+};
+parsihax__$ParseObject_ParseObject_$Impl_$.set_apply = function(this1,param) {
+	return this1[0] = param;
+};
+parsihax__$ParseObject_ParseObject_$Impl_$.to = function(v) {
+	var this1;
+	var this2 = new Array(1);
+	this1 = this2;
+	var ret = this1;
+	ret[0] = v;
+	return ret;
+};
+parsihax__$ParseObject_ParseObject_$Impl_$.opAdd = function(l,r) {
+	return parsihax_Parser.then(l,r);
+};
+parsihax__$ParseObject_ParseObject_$Impl_$.opOr = function(l,r) {
+	return parsihax_Parser.or(l,r);
+};
+parsihax__$ParseObject_ParseObject_$Impl_$.opDiv = function(l,r) {
+	return parsihax_Parser["as"](l,r);
 };
 var thx_ArrayFloats = function() { };
 thx_ArrayFloats.__name__ = ["thx","ArrayFloats"];
@@ -12276,9 +12308,9 @@ dr_DiceParser.basicDiceSet = parsihax_Parser["as"](parsihax_Parser.lazy(function
 }),"dice set");
 dr_DiceParser.diceSet = parsihax_Parser["as"](parsihax_Parser.map(dr_DiceParser.basicDiceSet,dr_DiceExpression.Roll),"dice set");
 dr_DiceParser.basicExpressionSet = parsihax_Parser["as"](parsihax_Parser.lazy(function() {
-	return parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OPEN_SET_BRACKET,dr_DiceParser.OWS),parsihax_Parser.skip(parsihax_Parser.or(parsihax_Parser.sepBy1(dr_DiceParser.inlineExpression,parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.string(",")),dr_DiceParser.OWS)),parsihax_Parser.succeed([])),parsihax_Parser.then(dr_DiceParser.OWS,dr_DiceParser.CLOSE_SET_BRACKET)));
+	return parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OPEN_SET_BRACKET,dr_DiceParser.OWS),parsihax_Parser.skip(parsihax_Parser.or(parsihax_Parser.sepBy1(dr_DiceParser.expression,parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.string(",")),dr_DiceParser.OWS)),parsihax_Parser.succeed([])),parsihax_Parser.then(dr_DiceParser.OWS,dr_DiceParser.CLOSE_SET_BRACKET)));
 }),"expression set");
-dr_DiceParser.sumExpressionSet = (function($this) {
+dr_DiceParser.expressionSetSum = (function($this) {
 	var $r;
 	var _e = dr_DiceParser.basicExpressionSet;
 	$r = parsihax_Parser["as"]((function(fun) {
@@ -12288,10 +12320,33 @@ dr_DiceParser.sumExpressionSet = (function($this) {
 	}),"expression set");
 	return $r;
 }(this));
+dr_DiceParser.negate = parsihax_Parser["as"](parsihax_Parser.lazy(function() {
+	return parsihax_Parser.then(dr_DiceParser.MINUS,parsihax_Parser.map(dr_DiceParser.inlineExpression,function(expr) {
+		return dr_DiceExpression.UnaryOp(dr_DiceUnOp.Negate,expr,thx_Unit.unit);
+	}));
+}),"negate");
+dr_DiceParser.opRight = parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.flatMap(parsihax_Parser.alt([parsihax_Parser.result(dr_DiceParser.PLUS,dr_DiceBinOp.Sum),parsihax_Parser.result(dr_DiceParser.MINUS,dr_DiceBinOp.Difference),parsihax_Parser.result(dr_DiceParser.MULTIPLICATION,dr_DiceBinOp.Multiplication),parsihax_Parser.result(dr_DiceParser.DIVISION,dr_DiceBinOp.Division)]),function(o) {
+	return parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.map(dr_DiceParser.inlineExpression,function(b) {
+		return { op : o, right : b};
+	}));
+}));
+dr_DiceParser.binop = parsihax_Parser.lazy(function() {
+	return parsihax_Parser.flatMap(dr_DiceParser.inlineExpression,function(left) {
+		return parsihax_Parser.map(parsihax_Parser.times(dr_DiceParser.opRight,1,1000),function(a) {
+			return thx_Arrays.reduce(a,function(left1,item) {
+				return dr_DiceExpression.BinaryOp(item.op,left1,item.right,thx_Unit.unit);
+			},left);
+		});
+	});
+});
+dr_DiceParser.expressionOperations = parsihax_Parser.alt([dr_DiceParser.binop]);
 dr_DiceParser.inlineExpression = parsihax_Parser["as"](parsihax_Parser.lazy(function() {
-	return parsihax_Parser.alt([dr_DiceParser.sumExpressionSet,dr_DiceParser.diceSet,dr_DiceParser.literal]);
+	return parsihax_Parser.alt([dr_DiceParser.expressionSetSum,dr_DiceParser.diceSet,dr_DiceParser.literal,dr_DiceParser.negate]);
+}),"inline expression");
+dr_DiceParser.expression = parsihax_Parser["as"](parsihax_Parser.lazy(function() {
+	return parsihax_Parser.alt([dr_DiceParser.expressionOperations,dr_DiceParser.inlineExpression]);
 }),"expression");
-dr_DiceParser.grammar = parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.skip(parsihax_Parser.skip(dr_DiceParser.inlineExpression,dr_DiceParser.OWS),parsihax_Parser.eof()));
+dr_DiceParser.grammar = parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.skip(parsihax_Parser.skip(dr_DiceParser.expression,dr_DiceParser.OWS),parsihax_Parser.eof()));
 haxe__$Int32_Int32_$Impl_$._mul = Math.imul != null ? Math.imul : function(a,b) {
 	return a * (b & 65535) + (a * (b >>> 16) << 16 | 0) | 0;
 };

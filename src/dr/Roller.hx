@@ -35,10 +35,26 @@ class Roller {
             });
           case Difference:
             BinaryOp(Difference, ra, rb, {
-              result: DiceResults.extractResult(ra) + DiceResults.extractResult(rb),
+              result: DiceResults.extractResult(ra) - DiceResults.extractResult(rb),
+              meta: meta
+            });
+          case Division:
+            BinaryOp(Difference, ra, rb, {
+              result: Std.int(DiceResults.extractResult(ra) / DiceResults.extractResult(rb)),
+              meta: meta
+            });
+          case Multiplication:
+            BinaryOp(Difference, ra, rb, {
+              result: DiceResults.extractResult(ra) * DiceResults.extractResult(rb),
               meta: meta
             });
         }
+      case UnaryOp(Negate, a, meta):
+        var ra = roll(a);
+        UnaryOp(Negate, ra, {
+          result: -DiceResults.extractResult(ra),
+          meta: meta
+        });
     };
   }
 

@@ -4,7 +4,8 @@ enum DiceExpression<T> {
   Roll(basic: BasicRoll<T>);
   RollBag(dice: DiceBag<T>, extractor: BagExtractor, meta: T);
   RollExpressions(exprs: Array<DiceExpression<T>>, extractor: ExpressionExtractor, meta: T);
-  BinaryOp(op: DiceOperator, a: DiceExpression<T>, b: DiceExpression<T>, meta: T);
+  BinaryOp(op: DiceBinOp, a: DiceExpression<T>, b: DiceExpression<T>, meta: T);
+  UnaryOp(op: DiceUnOp, a: DiceExpression<T>, meta: T);
 }
 
 enum BagExtractor {
@@ -32,7 +33,13 @@ enum ExpressionExtractor {
   KeepHigh(keep: Int);
 }
 
-enum DiceOperator {
+enum DiceBinOp {
   Sum;
   Difference;
+  Division;
+  Multiplication;
+}
+
+enum DiceUnOp {
+  Negate;
 }

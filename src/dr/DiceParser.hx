@@ -4,6 +4,7 @@ import parsihax.*;
 import parsihax.Parser.*;
 import parsihax.ParseObject;
 using parsihax.Parser;
+using thx.Arrays;
 using thx.Functions;
 import thx.Unit;
 import thx.Validation;
@@ -149,22 +150,65 @@ class DiceParser {
 
   static var basicExpressionSet: ParseObject<Array<DiceExpression<Unit>>> = function() {
     return OPEN_SET_BRACKET + OWS +
-      inlineExpression
+      expression
         .sepBy(OWS + ",".string() + OWS)
         .skip(OWS + CLOSE_SET_BRACKET);
   }.lazy() / "expression set";
 
-  static var sumExpressionSet: ParseObject<DiceExpression<Unit>> = 
+  static var expressionSetSum: ParseObject<DiceExpression<Unit>> = 
     basicExpressionSet.map.fn(RollExpressions(_, Sum, unit)) / "expression set";
+
+  static var negate: ParseObject<DiceExpression<Unit>> = function() {
+    return MINUS + inlineExpression.map(function(expr) {
+      return UnaryOp(Negate, expr, unit);
+    });
+  }.lazy() / "negate";
+
+  static var opRight = OWS +  [
+      PLUS.result(DiceBinOp.Sum),
+      MINUS.result(DiceBinOp.Difference),
+      MULTIPLICATION.result(DiceBinOp.Multiplication),
+      DIVISION.result(DiceBinOp.Division)
+    ].alt().flatMap(function(o: DiceBinOp) {
+      return OWS +
+        inlineExpression.map(function(b: DiceExpression<Unit>) {
+          return { op: o, right: b };
+        });
+    });
+
+  static var binop: ParseObject<DiceExpression<Unit>> =
+    function() {
+      return inlineExpression.flatMap(
+        function(left: DiceExpression<Unit>) {
+          return opRight.times(1, 1000).map(function(a) {
+            return a.reduce(function(left, item) {
+              return BinaryOp(item.op, left, item.right, unit);
+            }, left);
+          });
+        }
+      );
+    }.lazy();
+
+  static var expressionOperations = [
+    binop
+  ].alt();
 
   static var inlineExpression: ParseObject<DiceExpression<Unit>> = function() {
     return [
-      sumExpressionSet,
+      expressionSetSum,
       diceSet,
-      literal
+      literal,
+      negate
+    ].alt();
+  }.lazy() / "inline expression";
+
+  static var expression: ParseObject<DiceExpression<Unit>> = function() {
+    return [
+      expressionOperations,
+      inlineExpression
     ].alt();
   }.lazy() / "expression";
 
   static var grammar = 
-    OWS + inlineExpression.skip(OWS).skip(eof());
+    OWS + expression.skip(OWS).skip(eof());
 }
