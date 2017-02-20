@@ -68,4 +68,19 @@ class DiceExpressionExtensions {
     case RollExpressions(_): false;
     case UnaryOp(_): false;
   }
+
+    public static function extractMeta<T>(expr: DiceExpression<T>): T {
+    return switch expr {
+      case Roll(One(die)):
+        die.meta;
+      case RollBag(_, _, meta) |
+           RollExpressions(_, _, meta) |
+           BinaryOp(_, _, _, meta) |
+           UnaryOp(_, _, meta) |
+           Roll(Bag(_, meta)) |
+           Roll(Repeat(_, _, meta)) |
+           Roll(Literal(_, meta)):
+        meta;
+    };
+  }
 }

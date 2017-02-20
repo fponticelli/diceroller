@@ -3,7 +3,6 @@ package dr;
 using thx.Arrays;
 using thx.Functions;
 import dr.DiceExpression;
-import dr.DiceResult;
 
 class Roller {
   var random: Int -> Int;
@@ -11,7 +10,7 @@ class Roller {
     this.random = random;
   }
 
-  public function roll<T>(expr: DiceExpression<T>): DiceResult {
+  public function roll<T>(expr: DiceExpression<T>): DiceExpression<Int> {
     return switch expr {
       case Roll(roll):
         Roll(basicRoll(roll));
@@ -28,17 +27,17 @@ class Roller {
             rb = roll(b);
         switch op {
           case Sum:
-            BinaryOp(Sum, ra, rb, DiceResults.extractResult(ra) + DiceResults.extractResult(rb));
+            BinaryOp(Sum, ra, rb, DiceExpressionExtensions.extractMeta(ra) + DiceExpressionExtensions.extractMeta(rb));
           case Difference:
-            BinaryOp(Difference, ra, rb, DiceResults.extractResult(ra) - DiceResults.extractResult(rb));
+            BinaryOp(Difference, ra, rb, DiceExpressionExtensions.extractMeta(ra) - DiceExpressionExtensions.extractMeta(rb));
           case Division:
-            BinaryOp(Difference, ra, rb, Std.int(DiceResults.extractResult(ra) / DiceResults.extractResult(rb)));
+            BinaryOp(Difference, ra, rb, Std.int(DiceExpressionExtensions.extractMeta(ra) / DiceExpressionExtensions.extractMeta(rb)));
           case Multiplication:
-            BinaryOp(Difference, ra, rb, DiceResults.extractResult(ra) * DiceResults.extractResult(rb));
+            BinaryOp(Difference, ra, rb, DiceExpressionExtensions.extractMeta(ra) * DiceExpressionExtensions.extractMeta(rb));
         }
       case UnaryOp(Negate, a, meta):
         var ra = roll(a);
-        UnaryOp(Negate, ra, -DiceResults.extractResult(ra));
+        UnaryOp(Negate, ra, -DiceExpressionExtensions.extractMeta(ra));
     };
   }
 
@@ -76,8 +75,8 @@ class Roller {
         meta;
     }, 0);
 
-  function sumResults<T>(rolls: Array<DiceResult>)
-    return rolls.reduce(function(acc, roll) return acc + DiceResults.extractResult(roll), 0);
+  function sumResults<T>(rolls: Array<DiceExpression<Int>>)
+    return rolls.reduce(function(acc, roll) return acc + DiceExpressionExtensions.extractMeta(roll), 0);
 
   function extractResult<T>(rolls: Array<Die<Int>>, extractor: BagExtractor)
     return switch extractor {
@@ -85,25 +84,25 @@ class Roller {
         rolls.reduce(function(acc, roll) return acc + roll.meta, 0);
     };
 
-  function extractExpressionResults<T>(exprs: Array<DiceResult>, extractor: ExpressionExtractor) {
+  function extractExpressionResults<T>(exprs: Array<DiceExpression<Int>>, extractor: ExpressionExtractor) {
     exprs = flattenExprs(exprs);
     return switch extractor {
       case Average:
-        Std.int(exprs.reduce(function(acc, expr) return acc + DiceResults.extractResult(expr), 0) / exprs.length);
+        Std.int(exprs.reduce(function(acc, expr) return acc + DiceExpressionExtensions.extractMeta(expr), 0) / exprs.length);
       case Sum:
-        exprs.reduce(function(acc, expr) return acc + DiceResults.extractResult(expr), 0);
+        exprs.reduce(function(acc, expr) return acc + DiceExpressionExtensions.extractMeta(expr), 0);
       case Min:
-        exprs.map(DiceResults.extractResult).min();
+        exprs.map(DiceExpressionExtensions.extractMeta).min();
       case Max:
-        exprs.map(DiceResults.extractResult).max();
+        exprs.map(DiceExpressionExtensions.extractMeta).max();
       case DropLow(drop):
-        exprs.map(DiceResults.extractResult).order(thx.Ints.compare).slice(drop).sum();
+        exprs.map(DiceExpressionExtensions.extractMeta).order(thx.Ints.compare).slice(drop).sum();
       case KeepHigh(keep):
-        exprs.map(DiceResults.extractResult).order(thx.Ints.compare).reversed().slice(0, keep).sum();
+        exprs.map(DiceExpressionExtensions.extractMeta).order(thx.Ints.compare).reversed().slice(0, keep).sum();
     };
   }
 
-  function flattenExprs<T>(exprs: Array<DiceResult>) {
+  function flattenExprs<T>(exprs: Array<DiceExpression<Int>>) {
     return if(exprs.length == 1) {
       switch exprs[0] {
         case Roll(Bag(rolls, _)):

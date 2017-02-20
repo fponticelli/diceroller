@@ -1,7 +1,6 @@
 import utest.Assert;
 import utest.UTest;
 using dr.DiceExpressionExtensions;
-using dr.DiceResult;
 import dr.DiceParser;
 import dr.Roller;
 
@@ -97,9 +96,9 @@ class TestAll {
         var expected = null == t.p ? t.t : t.p;
         var f = t.t != expected ? ' for "${t.t}"' : "";
         Assert.equals(expected, serialized, 'expected serialization to be "${expected}" but it is "${serialized}"$f', t.pos);
-        var minr = min().roll(v).extractResult();
+        var minr = min().roll(v).extractMeta();
         Assert.equals(t.min, minr, 'expected min to be ${t.min} but it is $minr', t.pos);
-        var maxr = max().roll(v).extractResult();
+        var maxr = max().roll(v).extractMeta();
         Assert.equals(t.max, maxr, 'expected max to be ${t.max} but it is $maxr', t.pos);
     }
   }

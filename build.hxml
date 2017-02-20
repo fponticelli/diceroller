@@ -7,7 +7,10 @@
 -js bin/test.js
 
 dr.DiceExpression
-dr.DiceResult
+dr.DiceExpressionExtensions
+dr.DiceParser
+dr.Die
+dr.Discrete
 dr.Roller
 
 -cmd node bin/test.js
