@@ -82,6 +82,16 @@ class TestAll {
       { min: -2, max: 7, t: "-3 + -d6 + 2d8", pos: pos() },
       { min: 5, max: 24, t: "d6 + 2d8 + 2", pos: pos() },
       { min: 1, max: 48, t: "d6 * 2d8 / 2", pos: pos() },
+      { min: 14, max: 14, t: "2 + 3 * 4", pos: pos() },
+      { min: -10, max: -10, t: "2 + -3 * 4", pos: pos() },
+      { min: -10, max: -10, t: "2 + 3 * -4", pos: pos() },
+      { min: 10, max: 10, t: "-2 + 3 * 4", pos: pos() },
+      { min: 14, max: 14, t: "2 + {3 * 4}", pos: pos() },
+
+      { min: 4, max: 4, t: "100 / 25", pos: pos() },
+      { min: 75, max: 75, t: "25 * 3", pos: pos() },
+      { min: 2, max: 2, t: "150 / 25 * 3", pos: pos() },
+      { min: 11, max: 105, t: "{{2,d4,3d8},5} * {d4,3d8} / {3,d6}", pos: pos() },
     ];
     
     tests.map(assertParseAndBoundaries);
@@ -99,8 +109,8 @@ class TestAll {
         Assert.equals(expected, serialized, 'expected serialization to be "${expected}" but it is "${serialized}"$f', t.pos);
         var minr = min().roll(v).extractResult();
         Assert.equals(t.min, minr, 'expected min to be ${t.min} but it is $minr', t.pos);
-        var maxr = min().roll(v).extractResult();
-        Assert.equals(t.min, maxr, 'expected max to be ${t.min} but it is $maxr', t.pos);
+        var maxr = max().roll(v).extractResult();
+        Assert.equals(t.max, maxr, 'expected max to be ${t.max} but it is $maxr', t.pos);
     }
   }
 

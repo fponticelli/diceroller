@@ -164,12 +164,14 @@ class DiceParser {
     });
   }.lazy() / "negate";
 
-  static var opRight = OWS +  [
+  static var binOpSymbol = [
       PLUS.result(DiceBinOp.Sum),
       MINUS.result(DiceBinOp.Difference),
       MULTIPLICATION.result(DiceBinOp.Multiplication),
       DIVISION.result(DiceBinOp.Division)
-    ].alt().flatMap(function(o: DiceBinOp) {
+    ].alt();
+
+  static var opRight = OWS + binOpSymbol.flatMap(function(o: DiceBinOp) {
       return OWS +
         inlineExpression.map(function(b: DiceExpression<Unit>) {
           return { op: o, right: b };
@@ -182,7 +184,17 @@ class DiceParser {
         function(left: DiceExpression<Unit>) {
           return opRight.times(1, 1000).map(function(a) {
             return a.reduce(function(left, item) {
-              return BinaryOp(item.op, left, item.right, unit);
+              return switch item.op {
+                case Sum | Difference:
+                  return BinaryOp(item.op, left, item.right, unit);
+                case Multiplication | Division: // this seems too complicated but it works for now
+                  return switch left {
+                    case BinaryOp(o, l, r, _):
+                      BinaryOp(o, l, BinaryOp(item.op, r, item.right, unit), unit);
+                    case other:
+                      BinaryOp(item.op, left, item.right, unit);
+                  };
+              };
             }, left);
           });
         }
