@@ -14,14 +14,8 @@ class Die<T> {
     this.meta = meta;
   }
 
-  public function roll(random: Int -> Int): Die<DiceResultMeta<T>>
-    return rollWithMeta(random,  meta);
-
-  public function rollWithMeta<X>(random: Int -> Int, meta: X): Die<DiceResultMeta<X>>
-    return new Die(sides, {
-      result: random(sides),
-      meta: meta
-    });
+  public function roll(random: Int -> Int): Die<Int>
+    return new Die(sides, random(sides));
 
   public function toString()
     return "d" + (sides == 100 ? "%" : '$sides');

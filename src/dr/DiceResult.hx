@@ -1,12 +1,12 @@
 package dr;
 
-typedef DiceResult<T> = DiceExpression<DiceResultMeta<T>>;
+typedef DiceResult = DiceExpression<Int>;
 
 class DiceResults {
-  public static function extractResult<T>(expr: DiceResult<T>): Int {
+  public static function extractResult<T>(expr: DiceResult): Int {
     return switch expr {
       case Roll(One(die)):
-        die.meta.result;
+        die.meta;
       case RollBag(_, _, meta) |
            RollExpressions(_, _, meta) |
            BinaryOp(_, _, _, meta) |
@@ -14,7 +14,7 @@ class DiceResults {
            Roll(Bag(_, meta)) |
            Roll(Repeat(_, _, meta)) |
            Roll(Literal(_, meta)):
-        meta.result;
+        meta;
     };
   }
 }

@@ -1510,10 +1510,7 @@ dr_Die.prototype = {
 	sides: null
 	,meta: null
 	,roll: function(random) {
-		return this.rollWithMeta(random,this.meta);
-	}
-	,rollWithMeta: function(random,meta) {
-		return new dr_Die(this.sides,{ result : random(this.sides), meta : meta});
+		return new dr_Die(this.sides,random(this.sides));
 	}
 	,toString: function() {
 		return "d" + (this.sides == 100 ? "%" : "" + this.sides);
@@ -2718,30 +2715,30 @@ dr_DiceResults.extractResult = function(expr) {
 		switch(expr[2][1]) {
 		case 0:
 			var die = expr[2][2];
-			return die.meta.result;
+			return die.meta;
 		case 1:
 			var meta = expr[2][3];
-			return meta.result;
+			return meta;
 		case 2:
 			var meta1 = expr[2][4];
-			return meta1.result;
+			return meta1;
 		case 3:
 			var meta2 = expr[2][3];
-			return meta2.result;
+			return meta2;
 		}
 		break;
 	case 1:
 		var meta3 = expr[4];
-		return meta3.result;
+		return meta3;
 	case 2:
 		var meta4 = expr[4];
-		return meta4.result;
+		return meta4;
 	case 3:
 		var meta5 = expr[5];
-		return meta5.result;
+		return meta5;
 	case 4:
 		var meta6 = expr[4];
-		return meta6.result;
+		return meta6;
 	}
 };
 var dr_Roller = function(random) {
@@ -2761,14 +2758,14 @@ dr_Roller.prototype = {
 			var dice = expr[2];
 			var rolls = this.extractRolls(dice,extractor);
 			var result = this.extractResult(rolls,extractor);
-			return dr_DiceExpression.RollBag(dr_DiceBag.DiceSet(rolls),extractor,{ result : result, meta : meta});
+			return dr_DiceExpression.RollBag(dr_DiceBag.DiceSet(rolls),extractor,result);
 		case 2:
 			var meta1 = expr[4];
 			var extractor1 = expr[3];
 			var exprs = expr[2];
 			var exaluatedExpressions = exprs.map($bind(this,this.roll));
 			var result1 = this.extractExpressionResults(exaluatedExpressions,extractor1);
-			return dr_DiceExpression.RollExpressions(exaluatedExpressions,extractor1,{ result : result1, meta : meta1});
+			return dr_DiceExpression.RollExpressions(exaluatedExpressions,extractor1,result1);
 		case 3:
 			var meta2 = expr[5];
 			var b = expr[4];
@@ -2778,20 +2775,20 @@ dr_Roller.prototype = {
 			var rb = this.roll(b);
 			switch(op[1]) {
 			case 0:
-				return dr_DiceExpression.BinaryOp(dr_DiceBinOp.Sum,ra,rb,{ result : dr_DiceResults.extractResult(ra) + dr_DiceResults.extractResult(rb), meta : meta2});
+				return dr_DiceExpression.BinaryOp(dr_DiceBinOp.Sum,ra,rb,dr_DiceResults.extractResult(ra) + dr_DiceResults.extractResult(rb));
 			case 1:
-				return dr_DiceExpression.BinaryOp(dr_DiceBinOp.Difference,ra,rb,{ result : dr_DiceResults.extractResult(ra) - dr_DiceResults.extractResult(rb), meta : meta2});
+				return dr_DiceExpression.BinaryOp(dr_DiceBinOp.Difference,ra,rb,dr_DiceResults.extractResult(ra) - dr_DiceResults.extractResult(rb));
 			case 2:
-				return dr_DiceExpression.BinaryOp(dr_DiceBinOp.Difference,ra,rb,{ result : dr_DiceResults.extractResult(ra) / dr_DiceResults.extractResult(rb) | 0, meta : meta2});
+				return dr_DiceExpression.BinaryOp(dr_DiceBinOp.Difference,ra,rb,dr_DiceResults.extractResult(ra) / dr_DiceResults.extractResult(rb) | 0);
 			case 3:
-				return dr_DiceExpression.BinaryOp(dr_DiceBinOp.Difference,ra,rb,{ result : dr_DiceResults.extractResult(ra) * dr_DiceResults.extractResult(rb), meta : meta2});
+				return dr_DiceExpression.BinaryOp(dr_DiceBinOp.Difference,ra,rb,dr_DiceResults.extractResult(ra) * dr_DiceResults.extractResult(rb));
 			}
 			break;
 		case 4:
 			var meta3 = expr[4];
 			var a1 = expr[3];
 			var ra1 = this.roll(a1);
-			return dr_DiceExpression.UnaryOp(dr_DiceUnOp.Negate,ra1,{ result : -dr_DiceResults.extractResult(ra1), meta : meta3});
+			return dr_DiceExpression.UnaryOp(dr_DiceUnOp.Negate,ra1,-dr_DiceResults.extractResult(ra1));
 		}
 	}
 	,basicRoll: function(roll) {
@@ -2804,7 +2801,7 @@ dr_Roller.prototype = {
 			var list = roll[2];
 			var rolls = list.map($bind(this,this.basicRoll));
 			var result = this.sumBasicRoll(rolls);
-			return dr_BasicRoll.Bag(rolls,{ result : result, meta : meta});
+			return dr_BasicRoll.Bag(rolls,result);
 		case 2:
 			var meta1 = roll[4];
 			var die1 = roll[3];
@@ -2818,11 +2815,11 @@ dr_Roller.prototype = {
 			}
 			var rolls1 = _g;
 			var result1 = this.sumDice(rolls1);
-			return dr_BasicRoll.Bag(rolls1.map(dr_BasicRoll.One),{ result : result1, meta : meta1});
+			return dr_BasicRoll.Bag(rolls1.map(dr_BasicRoll.One),result1);
 		case 3:
 			var meta2 = roll[3];
 			var value = roll[2];
-			return dr_BasicRoll.Literal(value,{ result : value, meta : meta2});
+			return dr_BasicRoll.Literal(value,value);
 		}
 	}
 	,extractRolls: function(dice,extractor) {
@@ -2831,7 +2828,7 @@ dr_Roller.prototype = {
 	}
 	,sumDice: function(rolls) {
 		return thx_Arrays.reduce(rolls,function(acc,roll) {
-			return acc + roll.meta.result;
+			return acc + roll.meta;
 		},0);
 	}
 	,sumBasicRoll: function(rolls) {
@@ -2840,19 +2837,19 @@ dr_Roller.prototype = {
 			switch(roll[1]) {
 			case 0:
 				var die = roll[2];
-				tmp = die.meta.result;
+				tmp = die.meta;
 				break;
 			case 1:
 				var meta = roll[3];
-				tmp = meta.result;
+				tmp = meta;
 				break;
 			case 2:
 				var meta1 = roll[4];
-				tmp = meta1.result;
+				tmp = meta1;
 				break;
 			case 3:
 				var meta2 = roll[3];
-				tmp = meta2.result;
+				tmp = meta2;
 				break;
 			}
 			return acc + tmp;
@@ -2866,7 +2863,7 @@ dr_Roller.prototype = {
 	,extractResult: function(rolls,extractor) {
 		var explodeOn = extractor[2];
 		return thx_Arrays.reduce(rolls,function(acc,roll) {
-			return acc + roll.meta.result;
+			return acc + roll.meta;
 		},0);
 	}
 	,extractExpressionResults: function(exprs,extractor) {
@@ -2942,9 +2939,9 @@ dr_Roller.prototype = {
 			return _.roll(_gthis.random);
 		});
 		var explosives = rolls.filter(function(_1) {
-			return _1.meta.result >= explodeOn;
+			return _1.meta >= explodeOn;
 		}).map(function(_2) {
-			return new dr_Die(_2.sides,_2.meta.meta);
+			return new dr_Die(_2.sides,thx_Unit.unit);
 		});
 		return rolls.concat(explosives.length == 0 ? [] : this.explodeRolls(explosives,explodeOn));
 	}

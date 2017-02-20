@@ -11,65 +11,50 @@ class Roller {
     this.random = random;
   }
 
-  public function roll<T>(expr: DiceExpression<T>): DiceResult<T> {
+  public function roll<T>(expr: DiceExpression<T>): DiceResult {
     return switch expr {
       case Roll(roll):
         Roll(basicRoll(roll));
       case RollBag(dice, extractor, meta):
         var rolls = extractRolls(dice, extractor);
         var result = extractResult(rolls, extractor);
-        RollBag(DiceSet(rolls), extractor, { result: result, meta: meta});
+        RollBag(DiceSet(rolls), extractor, result);
       case RollExpressions(exprs, extractor, meta):
         var exaluatedExpressions = exprs.map(roll),
             result = extractExpressionResults(exaluatedExpressions, extractor);
-        RollExpressions(exaluatedExpressions, extractor, { result: result, meta: meta});
+        RollExpressions(exaluatedExpressions, extractor, result);
       case BinaryOp(op, a, b, meta):
         var ra = roll(a),
             rb = roll(b);
         switch op {
           case Sum:
-            BinaryOp(Sum, ra, rb, {
-              result: DiceResults.extractResult(ra) + DiceResults.extractResult(rb),
-              meta: meta
-            });
+            BinaryOp(Sum, ra, rb, DiceResults.extractResult(ra) + DiceResults.extractResult(rb));
           case Difference:
-            BinaryOp(Difference, ra, rb, {
-              result: DiceResults.extractResult(ra) - DiceResults.extractResult(rb),
-              meta: meta
-            });
+            BinaryOp(Difference, ra, rb, DiceResults.extractResult(ra) - DiceResults.extractResult(rb));
           case Division:
-            BinaryOp(Difference, ra, rb, {
-              result: Std.int(DiceResults.extractResult(ra) / DiceResults.extractResult(rb)),
-              meta: meta
-            });
+            BinaryOp(Difference, ra, rb, Std.int(DiceResults.extractResult(ra) / DiceResults.extractResult(rb)));
           case Multiplication:
-            BinaryOp(Difference, ra, rb, {
-              result: DiceResults.extractResult(ra) * DiceResults.extractResult(rb),
-              meta: meta
-            });
+            BinaryOp(Difference, ra, rb, DiceResults.extractResult(ra) * DiceResults.extractResult(rb));
         }
       case UnaryOp(Negate, a, meta):
         var ra = roll(a);
-        UnaryOp(Negate, ra, {
-          result: -DiceResults.extractResult(ra),
-          meta: meta
-        });
+        UnaryOp(Negate, ra, -DiceResults.extractResult(ra));
     };
   }
 
-  function basicRoll<T>(roll: BasicRoll<T>): BasicRoll<DiceResultMeta<T>> return switch roll {
+  function basicRoll<T>(roll: BasicRoll<T>): BasicRoll<Int> return switch roll {
     case One(die):
       One(die.roll(random));
     case Bag(list, meta):
       var rolls = list.map(basicRoll);
       var result = sumBasicRoll(rolls);
-      Bag(rolls, {result: result, meta: meta});
+      Bag(rolls, result);
     case Repeat(times, die, meta):
       var rolls = [for(i in 0...times) die.roll(random)];
       var result = sumDice(rolls);
-      Bag(rolls.map(One), {result: result, meta: meta});
+      Bag(rolls.map(One), result);
     case Literal(value, meta):
-      Literal(value, {result: value, meta: meta});
+      Literal(value, value);
   }
 
   function extractRolls(dice, extractor)
@@ -78,29 +63,29 @@ class Roller {
         explodeRolls(diceBagToArrayOfDice(dice), explodeOne);
     };
 
-  function sumDice<T>(rolls: Array<Die<DiceResultMeta<T>>>)
-    return rolls.reduce(function(acc, roll) return acc + roll.meta.result, 0);
+  function sumDice<T>(rolls: Array<Die<Int>>)
+    return rolls.reduce(function(acc, roll) return acc + roll.meta, 0);
 
-  function sumBasicRoll<T>(rolls: Array<BasicRoll<DiceResultMeta<T>>>)
+  function sumBasicRoll<T>(rolls: Array<BasicRoll<Int>>)
     return rolls.reduce(function(acc, roll) return acc + switch roll {
       case One(die):
-        die.meta.result;
+        die.meta;
       case Bag(_, meta) |
            Repeat(_, _, meta) |
            Literal(_, meta):
-        meta.result;
+        meta;
     }, 0);
 
-  function sumResults<T>(rolls: Array<DiceResult<T>>)
+  function sumResults<T>(rolls: Array<DiceResult>)
     return rolls.reduce(function(acc, roll) return acc + DiceResults.extractResult(roll), 0);
 
-  function extractResult<T>(rolls: Array<Die<DiceResultMeta<T>>>, extractor: BagExtractor)
+  function extractResult<T>(rolls: Array<Die<Int>>, extractor: BagExtractor)
     return switch extractor {
       case ExplodeOn(explodeOn):
-        rolls.reduce(function(acc, roll) return acc + roll.meta.result, 0);
+        rolls.reduce(function(acc, roll) return acc + roll.meta, 0);
     };
 
-  function extractExpressionResults<T>(exprs: Array<DiceResult<T>>, extractor: ExpressionExtractor) {
+  function extractExpressionResults<T>(exprs: Array<DiceResult>, extractor: ExpressionExtractor) {
     exprs = flattenExprs(exprs);
     return switch extractor {
       case Average:
@@ -118,7 +103,7 @@ class Roller {
     };
   }
 
-  function flattenExprs<T>(exprs: Array<DiceResult<T>>) {
+  function flattenExprs<T>(exprs: Array<DiceResult>) {
     return if(exprs.length == 1) {
       switch exprs[0] {
         case Roll(Bag(rolls, _)):
@@ -141,11 +126,11 @@ class Roller {
         [for(i in 0...times) die];
     };
 
-  function explodeRolls<T>(dice: Array<Die<T>>, explodeOn: Int): Array<Die<DiceResultMeta<T>>> {
+  function explodeRolls<T>(dice: Array<Die<T>>, explodeOn: Int): Array<Die<Int>> {
     var rolls = dice.map.fn(_.roll(random));
     var explosives = rolls
-          .filter.fn(_.meta.result >= explodeOn)
-          .map.fn(new Die(_.sides, _.meta.meta));
+          .filter.fn(_.meta >= explodeOn)
+          .map.fn(new Die(_.sides, thx.Unit.unit));
     return rolls.concat(
       explosives.length == 0 ? [] :
       explodeRolls(explosives, explodeOn)
