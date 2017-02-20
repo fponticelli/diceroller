@@ -456,12 +456,12 @@ TestAll.main = function() {
 };
 TestAll.prototype = {
 	max: function() {
-		return new dr_Roller(function(max) {
+		return dr_Roller.intRoller(function(max) {
 			return max;
 		});
 	}
 	,min: function() {
-		return new dr_Roller(function(_) {
+		return dr_Roller.intRoller(function(_) {
 			return 1;
 		});
 	}
@@ -483,9 +483,9 @@ TestAll.prototype = {
 			var expected = null == t.p ? t.t : t.p;
 			var f = t.t != expected ? " for \"" + t.t + "\"" : "";
 			utest_Assert.equals(expected,serialized,"expected serialization to be \"" + expected + "\" but it is \"" + serialized + "\"" + f,t.pos);
-			var minr = dr_DiceExpressionExtensions.extractMeta(this.min().roll(v));
+			var minr = dr_DiceExpressionExtensions.getMeta(this.min().roll(v));
 			utest_Assert.equals(t.min,minr,"expected min to be " + t.min + " but it is " + minr,t.pos);
-			var maxr = dr_DiceExpressionExtensions.extractMeta(this.max().roll(v));
+			var maxr = dr_DiceExpressionExtensions.getMeta(this.max().roll(v));
 			utest_Assert.equals(t.max,maxr,"expected max to be " + t.max + " but it is " + maxr,t.pos);
 			break;
 		}
@@ -617,6 +617,63 @@ Type["typeof"] = function(v) {
 	default:
 		return ValueType.TUnknown;
 	}
+};
+var dr_Algebra = function() { };
+dr_Algebra.__name__ = ["dr","Algebra"];
+dr_Algebra.prototype = {
+	zero: null
+	,die: null
+	,sum: null
+	,subtract: null
+	,negate: null
+	,multiply: null
+	,divide: null
+	,compare: null
+	,compareToSides: null
+	,average: null
+	,ofLiteral: null
+	,__class__: dr_Algebra
+};
+var dr_IntAlgebra = function(roll) {
+	this.zero = 0;
+	this.roll = roll;
+};
+dr_IntAlgebra.__name__ = ["dr","IntAlgebra"];
+dr_IntAlgebra.__interfaces__ = [dr_Algebra];
+dr_IntAlgebra.prototype = {
+	zero: null
+	,roll: null
+	,die: function(sides) {
+		return this.roll(sides);
+	}
+	,sum: function(a,b) {
+		return a + b;
+	}
+	,subtract: function(a,b) {
+		return a - b;
+	}
+	,negate: function(a) {
+		return -a;
+	}
+	,multiply: function(a,b) {
+		return a * b;
+	}
+	,divide: function(a,b) {
+		return a / b | 0;
+	}
+	,compare: function(a,b) {
+		return thx_Ints.compare(a,b);
+	}
+	,compareToSides: function(a,b) {
+		return thx_Ints.compare(a,b);
+	}
+	,average: function(arr) {
+		return thx_ArrayInts.average(arr) | 0;
+	}
+	,ofLiteral: function(v) {
+		return v;
+	}
+	,__class__: dr_IntAlgebra
 };
 var dr_DiceExpression = { __ename__ : ["dr","DiceExpression"], __constructs__ : ["Roll","RollBag","RollExpressions","BinaryOp","UnaryOp"] };
 dr_DiceExpression.Roll = function(basic) { var $x = ["Roll",0,basic]; $x.__enum__ = dr_DiceExpression; return $x; };
@@ -769,7 +826,7 @@ dr_DiceExpressionExtensions.needsBraces = function(expr) {
 		return false;
 	}
 };
-dr_DiceExpressionExtensions.extractMeta = function(expr) {
+dr_DiceExpressionExtensions.getMeta = function(expr) {
 	switch(expr[1]) {
 	case 0:
 		switch(expr[2][1]) {
@@ -2911,12 +2968,15 @@ dr_Discrete.prototype = {
 	}
 	,__class__: dr_Discrete
 };
-var dr_Roller = function(random) {
-	this.random = random;
+var dr_Roller = function(algebra) {
+	this.algebra = algebra;
 };
 dr_Roller.__name__ = ["dr","Roller"];
+dr_Roller.intRoller = function(roll) {
+	return new dr_Roller(new dr_IntAlgebra(roll));
+};
 dr_Roller.prototype = {
-	random: null
+	algebra: null
 	,roll: function(expr) {
 		switch(expr[1]) {
 		case 0:
@@ -2945,35 +3005,32 @@ dr_Roller.prototype = {
 			var rb = this.roll(b);
 			switch(op[1]) {
 			case 0:
-				return dr_DiceExpression.BinaryOp(dr_DiceBinOp.Sum,ra,rb,dr_DiceExpressionExtensions.extractMeta(ra) + dr_DiceExpressionExtensions.extractMeta(rb));
+				return dr_DiceExpression.BinaryOp(dr_DiceBinOp.Sum,ra,rb,this.algebra.sum(dr_DiceExpressionExtensions.getMeta(ra),dr_DiceExpressionExtensions.getMeta(rb)));
 			case 1:
-				return dr_DiceExpression.BinaryOp(dr_DiceBinOp.Difference,ra,rb,dr_DiceExpressionExtensions.extractMeta(ra) - dr_DiceExpressionExtensions.extractMeta(rb));
+				return dr_DiceExpression.BinaryOp(dr_DiceBinOp.Difference,ra,rb,this.algebra.subtract(dr_DiceExpressionExtensions.getMeta(ra),dr_DiceExpressionExtensions.getMeta(rb)));
 			case 2:
-				return dr_DiceExpression.BinaryOp(dr_DiceBinOp.Difference,ra,rb,dr_DiceExpressionExtensions.extractMeta(ra) / dr_DiceExpressionExtensions.extractMeta(rb) | 0);
+				return dr_DiceExpression.BinaryOp(dr_DiceBinOp.Difference,ra,rb,this.algebra.divide(dr_DiceExpressionExtensions.getMeta(ra),dr_DiceExpressionExtensions.getMeta(rb)));
 			case 3:
-				return dr_DiceExpression.BinaryOp(dr_DiceBinOp.Difference,ra,rb,dr_DiceExpressionExtensions.extractMeta(ra) * dr_DiceExpressionExtensions.extractMeta(rb));
+				return dr_DiceExpression.BinaryOp(dr_DiceBinOp.Difference,ra,rb,this.algebra.multiply(dr_DiceExpressionExtensions.getMeta(ra),dr_DiceExpressionExtensions.getMeta(rb)));
 			}
 			break;
 		case 4:
-			var meta3 = expr[4];
 			var a1 = expr[3];
 			var ra1 = this.roll(a1);
-			return dr_DiceExpression.UnaryOp(dr_DiceUnOp.Negate,ra1,-dr_DiceExpressionExtensions.extractMeta(ra1));
+			return dr_DiceExpression.UnaryOp(dr_DiceUnOp.Negate,ra1,this.algebra.negate(dr_DiceExpressionExtensions.getMeta(ra1)));
 		}
 	}
 	,basicRoll: function(roll) {
 		switch(roll[1]) {
 		case 0:
 			var die = roll[2];
-			return dr_BasicRoll.One(die.roll(this.random));
+			return dr_BasicRoll.One(die.roll(($_=this.algebra,$bind($_,$_.die))));
 		case 1:
-			var meta = roll[3];
 			var list = roll[2];
 			var rolls = list.map($bind(this,this.basicRoll));
 			var result = this.sumBasicRoll(rolls);
 			return dr_BasicRoll.Bag(rolls,result);
 		case 2:
-			var meta1 = roll[4];
 			var die1 = roll[3];
 			var times = roll[2];
 			var _g = [];
@@ -2981,15 +3038,14 @@ dr_Roller.prototype = {
 			var _g1 = times;
 			while(_g2 < _g1) {
 				var i = _g2++;
-				_g.push(die1.roll(this.random));
+				_g.push(die1.roll(($_=this.algebra,$bind($_,$_.die))));
 			}
 			var rolls1 = _g;
 			var result1 = this.sumDice(rolls1);
 			return dr_BasicRoll.Bag(rolls1.map(dr_BasicRoll.One),result1);
 		case 3:
-			var meta2 = roll[3];
 			var value = roll[2];
-			return dr_BasicRoll.Literal(value,value);
+			return dr_BasicRoll.Literal(value,this.algebra.ofLiteral(value));
 		}
 	}
 	,extractRolls: function(dice,extractor) {
@@ -2997,11 +3053,13 @@ dr_Roller.prototype = {
 		return this.explodeRolls(this.diceBagToArrayOfDice(dice),explodeOne);
 	}
 	,sumDice: function(rolls) {
+		var _gthis = this;
 		return thx_Arrays.reduce(rolls,function(acc,roll) {
-			return acc + roll.meta;
-		},0);
+			return _gthis.algebra.sum(acc,roll.meta);
+		},this.algebra.zero);
 	}
 	,sumBasicRoll: function(rolls) {
+		var _gthis = this;
 		return thx_Arrays.reduce(rolls,function(acc,roll) {
 			var tmp;
 			switch(roll[1]) {
@@ -3022,43 +3080,50 @@ dr_Roller.prototype = {
 				tmp = meta2;
 				break;
 			}
-			return acc + tmp;
-		},0);
+			return _gthis.algebra.sum(acc,tmp);
+		},this.algebra.zero);
 	}
 	,sumResults: function(rolls) {
+		var _gthis = this;
 		return thx_Arrays.reduce(rolls,function(acc,roll) {
-			return acc + dr_DiceExpressionExtensions.extractMeta(roll);
-		},0);
+			return _gthis.algebra.sum(acc,dr_DiceExpressionExtensions.getMeta(roll));
+		},this.algebra.zero);
 	}
 	,extractResult: function(rolls,extractor) {
+		var _gthis = this;
 		var explodeOn = extractor[2];
 		return thx_Arrays.reduce(rolls,function(acc,roll) {
-			return acc + roll.meta;
-		},0);
+			return _gthis.algebra.sum(acc,roll.meta);
+		},this.algebra.zero);
 	}
 	,extractExpressionResults: function(exprs,extractor) {
+		var _gthis = this;
 		exprs = this.flattenExprs(exprs);
 		switch(extractor[1]) {
 		case 0:
 			return thx_Arrays.reduce(exprs,function(acc,expr) {
-				return acc + dr_DiceExpressionExtensions.extractMeta(expr);
-			},0);
+				return _gthis.algebra.sum(acc,dr_DiceExpressionExtensions.getMeta(expr));
+			},this.algebra.zero);
 		case 1:
-			return thx_Arrays.reduce(exprs,function(acc1,expr1) {
-				return acc1 + dr_DiceExpressionExtensions.extractMeta(expr1);
-			},0) / exprs.length | 0;
+			return this.algebra.average(exprs.map(dr_DiceExpressionExtensions.getMeta));
 		case 2:
-			return thx_ArrayInts.min(exprs.map(dr_DiceExpressionExtensions.extractMeta));
+			return thx_Arrays.order(exprs.map(dr_DiceExpressionExtensions.getMeta),($_=this.algebra,$bind($_,$_.compare))).shift();
 		case 3:
-			return thx_ArrayInts.max(exprs.map(dr_DiceExpressionExtensions.extractMeta));
+			return thx_Arrays.order(exprs.map(dr_DiceExpressionExtensions.getMeta),($_=this.algebra,$bind($_,$_.compare))).pop();
 		case 4:
 			var drop = extractor[2];
-			return thx_ArrayInts.sum(thx_Arrays.order(exprs.map(dr_DiceExpressionExtensions.extractMeta),thx_Ints.compare).slice(drop));
+			return thx_Arrays.reduce(exprs.map(dr_DiceExpressionExtensions.getMeta).filter(function(meta) {
+				return _gthis.algebra.compareToSides(meta,drop) >= 0;
+			}),function(acc1,meta1) {
+				return _gthis.algebra.sum(acc1,meta1);
+			},this.algebra.zero);
 		case 5:
 			var keep = extractor[2];
-			var result = thx_Arrays.order(exprs.map(dr_DiceExpressionExtensions.extractMeta),thx_Ints.compare).slice();
-			result.reverse();
-			return thx_ArrayInts.sum(result.slice(0,keep));
+			return thx_Arrays.reduce(exprs.map(dr_DiceExpressionExtensions.getMeta).filter(function(meta2) {
+				return _gthis.algebra.compareToSides(meta2,keep) <= 0;
+			}),function(acc2,meta3) {
+				return _gthis.algebra.sum(acc2,meta3);
+			},this.algebra.zero);
 		}
 	}
 	,flattenExprs: function(exprs) {
@@ -3106,10 +3171,10 @@ dr_Roller.prototype = {
 	,explodeRolls: function(dice,explodeOn) {
 		var _gthis = this;
 		var rolls = dice.map(function(_) {
-			return _.roll(_gthis.random);
+			return _.roll(($_=_gthis.algebra,$bind($_,$_.die)));
 		});
 		var explosives = rolls.filter(function(_1) {
-			return _1.meta >= explodeOn;
+			return _gthis.algebra.compareToSides(_1.meta,explodeOn) >= 0;
 		}).map(function(_2) {
 			return new dr_Die(_2.sides,thx_Unit.unit);
 		});

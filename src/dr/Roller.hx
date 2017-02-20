@@ -3,14 +3,20 @@ package dr;
 using thx.Arrays;
 using thx.Functions;
 import dr.DiceExpression;
+using dr.DiceExpressionExtensions;
+import dr.DiceExpressionExtensions.getMeta;
+import dr.Algebra;
 
-class Roller {
-  var random: Int -> Int;
-  public function new(random: Int -> Int) {
-    this.random = random;
+class Roller<Meta> {
+  public static function intRoller(roll: Sides -> Int)
+    return new Roller(new IntAlgebra(roll));
+
+  var algebra: Algebra<Meta>;
+  public function new(algebra: Algebra<Meta>) {
+    this.algebra = algebra;
   }
 
-  public function roll<T>(expr: DiceExpression<T>): DiceExpression<Int> {
+  public function roll<T>(expr: DiceExpression<T>): DiceExpression<Meta> {
     return switch expr {
       case Roll(roll):
         Roll(basicRoll(roll));
@@ -27,33 +33,33 @@ class Roller {
             rb = roll(b);
         switch op {
           case Sum:
-            BinaryOp(Sum, ra, rb, DiceExpressionExtensions.extractMeta(ra) + DiceExpressionExtensions.extractMeta(rb));
+            BinaryOp(Sum, ra, rb, algebra.sum(ra.getMeta(), rb.getMeta()));
           case Difference:
-            BinaryOp(Difference, ra, rb, DiceExpressionExtensions.extractMeta(ra) - DiceExpressionExtensions.extractMeta(rb));
+            BinaryOp(Difference, ra, rb, algebra.subtract(ra.getMeta(), rb.getMeta()));
           case Division:
-            BinaryOp(Difference, ra, rb, Std.int(DiceExpressionExtensions.extractMeta(ra) / DiceExpressionExtensions.extractMeta(rb)));
+            BinaryOp(Difference, ra, rb, algebra.divide(ra.getMeta(), rb.getMeta()));
           case Multiplication:
-            BinaryOp(Difference, ra, rb, DiceExpressionExtensions.extractMeta(ra) * DiceExpressionExtensions.extractMeta(rb));
+            BinaryOp(Difference, ra, rb, algebra.multiply(ra.getMeta(), rb.getMeta()));
         }
-      case UnaryOp(Negate, a, meta):
+      case UnaryOp(Negate, a, _):
         var ra = roll(a);
-        UnaryOp(Negate, ra, -DiceExpressionExtensions.extractMeta(ra));
+        UnaryOp(Negate, ra, algebra.negate(ra.getMeta()));
     };
   }
 
-  function basicRoll<T>(roll: BasicRoll<T>): BasicRoll<Int> return switch roll {
+  function basicRoll<T>(roll: BasicRoll<T>): BasicRoll<Meta> return switch roll {
     case One(die):
-      One(die.roll(random));
-    case Bag(list, meta):
+      One(die.roll(algebra.die));
+    case Bag(list, _):
       var rolls = list.map(basicRoll);
       var result = sumBasicRoll(rolls);
       Bag(rolls, result);
-    case Repeat(times, die, meta):
-      var rolls = [for(i in 0...times) die.roll(random)];
+    case Repeat(times, die, _):
+      var rolls = [for(i in 0...times) die.roll(algebra.die)];
       var result = sumDice(rolls);
       Bag(rolls.map(One), result);
-    case Literal(value, meta):
-      Literal(value, value);
+    case Literal(value, _):
+      Literal(value, algebra.ofLiteral(value));
   }
 
   function extractRolls(dice, extractor)
@@ -62,47 +68,55 @@ class Roller {
         explodeRolls(diceBagToArrayOfDice(dice), explodeOne);
     };
 
-  function sumDice<T>(rolls: Array<Die<Int>>)
-    return rolls.reduce(function(acc, roll) return acc + roll.meta, 0);
+  function sumDice<T>(rolls: Array<Die<Meta>>)
+    return rolls.reduce(function(acc, roll) return algebra.sum(acc, roll.meta), algebra.zero);
 
-  function sumBasicRoll<T>(rolls: Array<BasicRoll<Int>>)
-    return rolls.reduce(function(acc, roll) return acc + switch roll {
+  function sumBasicRoll<T>(rolls: Array<BasicRoll<Meta>>)
+    return rolls.reduce(function(acc, roll) return algebra.sum(acc, switch roll {
       case One(die):
         die.meta;
       case Bag(_, meta) |
            Repeat(_, _, meta) |
            Literal(_, meta):
         meta;
-    }, 0);
+    }), algebra.zero);
 
-  function sumResults<T>(rolls: Array<DiceExpression<Int>>)
-    return rolls.reduce(function(acc, roll) return acc + DiceExpressionExtensions.extractMeta(roll), 0);
+  function sumResults<T>(rolls: Array<DiceExpression<Meta>>)
+    return rolls.reduce(function(acc, roll) return algebra.sum(acc, roll.getMeta()), algebra.zero);
 
-  function extractResult<T>(rolls: Array<Die<Int>>, extractor: BagExtractor)
+  function extractResult<T>(rolls: Array<Die<Meta>>, extractor: BagExtractor)
     return switch extractor {
       case ExplodeOn(explodeOn):
-        rolls.reduce(function(acc, roll) return acc + roll.meta, 0);
+        rolls.reduce(function(acc, roll) return algebra.sum(acc, roll.meta), algebra.zero);
     };
 
-  function extractExpressionResults<T>(exprs: Array<DiceExpression<Int>>, extractor: ExpressionExtractor) {
+  function extractExpressionResults<T>(exprs: Array<DiceExpression<Meta>>, extractor: ExpressionExtractor) {
     exprs = flattenExprs(exprs);
     return switch extractor {
       case Average:
-        Std.int(exprs.reduce(function(acc, expr) return acc + DiceExpressionExtensions.extractMeta(expr), 0) / exprs.length);
+        algebra.average(exprs.map(getMeta));
       case Sum:
-        exprs.reduce(function(acc, expr) return acc + DiceExpressionExtensions.extractMeta(expr), 0);
+        exprs.reduce(function(acc, expr) return algebra.sum(acc, expr.getMeta()), algebra.zero);
       case Min:
-        exprs.map(DiceExpressionExtensions.extractMeta).min();
+        exprs.map(getMeta).order(algebra.compare).shift();
       case Max:
-        exprs.map(DiceExpressionExtensions.extractMeta).max();
+        exprs.map(getMeta).order(algebra.compare).pop();
       case DropLow(drop):
-        exprs.map(DiceExpressionExtensions.extractMeta).order(thx.Ints.compare).slice(drop).sum();
+        exprs.map(getMeta).filter(function(meta) {
+          return algebra.compareToSides(meta, drop) >= 0;
+        }).reduce(function(acc, meta) {
+          return algebra.sum(acc, meta);
+        }, algebra.zero);
       case KeepHigh(keep):
-        exprs.map(DiceExpressionExtensions.extractMeta).order(thx.Ints.compare).reversed().slice(0, keep).sum();
+        exprs.map(getMeta).filter(function(meta) {
+          return algebra.compareToSides(meta, keep) <= 0;
+        }).reduce(function(acc, meta) {
+          return algebra.sum(acc, meta);
+        }, algebra.zero);
     };
   }
 
-  function flattenExprs<T>(exprs: Array<DiceExpression<Int>>) {
+  function flattenExprs<T>(exprs: Array<DiceExpression<Meta>>) {
     return if(exprs.length == 1) {
       switch exprs[0] {
         case Roll(Bag(rolls, _)):
@@ -125,10 +139,10 @@ class Roller {
         [for(i in 0...times) die];
     };
 
-  function explodeRolls<T>(dice: Array<Die<T>>, explodeOn: Int): Array<Die<Int>> {
-    var rolls = dice.map.fn(_.roll(random));
+  function explodeRolls<T>(dice: Array<Die<T>>, explodeOn: Sides): Array<Die<Meta>> {
+    var rolls = dice.map.fn(_.roll(algebra.die));
     var explosives = rolls
-          .filter.fn(_.meta >= explodeOn)
+          .filter.fn(algebra.compareToSides(_.meta, explodeOn) >= 0)
           .map.fn(new Die(_.sides, thx.Unit.unit));
     return rolls.concat(
       explosives.length == 0 ? [] :

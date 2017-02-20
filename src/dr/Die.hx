@@ -14,7 +14,7 @@ class Die<T> {
     this.meta = meta;
   }
 
-  public function roll(random: Int -> Int): Die<Int>
+  public function roll<Result>(random: Sides -> Result): Die<Result>
     return new Die(sides, random(sides));
 
   public function toString()

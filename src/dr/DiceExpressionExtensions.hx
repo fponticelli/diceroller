@@ -69,7 +69,7 @@ class DiceExpressionExtensions {
     case UnaryOp(_): false;
   }
 
-    public static function extractMeta<T>(expr: DiceExpression<T>): T {
+  public static function getMeta<T>(expr: DiceExpression<T>): T {
     return switch expr {
       case Roll(One(die)):
         die.meta;

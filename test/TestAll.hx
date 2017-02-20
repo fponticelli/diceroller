@@ -14,10 +14,10 @@ class TestAll {
   public function new() {}
 
   public function max()
-    return new Roller(function(max: Int) return max);
+    return Roller.intRoller(function(max: Int) return max);
 
   public function min()
-    return new Roller(function(_: Int) return 1);
+    return Roller.intRoller(function(_: Int) return 1);
 
   public function testParseAndBoundaries() {
     var tests: Array<TestObject> = [
@@ -96,9 +96,9 @@ class TestAll {
         var expected = null == t.p ? t.t : t.p;
         var f = t.t != expected ? ' for "${t.t}"' : "";
         Assert.equals(expected, serialized, 'expected serialization to be "${expected}" but it is "${serialized}"$f', t.pos);
-        var minr = min().roll(v).extractMeta();
+        var minr = min().roll(v).getMeta();
         Assert.equals(t.min, minr, 'expected min to be ${t.min} but it is $minr', t.pos);
-        var maxr = max().roll(v).extractMeta();
+        var maxr = max().roll(v).getMeta();
         Assert.equals(t.max, maxr, 'expected max to be ${t.max} but it is $maxr', t.pos);
     }
   }
