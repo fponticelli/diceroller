@@ -41,9 +41,6 @@ class DiceExpressionExtensions {
       case RepeatDie(time, die):
         '${time}${die.toString()}';
     }) + (switch extractor {
-      case Sum: "";
-      case DropLow(drop): 'd$drop';
-      case KeepHigh(keep): 'k$keep';
       case ExplodeOn(explodeOn): 'e$explodeOn';
     });
 
@@ -51,6 +48,7 @@ class DiceExpressionExtensions {
     return '{' + exprs.map(toString).join(",") + '}' +
     (switch extractor {
       case Sum: "";
+      case Average: " average";
       case DropLow(drop): 'd$drop';
       case KeepHigh(keep): 'k$keep';
     });

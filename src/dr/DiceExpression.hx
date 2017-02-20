@@ -9,9 +9,6 @@ enum DiceExpression<T> {
 }
 
 enum BagExtractor {
-  Sum;
-  DropLow(drop: Int);
-  KeepHigh(keep: Int);
   ExplodeOn(explodeOn: Int);
 }
 
@@ -29,6 +26,7 @@ enum DiceBag<T> {
 
 enum ExpressionExtractor {
   Sum;
+  Average;
   DropLow(drop: Int);
   KeepHigh(keep: Int);
 }

@@ -1,6 +1,5 @@
 package dr;
 
-import thx.Unit;
 using thx.Arrays;
 using thx.Functions;
 import dr.DiceExpression;
@@ -75,8 +74,6 @@ class Roller {
 
   function extractRolls(dice, extractor)
     return switch extractor {
-      case Sum | DropLow(_) | KeepHigh(_):
-        diceBagToArrayOfDice(dice).map.fn(_.roll(random));
       case ExplodeOn(explodeOne):
         explodeRolls(diceBagToArrayOfDice(dice), explodeOne);
     };
@@ -99,18 +96,14 @@ class Roller {
 
   function extractResult<T>(rolls: Array<Die<DiceResultMeta<T>>>, extractor: BagExtractor)
     return switch extractor {
-      case Sum:
-        rolls.reduce(function(acc, roll) return acc + roll.meta.result, 0);
-      case DropLow(drop):
-        rolls.map.fn(_.meta.result).order(thx.Ints.compare).slice(drop).sum();
-      case KeepHigh(keep):
-        rolls.map.fn(_.meta.result).order(thx.Ints.compare).reversed().slice(0, keep).sum();
       case ExplodeOn(explodeOn):
         rolls.reduce(function(acc, roll) return acc + roll.meta.result, 0);
     };
 
   function extractExpressionResults<T>(exprs: Array<DiceResult<T>>, extractor: ExpressionExtractor)
     return switch extractor {
+      case Average:
+        Std.int(exprs.reduce(function(acc, expr) return acc + DiceResults.extractResult(expr), 0) / exprs.length);
       case Sum:
         exprs.reduce(function(acc, expr) return acc + DiceResults.extractResult(expr), 0);
       case DropLow(drop):
@@ -137,19 +130,4 @@ class Roller {
       explodeRolls(explosives, explodeOn)
     );
   }
-
-  public function rollDice(dice: Int, sides: Int): DiceResult<Unit>
-    return roll(RollBag(RepeatDie(dice, new Die(sides, unit)), Sum, unit));
-
-  public function rollOne(sides: Int): DiceResult<Unit>
-    return roll(Roll(One(Die.withSides(sides))));
-
-  public function rollDiceAndDropLow(dice: Int, sides: Int, drop: Int): DiceResult<Unit>
-    return roll(RollBag(RepeatDie(dice, new Die(sides, unit)), DropLow(drop), unit));
-
-  public function rollDiceAndKeepHigh(dice: Int, sides: Int, keep: Int): DiceResult<Unit>
-    return roll(RollBag(RepeatDie(dice, new Die(sides, unit)), KeepHigh(keep), unit));
-
-  public function rollDiceAndExplode(dice: Int, sides: Int, explodeOn: Int): DiceResult<Unit>
-    return roll(RollBag(RepeatDie(dice, new Die(sides, unit)), ExplodeOn(explodeOn), unit));
 }
