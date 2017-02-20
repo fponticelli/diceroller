@@ -12,6 +12,7 @@ dr.DiceExpressionExtensions
 dr.DiceParser
 dr.Die
 dr.Discrete
+dr.DiscreteAlgebra
 dr.Roller
 dr.Sides
 

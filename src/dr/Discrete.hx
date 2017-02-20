@@ -13,6 +13,11 @@ class Discrete {
     compact();
   }
 
+  public static var empty(default, null): Discrete = new Discrete([], []);
+
+  public static function literal(n: Int) // TODO ?
+    return new Discrete([1], [n]);
+
   // Create a new Discrete representing a die with specified number of faces
   // and standard numbering (1...n). E.g., Discrete.die(6) creates a d6
   public static function die(n: Int)

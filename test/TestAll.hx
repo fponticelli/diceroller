@@ -14,10 +14,13 @@ class TestAll {
   public function new() {}
 
   public function max()
-    return Roller.intRoller(function(max: Int) return max);
+    return Roller.int(function(max: Int) return max);
+
+  public function discrete()
+    return Roller.discrete();
 
   public function min()
-    return Roller.intRoller(function(_: Int) return 1);
+    return Roller.int(function(_: Int) return 1);
 
   public function testParseAndBoundaries() {
     var tests: Array<TestObject> = [
@@ -101,6 +104,19 @@ class TestAll {
         var maxr = max().roll(v).getMeta();
         Assert.equals(t.max, maxr, 'expected max to be ${t.max} but it is $maxr', t.pos);
     }
+  }
+
+  public function testDiscrete() {
+    var expr = unsafeParse("d6"),
+        roller = discrete(),
+        discrete = roller.roll(expr).getMeta();
+    trace("values: " + discrete.values());
+    trace("probabilities: " + discrete.probabilities());
+  }
+
+  public static function unsafeParse(s: String) return switch DiceParser.parse(s) {
+    case Left(e): throw e;
+    case Right(v): v;
   }
 
   inline public function pos(?pos: haxe.PosInfos) return pos;

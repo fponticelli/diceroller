@@ -8,8 +8,10 @@ import dr.DiceExpressionExtensions.getMeta;
 import dr.Algebra;
 
 class Roller<Meta> {
-  public static function intRoller(roll: Sides -> Int)
+  public static function int(roll: Sides -> Int)
     return new Roller(new IntAlgebra(roll));
+  public static function discrete()
+    return new Roller(new DiscreteAlgebra());
 
   var algebra: Algebra<Meta>;
   public function new(algebra: Algebra<Meta>) {
