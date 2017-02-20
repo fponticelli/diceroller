@@ -506,7 +506,7 @@ TestAll.prototype = {
 		}
 	}
 	,testDiscrete: function() {
-		var expr = TestAll.unsafeParse("d6");
+		var expr = TestAll.unsafeParse("{3d6 - 1d8} / 2");
 		var roller = this.discrete();
 		var discrete = dr_DiceExpressionExtensions.getMeta(roller.roll(expr));
 		haxe_Log.trace("values: " + Std.string(discrete.values()),{ fileName : "TestAll.hx", lineNumber : 113, className : "TestAll", methodName : "testDiscrete"});
@@ -2994,7 +2994,7 @@ dr_Discrete.prototype = {
 	,__class__: dr_Discrete
 };
 var dr_DiscreteAlgebra = function() {
-	this.zero = dr_Discrete.empty;
+	this.zero = dr_Discrete.zero;
 };
 dr_DiscreteAlgebra.__name__ = ["dr","DiscreteAlgebra"];
 dr_DiscreteAlgebra.__interfaces__ = [dr_Algebra];
@@ -12699,7 +12699,7 @@ dr_DiceParser.expression = parsihax_Parser["as"](parsihax_Parser.lazy(function()
 	return parsihax_Parser.alt([dr_DiceParser.expressionOperations,dr_DiceParser.inlineExpression]);
 }),"expression");
 dr_DiceParser.grammar = parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.skip(parsihax_Parser.skip(dr_DiceParser.expression,dr_DiceParser.OWS),parsihax_Parser.eof()));
-dr_Discrete.empty = new dr_Discrete([],[]);
+dr_Discrete.zero = dr_Discrete.literal(0);
 haxe__$Int32_Int32_$Impl_$._mul = Math.imul != null ? Math.imul : function(a,b) {
 	return a * (b & 65535) + (a * (b >>> 16) << 16 | 0) | 0;
 };

@@ -1,7 +1,7 @@
 package dr;
 
 class DiscreteAlgebra implements Algebra<Discrete> {
-  public var zero(default, null) = Discrete.empty;
+  public var zero(default, null) = Discrete.zero;
   public function new() {}
   public function die(sides: Sides)
     return Discrete.die(sides);

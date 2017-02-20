@@ -13,7 +13,7 @@ class Discrete {
     compact();
   }
 
-  public static var empty(default, null): Discrete = new Discrete([], []);
+  public static var zero(default, null): Discrete = literal(0);
 
   public static function literal(n: Int) // TODO ?
     return new Discrete([1], [n]);

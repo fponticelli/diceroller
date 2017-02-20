@@ -85,7 +85,7 @@ class TestAll {
       { min: 4,  max: 24,  t: "{3d6,5d6} average", pos: pos() },
       { min: 2,  max: 2,  t: "{1,2,3} average", pos: pos() },
     ];
-    
+
     tests.map(assertParseAndBoundaries);
   }
 
@@ -107,7 +107,7 @@ class TestAll {
   }
 
   public function testDiscrete() {
-    var expr = unsafeParse("d6"),
+    var expr = unsafeParse("{3d6 - 1d8} / 2"),
         roller = discrete(),
         discrete = roller.roll(expr).getMeta();
     trace("values: " + discrete.values());
