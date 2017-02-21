@@ -2974,7 +2974,7 @@ dr_Discrete.prototype = {
 		}
 		return new dr_Discrete(weights,values);
 	}
-	,always_resample: function(x) {
+	,alwaysResample: function(x) {
 		var weights = this.weights();
 		var _g1 = 0;
 		var _g = this.weighted_values.length;
