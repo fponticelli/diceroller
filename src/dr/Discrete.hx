@@ -1,6 +1,9 @@
 package dr;
 
 import thx.Tuple;
+using thx.Arrays;
+using thx.Strings;
+using thx.format.NumberFormat;
 
 // We model discrete distributions as pairs of (integer) weights and values
 class Discrete {
@@ -100,6 +103,17 @@ class Discrete {
         if(weightedValues[i]._1 == x[j])
           weights[i] = 0;
     return new Discrete(weights, this.values());
+  }
+
+  public function toString() {
+    var format = NumberFormat.integer.bind(_, null);
+    var pad = values().reduce(function(max, curr) {
+      var v = format(curr).length;
+      return thx.Ints.max(v, max);
+    }, 0);
+    return 'probabilities:\n' + values().zip(probabilities()).map(function(vp) {
+      return format(vp._0).lpad(" ", pad) + ": " + NumberFormat.percent(vp._1, 2);
+    }).join("\n");
   }
 
   // Comparison function for sorting. Used in compact

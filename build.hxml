@@ -1,4 +1,5 @@
 -lib thx.core
+-lib thx.format
 -lib utest
 -lib parsihax
 -cp src

@@ -107,11 +107,10 @@ class TestAll {
   }
 
   public function testDiscrete() {
-    var expr = unsafeParse("{3d6 - 1d8} / 2"),
+    var expr = unsafeParse("1d6"),
         roller = discrete(),
         discrete = roller.roll(expr).getMeta();
-    trace("values: " + discrete.values());
-    trace("probabilities: " + discrete.probabilities());
+    trace(discrete.toString());
   }
 
   public static function unsafeParse(s: String) return switch DiceParser.parse(s) {
