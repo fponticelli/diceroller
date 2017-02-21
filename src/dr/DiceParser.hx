@@ -20,6 +20,11 @@ class DiceParser {
     };
   }
 
+  public static function unsafeParse(s: String) return switch parse(s) {
+    case Left(e): throw e;
+    case Right(v): v;
+  }
+
   static var PLUS = "+".string() / "plus";
   static var MINUS = "-".string() / "minus";
   static var positive = ~/[+]?([1-9][0-9]*)/.regexp(1).map(Std.parseInt) / "positive number";
@@ -43,8 +48,8 @@ class DiceParser {
   static var MULTIPLICATION = ~/[*⋅×x]/.regexp() / "multiplication symbol";
   static var DIVISION = "/".string() | "÷".string() | ":".string() / "division symbol";
 
-  static var KEEP_OR_DROP = "keep".string() | "drop".string();
-  static var LOW_HIGH = "lowest".string() | "low".string() | "highest".string() | "high".string();
+  static var keepOrDrop = "keep".string().result(Keep) | "drop".string().result(Drop);
+  static var lowOrHigh = ("lowest".string() | "low".string()).result(Low) | ("highest".string() | "high".string()).result(High);
   static var MORE_LESS = "more".string() | "less".string();
   static var OR_MORE_LESS = SKIP_WS("or".string()) + MORE_LESS / "or (more|less)";
 
@@ -72,7 +77,7 @@ class DiceParser {
   static var basicLiteral = positive.map.fn(Literal(_, unit)) / "basic literal";
   static var literal = basicLiteral.map(Roll) / "literal";
   static function toDie(sides: Int) return new Die(sides, unit);
-  
+
   static var DEFAULT_DIE_SIDES = 6;
   static var die = [
       (D + PERCENT).result(toDie(100)),
@@ -132,19 +137,43 @@ class DiceParser {
     basicExpressionSet
   ].alt();
 
-
-  static var expressionSetImplicit: ParseObject<DiceExpression<Unit>> = 
+  static var expressionSetImplicit: ParseObject<DiceExpression<Unit>> =
     diceOrSet.map.fn(RollExpressions(_, Sum, unit)) / "implicit sum";
-  static var expressionSetSum: ParseObject<DiceExpression<Unit>> = 
+  static var expressionSetSum: ParseObject<DiceExpression<Unit>> =
     diceOrSet.skip(OWS + SUM).map.fn(RollExpressions(_, Sum, unit)) / "sum";
-  static var expressionSetAverage: ParseObject<DiceExpression<Unit>> = 
+  static var expressionSetAverage: ParseObject<DiceExpression<Unit>> =
     diceOrSet.skip(OWS + AVERAGE).map.fn(RollExpressions(_, Average, unit)) / "average";
-  static var expressionSetMin: ParseObject<DiceExpression<Unit>> = 
+  static var expressionSetMin: ParseObject<DiceExpression<Unit>> =
     diceOrSet.skip(OWS + MIN).map.fn(RollExpressions(_, Min, unit)) / "minimum";
-  static var expressionSetMax: ParseObject<DiceExpression<Unit>> = 
+  static var expressionSetMax: ParseObject<DiceExpression<Unit>> =
     diceOrSet.skip(OWS + MAX).map.fn(RollExpressions(_, Max, unit)) / "maximum";
+  static var expressionSetDropOrKeep: ParseObject<DiceExpression<Unit>> =
+    diceOrSet.skip(OWS).flatMap(function(expr) {
+      return keepOrDrop.flatMap(function(kd) {
+        return OWS + (lowOrHigh.flatMap(function(lh) {
+          return OWS + positive.map(function(value) {
+            return switch kd {
+              case Drop:
+                RollExpressions(expr, Drop(lh, value), unit);
+              case Keep:
+                RollExpressions(expr, Keep(lh, value), unit);
+            };
+          });
+        }) |
+          positive.map(function(value) {
+            return switch kd {
+              case Drop:
+                RollExpressions(expr, Drop(Low, value), unit);
+              case Keep:
+                RollExpressions(expr, Keep(High, value), unit);
+            };
+          })
+        );
+      });
+    }) / "keep or drop";
 
   static var expressionSetOp = [
+    expressionSetDropOrKeep,
     expressionSetAverage,
     expressionSetMin,
     expressionSetMax,
@@ -215,6 +244,11 @@ class DiceParser {
     ].alt();
   }.lazy() / "expression";
 
-  static var grammar = 
+  static var grammar =
     OWS + expression.skip(OWS).skip(eof());
+}
+
+enum DropKeep {
+  Drop;
+  Keep;
 }

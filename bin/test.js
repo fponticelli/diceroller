@@ -454,18 +454,6 @@ TestAll.__name__ = ["TestAll"];
 TestAll.main = function() {
 	utest_UTest.run([new TestAll()]);
 };
-TestAll.unsafeParse = function(s) {
-	var _g = dr_DiceParser.parse(s);
-	switch(_g[1]) {
-	case 0:
-		var e = _g[2];
-		throw new js__$Boot_HaxeError(e);
-		break;
-	case 1:
-		var v = _g[2];
-		return v;
-	}
-};
 TestAll.prototype = {
 	max: function() {
 		return dr_Roller["int"](function(max) {
@@ -481,7 +469,7 @@ TestAll.prototype = {
 		});
 	}
 	,testParseAndBoundaries: function() {
-		var tests = [{ min : 1, max : 1, t : "1", pos : { fileName : "TestAll.hx", lineNumber : 27, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 2, t : "2", pos : { fileName : "TestAll.hx", lineNumber : 28, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "D", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 29, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 30, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1d", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 31, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1D", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 32, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1d6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 33, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1D6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 34, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d6", pos : { fileName : "TestAll.hx", lineNumber : 35, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "D6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 36, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : " d6 ", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 37, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d6 ", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 38, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : " d6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 39, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 100, t : "d%", pos : { fileName : "TestAll.hx", lineNumber : 40, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 300, t : "3d100", p : "3d%", pos : { fileName : "TestAll.hx", lineNumber : 41, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 8, t : "{d8}", p : "d8", pos : { fileName : "TestAll.hx", lineNumber : 43, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 2, t : "{2}", p : "2", pos : { fileName : "TestAll.hx", lineNumber : 44, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, max : 5, t : "{2,3}", pos : { fileName : "TestAll.hx", lineNumber : 45, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 6, t : "{2d3}", p : "2d3", pos : { fileName : "TestAll.hx", lineNumber : 46, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 14, t : "{d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 47, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 14, t : "{ d6 , d8 }", p : "{d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 48, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 18, t : "{d4,d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 49, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, max : 20, t : "{2,d4,d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 50, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 6, max : 30, t : "{2,d4,3d8}", pos : { fileName : "TestAll.hx", lineNumber : 51, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, max : 58, t : "{{2,d4,3d8},d4,3d8}", pos : { fileName : "TestAll.hx", lineNumber : 52, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -6, max : -6, t : "-6", pos : { fileName : "TestAll.hx", lineNumber : 54, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -1, max : -6, t : "-d6", pos : { fileName : "TestAll.hx", lineNumber : 55, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -2, max : -10, t : "-{d6,d4}", pos : { fileName : "TestAll.hx", lineNumber : 56, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, max : 5, t : "2+3", p : "2 + 3", pos : { fileName : "TestAll.hx", lineNumber : 57, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 1, t : "2-1", p : "2 - 1", pos : { fileName : "TestAll.hx", lineNumber : 58, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 0, max : 0, t : "2-1-1", p : "2 - 1 - 1", pos : { fileName : "TestAll.hx", lineNumber : 59, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 6, max : 25, t : "3 + d6 + 2d8", pos : { fileName : "TestAll.hx", lineNumber : 60, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 0, max : 19, t : "-3 + d6 + 2d8", pos : { fileName : "TestAll.hx", lineNumber : 61, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -2, max : 7, t : "-3 + -d6 + 2d8", pos : { fileName : "TestAll.hx", lineNumber : 62, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, max : 24, t : "d6 + 2d8 + 2", pos : { fileName : "TestAll.hx", lineNumber : 63, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 48, t : "d6 * 2d8 / 2", pos : { fileName : "TestAll.hx", lineNumber : 64, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 14, max : 14, t : "2 + 3 * 4", pos : { fileName : "TestAll.hx", lineNumber : 65, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -10, max : -10, t : "2 + -3 * 4", pos : { fileName : "TestAll.hx", lineNumber : 66, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -10, max : -10, t : "2 + 3 * -4", pos : { fileName : "TestAll.hx", lineNumber : 67, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, max : 10, t : "-2 + 3 * 4", pos : { fileName : "TestAll.hx", lineNumber : 68, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 14, max : 14, t : "2 + {3 * 4}", pos : { fileName : "TestAll.hx", lineNumber : 69, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 4, max : 4, t : "100 / 25", pos : { fileName : "TestAll.hx", lineNumber : 71, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 75, max : 75, t : "25 * 3", pos : { fileName : "TestAll.hx", lineNumber : 72, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 2, t : "150 / 25 * 3", pos : { fileName : "TestAll.hx", lineNumber : 73, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 18, max : 18, t : "{150 / 25} * 3", pos : { fileName : "TestAll.hx", lineNumber : 74, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 11, max : 105, t : "{{2,d4,3d8},5} * {d4,3d8} / {3,d6}", pos : { fileName : "TestAll.hx", lineNumber : 75, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, max : 60, t : "10d6", pos : { fileName : "TestAll.hx", lineNumber : 77, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, max : 60, t : "10d6 sum", p : "10d6", pos : { fileName : "TestAll.hx", lineNumber : 78, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "10d6 min", pos : { fileName : "TestAll.hx", lineNumber : 79, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "10d6 minimum", p : "10d6 min", pos : { fileName : "TestAll.hx", lineNumber : 80, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "10d6 max", pos : { fileName : "TestAll.hx", lineNumber : 81, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "10d6 maximum", p : "10d6 max", pos : { fileName : "TestAll.hx", lineNumber : 82, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 2, t : "{1,2,3} avg", p : "{1,2,3} average", pos : { fileName : "TestAll.hx", lineNumber : 83, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "3d6 average", pos : { fileName : "TestAll.hx", lineNumber : 84, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 4, max : 24, t : "{3d6,5d6} average", pos : { fileName : "TestAll.hx", lineNumber : 85, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 2, t : "{1,2,3} average", pos : { fileName : "TestAll.hx", lineNumber : 86, className : "TestAll", methodName : "testParseAndBoundaries"}}];
+		var tests = [{ min : 1, t : "1", pos : { fileName : "TestAll.hx", lineNumber : 27, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, t : "2", pos : { fileName : "TestAll.hx", lineNumber : 28, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "D", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 29, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 30, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1d", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 31, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1D", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 32, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1d6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 33, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1D6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 34, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d6", pos : { fileName : "TestAll.hx", lineNumber : 35, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "D6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 36, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : " d6 ", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 37, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d6 ", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 38, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : " d6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 39, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 100, t : "d%", pos : { fileName : "TestAll.hx", lineNumber : 40, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 300, t : "3d100", p : "3d%", pos : { fileName : "TestAll.hx", lineNumber : 41, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 8, t : "{d8}", p : "d8", pos : { fileName : "TestAll.hx", lineNumber : 43, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 2, t : "{2}", p : "2", pos : { fileName : "TestAll.hx", lineNumber : 44, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "{2,3}", pos : { fileName : "TestAll.hx", lineNumber : 45, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 6, t : "{2d3}", p : "2d3", pos : { fileName : "TestAll.hx", lineNumber : 46, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 14, t : "{d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 47, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 14, t : "{ d6 , d8 }", p : "{d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 48, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 18, t : "{d4,d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 49, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, max : 20, t : "{2,d4,d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 50, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 6, max : 30, t : "{2,d4,3d8}", pos : { fileName : "TestAll.hx", lineNumber : 51, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, max : 58, t : "{{2,d4,3d8},d4,3d8}", pos : { fileName : "TestAll.hx", lineNumber : 52, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -6, t : "-6", pos : { fileName : "TestAll.hx", lineNumber : 54, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -1, max : -6, t : "-d6", pos : { fileName : "TestAll.hx", lineNumber : 55, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -2, max : -10, t : "-{d6,d4}", pos : { fileName : "TestAll.hx", lineNumber : 56, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "2+3", p : "2 + 3", pos : { fileName : "TestAll.hx", lineNumber : 57, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, t : "2-1", p : "2 - 1", pos : { fileName : "TestAll.hx", lineNumber : 58, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 0, t : "2-1-1", p : "2 - 1 - 1", pos : { fileName : "TestAll.hx", lineNumber : 59, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 6, max : 25, t : "3 + d6 + 2d8", pos : { fileName : "TestAll.hx", lineNumber : 60, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 0, max : 19, t : "-3 + d6 + 2d8", pos : { fileName : "TestAll.hx", lineNumber : 61, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -2, max : 7, t : "-3 + -d6 + 2d8", pos : { fileName : "TestAll.hx", lineNumber : 62, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, max : 24, t : "d6 + 2d8 + 2", pos : { fileName : "TestAll.hx", lineNumber : 63, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 48, t : "d6 * 2d8 / 2", pos : { fileName : "TestAll.hx", lineNumber : 64, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 14, max : 14, t : "2 + 3 * 4", pos : { fileName : "TestAll.hx", lineNumber : 65, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -10, t : "2 + -3 * 4", pos : { fileName : "TestAll.hx", lineNumber : 66, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -10, t : "2 + 3 * -4", pos : { fileName : "TestAll.hx", lineNumber : 67, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, t : "-2 + 3 * 4", pos : { fileName : "TestAll.hx", lineNumber : 68, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 14, t : "2 + {3 * 4}", pos : { fileName : "TestAll.hx", lineNumber : 69, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 4, t : "100 / 25", pos : { fileName : "TestAll.hx", lineNumber : 71, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 75, t : "25 * 3", pos : { fileName : "TestAll.hx", lineNumber : 72, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, t : "150 / 25 * 3", pos : { fileName : "TestAll.hx", lineNumber : 73, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 18, t : "{150 / 25} * 3", pos : { fileName : "TestAll.hx", lineNumber : 74, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 11, max : 105, t : "{{2,d4,3d8},5} * {d4,3d8} / {3,d6}", pos : { fileName : "TestAll.hx", lineNumber : 75, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, max : 60, t : "10d6", pos : { fileName : "TestAll.hx", lineNumber : 77, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, max : 60, t : "10d6 sum", p : "10d6", pos : { fileName : "TestAll.hx", lineNumber : 78, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "10d6 min", pos : { fileName : "TestAll.hx", lineNumber : 79, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "10d6 minimum", p : "10d6 min", pos : { fileName : "TestAll.hx", lineNumber : 80, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "10d6 max", pos : { fileName : "TestAll.hx", lineNumber : 81, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "10d6 maximum", p : "10d6 max", pos : { fileName : "TestAll.hx", lineNumber : 82, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, t : "{1,2,3} min", pos : { fileName : "TestAll.hx", lineNumber : 83, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} max", pos : { fileName : "TestAll.hx", lineNumber : 84, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, t : "{1,2,3} avg", p : "{1,2,3} average", pos : { fileName : "TestAll.hx", lineNumber : 85, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "3d6 average", pos : { fileName : "TestAll.hx", lineNumber : 86, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 4, max : 24, t : "{3d6,5d6} average", pos : { fileName : "TestAll.hx", lineNumber : 87, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, t : "{1,2,3} average", pos : { fileName : "TestAll.hx", lineNumber : 88, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "{1,2,3} drop lowest 1", p : "{1,2,3} drop 1", pos : { fileName : "TestAll.hx", lineNumber : 90, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} drop lowest 2", p : "{1,2,3} drop 2", pos : { fileName : "TestAll.hx", lineNumber : 91, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} drop low 2", p : "{1,2,3} drop 2", pos : { fileName : "TestAll.hx", lineNumber : 92, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "{1,2,3} drop 1", pos : { fileName : "TestAll.hx", lineNumber : 93, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} drop highest 1", pos : { fileName : "TestAll.hx", lineNumber : 94, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, t : "{1,2,3} drop highest 2", pos : { fileName : "TestAll.hx", lineNumber : 95, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, t : "{1,2,3} drop high 2", p : "{1,2,3} drop highest 2", pos : { fileName : "TestAll.hx", lineNumber : 96, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 18, t : "5d6 drop 2", pos : { fileName : "TestAll.hx", lineNumber : 97, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, t : "{1,2,3} keep lowest 1", pos : { fileName : "TestAll.hx", lineNumber : 99, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} keep lowest 2", pos : { fileName : "TestAll.hx", lineNumber : 100, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} keep low 2", p : "{1,2,3} keep lowest 2", pos : { fileName : "TestAll.hx", lineNumber : 101, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} keep 1", pos : { fileName : "TestAll.hx", lineNumber : 102, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} keep highest 1", p : "{1,2,3} keep 1", pos : { fileName : "TestAll.hx", lineNumber : 103, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "{1,2,3} keep highest 2", p : "{1,2,3} keep 2", pos : { fileName : "TestAll.hx", lineNumber : 104, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "{1,2,3} keep high 2", p : "{1,2,3} keep 2", pos : { fileName : "TestAll.hx", lineNumber : 105, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 12, t : "5d6 keep 2", pos : { fileName : "TestAll.hx", lineNumber : 106, className : "TestAll", methodName : "testParseAndBoundaries"}}];
 		tests.map($bind(this,this.assertParseAndBoundaries));
 	}
 	,assertParseAndBoundaries: function(t) {
@@ -501,15 +489,23 @@ TestAll.prototype = {
 			var minr = dr_DiceExpressionExtensions.getMeta(this.min().roll(v));
 			utest_Assert.equals(t.min,minr,"expected min to be " + t.min + " but it is " + minr,t.pos);
 			var maxr = dr_DiceExpressionExtensions.getMeta(this.max().roll(v));
-			utest_Assert.equals(t.max,maxr,"expected max to be " + t.max + " but it is " + maxr,t.pos);
+			var expectedmax = null == t.max ? t.min : t.max;
+			utest_Assert.equals(expectedmax,maxr,"expected max to be " + expectedmax + " but it is " + maxr,t.pos);
 			break;
 		}
 	}
 	,testDiscrete: function() {
-		var expr = TestAll.unsafeParse("1d6");
+		var expr = dr_DiceParser.unsafeParse("1d6");
 		var roller = this.discrete();
 		var discrete = dr_DiceExpressionExtensions.getMeta(roller.roll(expr));
-		haxe_Log.trace(discrete.toString(),{ fileName : "TestAll.hx", lineNumber : 113, className : "TestAll", methodName : "testDiscrete"});
+		var _g = 0;
+		var _g1 = discrete.probabilities();
+		while(_g < _g1.length) {
+			var v = _g1[_g];
+			++_g;
+			utest_Assert.floatEquals(0.16666666,v,null,null,{ fileName : "TestAll.hx", lineNumber : 135, className : "TestAll", methodName : "testDiscrete"});
+		}
+		utest_Assert.same([1,2,3,4,5,6],discrete.values(),null,null,null,{ fileName : "TestAll.hx", lineNumber : 136, className : "TestAll", methodName : "testDiscrete"});
 	}
 	,pos: function(pos) {
 		return pos;
@@ -702,8 +698,19 @@ dr_DiceExpression.RollBag = function(dice,extractor,meta) { var $x = ["RollBag",
 dr_DiceExpression.RollExpressions = function(exprs,extractor,meta) { var $x = ["RollExpressions",2,exprs,extractor,meta]; $x.__enum__ = dr_DiceExpression; return $x; };
 dr_DiceExpression.BinaryOp = function(op,a,b,meta) { var $x = ["BinaryOp",3,op,a,b,meta]; $x.__enum__ = dr_DiceExpression; return $x; };
 dr_DiceExpression.UnaryOp = function(op,a,meta) { var $x = ["UnaryOp",4,op,a,meta]; $x.__enum__ = dr_DiceExpression; return $x; };
-var dr_BagExtractor = { __ename__ : ["dr","BagExtractor"], __constructs__ : ["ExplodeOn"] };
-dr_BagExtractor.ExplodeOn = function(explodeOn) { var $x = ["ExplodeOn",0,explodeOn]; $x.__enum__ = dr_BagExtractor; return $x; };
+var dr_BagExtractor = { __ename__ : ["dr","BagExtractor"], __constructs__ : ["Explode","Reroll"] };
+dr_BagExtractor.Explode = function(times,range) { var $x = ["Explode",0,times,range]; $x.__enum__ = dr_BagExtractor; return $x; };
+dr_BagExtractor.Reroll = function(times,range) { var $x = ["Reroll",1,times,range]; $x.__enum__ = dr_BagExtractor; return $x; };
+var dr_Times = { __ename__ : ["dr","Times"], __constructs__ : ["Always","UpTo"] };
+dr_Times.Always = ["Always",0];
+dr_Times.Always.__enum__ = dr_Times;
+dr_Times.UpTo = function(value) { var $x = ["UpTo",1,value]; $x.__enum__ = dr_Times; return $x; };
+var dr_Range = { __ename__ : ["dr","Range"], __constructs__ : ["Exact","Between","ValueOrMore","ValueOrBelow","Composite"] };
+dr_Range.Exact = function(value) { var $x = ["Exact",0,value]; $x.__enum__ = dr_Range; return $x; };
+dr_Range.Between = function(minInclusive,maxInclusive) { var $x = ["Between",1,minInclusive,maxInclusive]; $x.__enum__ = dr_Range; return $x; };
+dr_Range.ValueOrMore = function(value) { var $x = ["ValueOrMore",2,value]; $x.__enum__ = dr_Range; return $x; };
+dr_Range.ValueOrBelow = function(value) { var $x = ["ValueOrBelow",3,value]; $x.__enum__ = dr_Range; return $x; };
+dr_Range.Composite = function(ranges) { var $x = ["Composite",4,ranges]; $x.__enum__ = dr_Range; return $x; };
 var dr_BasicRoll = { __ename__ : ["dr","BasicRoll"], __constructs__ : ["One","Bag","Repeat","Literal"] };
 dr_BasicRoll.One = function(die) { var $x = ["One",0,die]; $x.__enum__ = dr_BasicRoll; return $x; };
 dr_BasicRoll.Bag = function(list,meta) { var $x = ["Bag",1,list,meta]; $x.__enum__ = dr_BasicRoll; return $x; };
@@ -712,7 +719,7 @@ dr_BasicRoll.Literal = function(value,meta) { var $x = ["Literal",3,value,meta];
 var dr_DiceBag = { __ename__ : ["dr","DiceBag"], __constructs__ : ["DiceSet","RepeatDie"] };
 dr_DiceBag.DiceSet = function(dice) { var $x = ["DiceSet",0,dice]; $x.__enum__ = dr_DiceBag; return $x; };
 dr_DiceBag.RepeatDie = function(times,die) { var $x = ["RepeatDie",1,times,die]; $x.__enum__ = dr_DiceBag; return $x; };
-var dr_ExpressionExtractor = { __ename__ : ["dr","ExpressionExtractor"], __constructs__ : ["Sum","Average","Min","Max","DropLow","KeepHigh"] };
+var dr_ExpressionExtractor = { __ename__ : ["dr","ExpressionExtractor"], __constructs__ : ["Sum","Average","Min","Max","Drop","Keep"] };
 dr_ExpressionExtractor.Sum = ["Sum",0];
 dr_ExpressionExtractor.Sum.__enum__ = dr_ExpressionExtractor;
 dr_ExpressionExtractor.Average = ["Average",1];
@@ -721,8 +728,13 @@ dr_ExpressionExtractor.Min = ["Min",2];
 dr_ExpressionExtractor.Min.__enum__ = dr_ExpressionExtractor;
 dr_ExpressionExtractor.Max = ["Max",3];
 dr_ExpressionExtractor.Max.__enum__ = dr_ExpressionExtractor;
-dr_ExpressionExtractor.DropLow = function(drop) { var $x = ["DropLow",4,drop]; $x.__enum__ = dr_ExpressionExtractor; return $x; };
-dr_ExpressionExtractor.KeepHigh = function(keep) { var $x = ["KeepHigh",5,keep]; $x.__enum__ = dr_ExpressionExtractor; return $x; };
+dr_ExpressionExtractor.Drop = function(dir,value) { var $x = ["Drop",4,dir,value]; $x.__enum__ = dr_ExpressionExtractor; return $x; };
+dr_ExpressionExtractor.Keep = function(dir,value) { var $x = ["Keep",5,dir,value]; $x.__enum__ = dr_ExpressionExtractor; return $x; };
+var dr_LowHigh = { __ename__ : ["dr","LowHigh"], __constructs__ : ["Low","High"] };
+dr_LowHigh.Low = ["Low",0];
+dr_LowHigh.Low.__enum__ = dr_LowHigh;
+dr_LowHigh.High = ["High",1];
+dr_LowHigh.High.__enum__ = dr_LowHigh;
 var dr_DiceBinOp = { __ename__ : ["dr","DiceBinOp"], __constructs__ : ["Sum","Difference","Division","Multiplication"] };
 dr_DiceBinOp.Sum = ["Sum",0];
 dr_DiceBinOp.Sum.__enum__ = dr_DiceBinOp;
@@ -809,8 +821,26 @@ dr_DiceExpressionExtensions.diceBagToString = function(group,extractor) {
 		tmp = "" + time + die.toString();
 		break;
 	}
-	var explodeOn = extractor[2];
-	return tmp + ("e" + explodeOn);
+	var tmp1;
+	switch(extractor[1]) {
+	case 0:
+		var range = extractor[3];
+		var times = extractor[2];
+		tmp1 = ["explode"].concat([dr_DiceExpressionExtensions.timesToString(times)]).concat([dr_DiceExpressionExtensions.rangeToString(range)]).filter(thx_Strings.hasContent).join(" ");
+		break;
+	case 1:
+		var range1 = extractor[3];
+		var times1 = extractor[2];
+		tmp1 = ["reroll"].concat([dr_DiceExpressionExtensions.timesToString(times1)]).concat([dr_DiceExpressionExtensions.rangeToString(range1)]).filter(thx_Strings.hasContent).join(" ");
+		break;
+	}
+	return tmp + tmp1;
+};
+dr_DiceExpressionExtensions.timesToString = function(times) {
+	return "";
+};
+dr_DiceExpressionExtensions.rangeToString = function(range) {
+	return "";
 };
 dr_DiceExpressionExtensions.expressionsToString = function(exprs,extractor) {
 	return (exprs.length == 1 && !dr_DiceExpressionExtensions.needsBraces(exprs[0]) ? exprs.map(dr_DiceExpressionExtensions.toString).join(",") : "{" + exprs.map(dr_DiceExpressionExtensions.toString).join(",") + "}") + dr_DiceExpressionExtensions.expressionExtractorToString(extractor);
@@ -826,11 +856,25 @@ dr_DiceExpressionExtensions.expressionExtractorToString = function(extractor) {
 	case 3:
 		return " max";
 	case 4:
-		var drop = extractor[2];
-		return "d" + drop;
+		switch(extractor[2][1]) {
+		case 0:
+			var drop = extractor[3];
+			return " drop " + drop;
+		case 1:
+			var drop1 = extractor[3];
+			return " drop highest " + drop1;
+		}
+		break;
 	case 5:
-		var keep = extractor[2];
-		return "k" + keep;
+		switch(extractor[2][1]) {
+		case 0:
+			var drop2 = extractor[3];
+			return " keep lowest " + drop2;
+		case 1:
+			var drop3 = extractor[3];
+			return " keep " + drop3;
+		}
+		break;
 	}
 };
 dr_DiceExpressionExtensions.needsBraces = function(expr) {
@@ -1630,6 +1674,11 @@ dr_Die.prototype = {
 	}
 	,__class__: dr_Die
 };
+var dr_DropKeep = { __ename__ : ["dr","DropKeep"], __constructs__ : ["Drop","Keep"] };
+dr_DropKeep.Drop = ["Drop",0];
+dr_DropKeep.Drop.__enum__ = dr_DropKeep;
+dr_DropKeep.Keep = ["Keep",1];
+dr_DropKeep.Keep.__enum__ = dr_DropKeep;
 var thx_Arrays = function() { };
 thx_Arrays.__name__ = ["thx","Arrays"];
 thx_Arrays.append = function(array,element) {
@@ -2808,6 +2857,18 @@ dr_DiceParser.parse = function(s) {
 		return thx_Either.Left(msg);
 	}
 };
+dr_DiceParser.unsafeParse = function(s) {
+	var _g = dr_DiceParser.parse(s);
+	switch(_g[1]) {
+	case 0:
+		var e = _g[2];
+		throw new js__$Boot_HaxeError(e);
+		break;
+	case 1:
+		var v = _g[2];
+		return v;
+	}
+};
 dr_DiceParser.SKIP_WS = function(parser) {
 	return parsihax_Parser.skip(parser,dr_DiceParser.WS);
 };
@@ -3141,8 +3202,16 @@ dr_Roller.prototype = {
 		}
 	}
 	,extractRolls: function(dice,extractor) {
-		var explodeOne = extractor[2];
-		return this.explodeRolls(this.diceBagToArrayOfDice(dice),explodeOne);
+		switch(extractor[1]) {
+		case 0:
+			var range = extractor[3];
+			var times = extractor[2];
+			return this.explodeRolls(this.diceBagToArrayOfDice(dice),times,range);
+		case 1:
+			var range1 = extractor[3];
+			var times1 = extractor[2];
+			return this.rerollRolls(this.diceBagToArrayOfDice(dice),times1,range1);
+		}
 	}
 	,sumDice: function(rolls) {
 		var _gthis = this;
@@ -3176,26 +3245,33 @@ dr_Roller.prototype = {
 		},this.algebra.zero);
 	}
 	,sumResults: function(rolls) {
-		var _gthis = this;
-		return thx_Arrays.reduce(rolls,function(acc,roll) {
-			return _gthis.algebra.sum(acc,dr_DiceExpressionExtensions.getMeta(roll));
-		},this.algebra.zero);
+		return thx_Arrays.reduce(rolls.map(function(_) {
+			return dr_DiceExpressionExtensions.getMeta(_);
+		}),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
 	}
 	,extractResult: function(rolls,extractor) {
-		var _gthis = this;
-		var explodeOn = extractor[2];
-		return thx_Arrays.reduce(rolls,function(acc,roll) {
-			return _gthis.algebra.sum(acc,roll.meta);
-		},this.algebra.zero);
+		switch(extractor[1]) {
+		case 0:
+			var range = extractor[3];
+			var times = extractor[2];
+			return thx_Arrays.reduce(rolls.map(function(_) {
+				return _.meta;
+			}),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
+		case 1:
+			var range1 = extractor[3];
+			var times1 = extractor[2];
+			return thx_Arrays.reduce(rolls.map(function(_1) {
+				return _1.meta;
+			}),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
+		}
 	}
 	,extractExpressionResults: function(exprs,extractor) {
-		var _gthis = this;
 		exprs = this.flattenExprs(exprs);
 		switch(extractor[1]) {
 		case 0:
-			return thx_Arrays.reduce(exprs,function(acc,expr) {
-				return _gthis.algebra.sum(acc,dr_DiceExpressionExtensions.getMeta(expr));
-			},this.algebra.zero);
+			return thx_Arrays.reduce(exprs.map(function(_) {
+				return dr_DiceExpressionExtensions.getMeta(_);
+			}),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
 		case 1:
 			return this.algebra.average(exprs.map(dr_DiceExpressionExtensions.getMeta));
 		case 2:
@@ -3203,19 +3279,25 @@ dr_Roller.prototype = {
 		case 3:
 			return thx_Arrays.order(exprs.map(dr_DiceExpressionExtensions.getMeta),($_=this.algebra,$bind($_,$_.compare))).pop();
 		case 4:
-			var drop = extractor[2];
-			return thx_Arrays.reduce(exprs.map(dr_DiceExpressionExtensions.getMeta).filter(function(meta) {
-				return _gthis.algebra.compareToSides(meta,drop) >= 0;
-			}),function(acc1,meta1) {
-				return _gthis.algebra.sum(acc1,meta1);
-			},this.algebra.zero);
+			var value = extractor[3];
+			var dir = extractor[2];
+			switch(dir[1]) {
+			case 0:
+				return thx_Arrays.reduce(thx_Arrays.order(exprs.map(dr_DiceExpressionExtensions.getMeta),($_=this.algebra,$bind($_,$_.compare))).slice(value),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
+			case 1:
+				return thx_Arrays.reduce(thx_Arrays.order(exprs.map(dr_DiceExpressionExtensions.getMeta),($_=this.algebra,$bind($_,$_.compare))).slice(0,-value),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
+			}
+			break;
 		case 5:
-			var keep = extractor[2];
-			return thx_Arrays.reduce(exprs.map(dr_DiceExpressionExtensions.getMeta).filter(function(meta2) {
-				return _gthis.algebra.compareToSides(meta2,keep) <= 0;
-			}),function(acc2,meta3) {
-				return _gthis.algebra.sum(acc2,meta3);
-			},this.algebra.zero);
+			var value1 = extractor[3];
+			var dir1 = extractor[2];
+			switch(dir1[1]) {
+			case 0:
+				return thx_Arrays.reduce(thx_Arrays.order(exprs.map(dr_DiceExpressionExtensions.getMeta),($_=this.algebra,$bind($_,$_.compare))).slice(0,value1),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
+			case 1:
+				return thx_Arrays.reduce(thx_Arrays.order(exprs.map(dr_DiceExpressionExtensions.getMeta),($_=this.algebra,$bind($_,$_.compare))).slice(-value1),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
+			}
+			break;
 		}
 	}
 	,flattenExprs: function(exprs) {
@@ -3260,17 +3342,21 @@ dr_Roller.prototype = {
 			return _g;
 		}
 	}
-	,explodeRolls: function(dice,explodeOn) {
+	,explodeRolls: function(dice,times,range) {
 		var _gthis = this;
 		var rolls = dice.map(function(_) {
 			return _.roll(($_=_gthis.algebra,$bind($_,$_.die)));
 		});
-		var explosives = rolls.filter(function(_1) {
-			return _gthis.algebra.compareToSides(_1.meta,explodeOn) >= 0;
-		}).map(function(_2) {
-			return new dr_Die(_2.sides,thx_Unit.unit);
+		var explosives = [];
+		return rolls.concat(explosives.length == 0 ? [] : this.explodeRolls(explosives,times,range));
+	}
+	,rerollRolls: function(dice,times,range) {
+		var _gthis = this;
+		var rolls = dice.map(function(_) {
+			return _.roll(($_=_gthis.algebra,$bind($_,$_.die)));
 		});
-		return rolls.concat(explosives.length == 0 ? [] : this.explodeRolls(explosives,explodeOn));
+		var rerolls = [];
+		return rolls.concat(rerolls.length == 0 ? [] : this.rerollRolls(rerolls,times,range));
 	}
 	,__class__: dr_Roller
 };
@@ -13950,8 +14036,8 @@ dr_DiceParser.WS = parsihax_Parser["as"](parsihax_Parser.regexp(new EReg("\\s+",
 dr_DiceParser.OWS = parsihax_Parser.or(dr_DiceParser.WS,parsihax_Parser["as"](parsihax_Parser.string(""),"optional white space"));
 dr_DiceParser.MULTIPLICATION = parsihax_Parser["as"](parsihax_Parser.regexp(new EReg("[*⋅×x]","")),"multiplication symbol");
 dr_DiceParser.DIVISION = parsihax_Parser.or(parsihax_Parser.or(parsihax_Parser.string("/"),parsihax_Parser.string("÷")),parsihax_Parser["as"](parsihax_Parser.string(":"),"division symbol"));
-dr_DiceParser.KEEP_OR_DROP = parsihax_Parser.or(parsihax_Parser.string("keep"),parsihax_Parser.string("drop"));
-dr_DiceParser.LOW_HIGH = parsihax_Parser.or(parsihax_Parser.or(parsihax_Parser.or(parsihax_Parser.string("lowest"),parsihax_Parser.string("low")),parsihax_Parser.string("highest")),parsihax_Parser.string("high"));
+dr_DiceParser.keepOrDrop = parsihax_Parser.or(parsihax_Parser.result(parsihax_Parser.string("keep"),dr_DropKeep.Keep),parsihax_Parser.result(parsihax_Parser.string("drop"),dr_DropKeep.Drop));
+dr_DiceParser.lowOrHigh = parsihax_Parser.or(parsihax_Parser.result(parsihax_Parser.or(parsihax_Parser.string("lowest"),parsihax_Parser.string("low")),dr_LowHigh.Low),parsihax_Parser.result(parsihax_Parser.or(parsihax_Parser.string("highest"),parsihax_Parser.string("high")),dr_LowHigh.High));
 dr_DiceParser.MORE_LESS = parsihax_Parser.or(parsihax_Parser.string("more"),parsihax_Parser.string("less"));
 dr_DiceParser.OR_MORE_LESS = parsihax_Parser.then(dr_DiceParser.SKIP_WS(parsihax_Parser.string("or")),parsihax_Parser["as"](dr_DiceParser.MORE_LESS,"or (more|less)"));
 dr_DiceParser.SUM = parsihax_Parser["as"](parsihax_Parser.string("sum"),"sum");
@@ -14063,7 +14149,28 @@ dr_DiceParser.expressionSetMax = (function($this) {
 	}),"maximum");
 	return $r;
 }(this));
-dr_DiceParser.expressionSetOp = parsihax_Parser.alt([dr_DiceParser.expressionSetAverage,dr_DiceParser.expressionSetMin,dr_DiceParser.expressionSetMax,dr_DiceParser.expressionSetSum,dr_DiceParser.expressionSetImplicit]);
+dr_DiceParser.expressionSetDropOrKeep = parsihax_Parser["as"](parsihax_Parser.flatMap(parsihax_Parser.skip(dr_DiceParser.diceOrSet,dr_DiceParser.OWS),function(expr) {
+	return parsihax_Parser.flatMap(dr_DiceParser.keepOrDrop,function(kd) {
+		return parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.or(parsihax_Parser.flatMap(dr_DiceParser.lowOrHigh,function(lh) {
+			return parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.map(dr_DiceParser.positive,function(value) {
+				switch(kd[1]) {
+				case 0:
+					return dr_DiceExpression.RollExpressions(expr,dr_ExpressionExtractor.Drop(lh,value),thx_Unit.unit);
+				case 1:
+					return dr_DiceExpression.RollExpressions(expr,dr_ExpressionExtractor.Keep(lh,value),thx_Unit.unit);
+				}
+			}));
+		}),parsihax_Parser.map(dr_DiceParser.positive,function(value1) {
+			switch(kd[1]) {
+			case 0:
+				return dr_DiceExpression.RollExpressions(expr,dr_ExpressionExtractor.Drop(dr_LowHigh.Low,value1),thx_Unit.unit);
+			case 1:
+				return dr_DiceExpression.RollExpressions(expr,dr_ExpressionExtractor.Keep(dr_LowHigh.High,value1),thx_Unit.unit);
+			}
+		})));
+	});
+}),"keep or drop");
+dr_DiceParser.expressionSetOp = parsihax_Parser.alt([dr_DiceParser.expressionSetDropOrKeep,dr_DiceParser.expressionSetAverage,dr_DiceParser.expressionSetMin,dr_DiceParser.expressionSetMax,dr_DiceParser.expressionSetSum,dr_DiceParser.expressionSetImplicit]);
 dr_DiceParser.negate = parsihax_Parser["as"](parsihax_Parser.lazy(function() {
 	return parsihax_Parser.then(dr_DiceParser.MINUS,parsihax_Parser.map(dr_DiceParser.inlineExpression,function(expr) {
 		return dr_DiceExpression.UnaryOp(dr_DiceUnOp.Negate,expr,thx_Unit.unit);

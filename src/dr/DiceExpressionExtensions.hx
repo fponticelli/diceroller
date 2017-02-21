@@ -1,6 +1,7 @@
 package dr;
 
 using thx.Functions;
+using thx.Strings;
 import dr.DiceExpression;
 
 class DiceExpressionExtensions {
@@ -42,11 +43,24 @@ class DiceExpressionExtensions {
       case RepeatDie(time, die):
         '${time}${die.toString()}';
     }) + (switch extractor {
-      case ExplodeOn(explodeOn): 'e$explodeOn';
+      case Explode(times, range):
+        ['explode'].concat([timesToString(times)]).concat([rangeToString(range)]).filter(Strings.hasContent).join(" ");
+      case Reroll(times, range):
+        ['reroll'].concat([timesToString(times)]).concat([rangeToString(range)]).filter(Strings.hasContent).join(" ");
     });
 
+  public static function timesToString(times: Times) {
+    // TODO
+    return "";
+  }
+
+  public static function rangeToString(range: Range) {
+    // TODO
+    return "";
+  }
+
   public static function expressionsToString<T>(exprs: Array<DiceExpression<T>>, extractor: ExpressionExtractor)
-    return 
+    return
       (exprs.length == 1 && !needsBraces(exprs[0]) ?
         exprs.map(toString).join(",") :
         '{' + exprs.map(toString).join(",") + '}') +
@@ -57,8 +71,10 @@ class DiceExpressionExtensions {
     case Average: " average";
     case Min: " min";
     case Max: " max";
-    case DropLow(drop): 'd$drop';
-    case KeepHigh(keep): 'k$keep';
+    case Drop(Low, drop):  ' drop $drop';
+    case Drop(High, drop): ' drop highest $drop';
+    case Keep(High, drop): ' keep $drop';
+    case Keep(Low, drop):  ' keep lowest $drop';
   };
 
   public static function needsBraces(expr) return switch expr {

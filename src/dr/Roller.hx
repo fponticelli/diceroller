@@ -66,8 +66,10 @@ class Roller<Meta> {
 
   function extractRolls(dice, extractor)
     return switch extractor {
-      case ExplodeOn(explodeOne):
-        explodeRolls(diceBagToArrayOfDice(dice), explodeOne);
+      case Explode(times, range):
+        explodeRolls(diceBagToArrayOfDice(dice), times, range);
+      case Reroll(times, range):
+        rerollRolls(diceBagToArrayOfDice(dice), times, range);
     };
 
   function sumDice<T>(rolls: Array<Die<Meta>>)
@@ -84,12 +86,16 @@ class Roller<Meta> {
     }), algebra.zero);
 
   function sumResults<T>(rolls: Array<DiceExpression<Meta>>)
-    return rolls.reduce(function(acc, roll) return algebra.sum(acc, roll.getMeta()), algebra.zero);
+    return rolls.map.fn(_.getMeta()).reduce(algebra.sum, algebra.zero);
 
   function extractResult<T>(rolls: Array<Die<Meta>>, extractor: BagExtractor)
     return switch extractor {
-      case ExplodeOn(explodeOn):
-        rolls.reduce(function(acc, roll) return algebra.sum(acc, roll.meta), algebra.zero);
+      case Explode(times, range):
+        // TODO needs work?
+        rolls.map.fn(_.meta).reduce(algebra.sum, algebra.zero);
+      case Reroll(times, range):
+        // TODO needs work?
+        rolls.map.fn(_.meta).reduce(algebra.sum, algebra.zero);
     };
 
   function extractExpressionResults<T>(exprs: Array<DiceExpression<Meta>>, extractor: ExpressionExtractor) {
@@ -98,23 +104,25 @@ class Roller<Meta> {
       case Average:
         algebra.average(exprs.map(getMeta));
       case Sum:
-        exprs.reduce(function(acc, expr) return algebra.sum(acc, expr.getMeta()), algebra.zero);
+        exprs.map.fn(_.getMeta()).reduce(algebra.sum, algebra.zero);
       case Min:
         exprs.map(getMeta).order(algebra.compare).shift();
       case Max:
         exprs.map(getMeta).order(algebra.compare).pop();
-      case DropLow(drop):
-        exprs.map(getMeta).filter(function(meta) {
-          return algebra.compareToSides(meta, drop) >= 0;
-        }).reduce(function(acc, meta) {
-          return algebra.sum(acc, meta);
-        }, algebra.zero);
-      case KeepHigh(keep):
-        exprs.map(getMeta).filter(function(meta) {
-          return algebra.compareToSides(meta, keep) <= 0;
-        }).reduce(function(acc, meta) {
-          return algebra.sum(acc, meta);
-        }, algebra.zero);
+      case Drop(dir, value):
+        switch dir {
+          case Low:
+            exprs.map(getMeta).order(algebra.compare).slice(value).reduce(algebra.sum, algebra.zero);
+          case High:
+            exprs.map(getMeta).order(algebra.compare).slice(0, -value).reduce(algebra.sum, algebra.zero);
+        };
+      case Keep(dir, value):
+        switch dir {
+          case Low:
+            exprs.map(getMeta).order(algebra.compare).slice(0,value).reduce(algebra.sum, algebra.zero);
+          case High:
+            exprs.map(getMeta).order(algebra.compare).slice(-value).reduce(algebra.sum, algebra.zero);
+        };
     };
   }
 
@@ -141,14 +149,29 @@ class Roller<Meta> {
         [for(i in 0...times) die];
     };
 
-  function explodeRolls<T>(dice: Array<Die<T>>, explodeOn: Sides): Array<Die<Meta>> {
+  function explodeRolls<T>(dice: Array<Die<T>>, times: Times, range: Range): Array<Die<Meta>> {
     var rolls = dice.map.fn(_.roll(algebra.die));
-    var explosives = rolls
-          .filter.fn(algebra.compareToSides(_.meta, explodeOn) >= 0)
-          .map.fn(new Die(_.sides, thx.Unit.unit));
+    var explosives = [];
+    // TODO
+    // rolls
+    //       .filter.fn(algebra.compareToSides(_.meta, explodeOn) >= 0)
+    //       .map.fn(new Die(_.sides, thx.Unit.unit));
     return rolls.concat(
       explosives.length == 0 ? [] :
-      explodeRolls(explosives, explodeOn)
+      explodeRolls(explosives, times, range)
+    );
+  }
+
+  function rerollRolls<T>(dice: Array<Die<T>>, times: Times, range: Range): Array<Die<Meta>> {
+    var rolls = dice.map.fn(_.roll(algebra.die));
+    var rerolls = [];
+    // TODO
+    // rolls
+    //       .filter.fn(algebra.compareToSides(_.meta, explodeOn) >= 0)
+    //       .map.fn(new Die(_.sides, thx.Unit.unit));
+    return rolls.concat(
+      rerolls.length == 0 ? [] :
+      rerollRolls(rerolls, times, range)
     );
   }
 }

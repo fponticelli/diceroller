@@ -9,7 +9,21 @@ enum DiceExpression<T> {
 }
 
 enum BagExtractor {
-  ExplodeOn(explodeOn: Int);
+  Explode(times: Times, range: Range);
+  Reroll(times: Times, range: Range);
+}
+
+enum Times {
+  Always;
+  UpTo(value: Int);
+}
+
+enum Range {
+  Exact(value: Int);
+  Between(minInclusive: Int, maxInclusive: Int);
+  ValueOrMore(value: Int);
+  ValueOrBelow(value: Int);
+  Composite(ranges: Array<Range>);
 }
 
 enum BasicRoll<T> {
@@ -29,8 +43,13 @@ enum ExpressionExtractor {
   Average;
   Min;
   Max;
-  DropLow(drop: Int);
-  KeepHigh(keep: Int);
+  Drop(dir: LowHigh, value: Int);
+  Keep(dir: LowHigh, value: Int);
+}
+
+enum LowHigh {
+  Low;
+  High;
 }
 
 enum DiceBinOp {
