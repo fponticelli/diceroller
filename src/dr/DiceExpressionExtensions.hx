@@ -44,19 +44,29 @@ class DiceExpressionExtensions {
         '${time}${die.toString()}';
     }) + (switch extractor {
       case Explode(times, range):
-        ['explode'].concat([timesToString(times)]).concat([rangeToString(range)]).filter(Strings.hasContent).join(" ");
+        [' explode'].concat([timesToString(times)]).concat([rangeToString(range)]).filter(Strings.hasContent).join(" ");
       case Reroll(times, range):
-        ['reroll'].concat([timesToString(times)]).concat([rangeToString(range)]).filter(Strings.hasContent).join(" ");
+        [' reroll'].concat([timesToString(times)]).concat([rangeToString(range)]).filter(Strings.hasContent).join(" ");
     });
 
   public static function timesToString(times: Times) {
     // TODO
-    return "";
+    return switch times {
+      case Always: "";
+      case UpTo(1): "once";
+      case UpTo(2): "twice";
+      case UpTo(n): '$n times';
+    };
   }
 
   public static function rangeToString(range: Range) {
-    // TODO
-    return "";
+    return switch range {
+      case Exact(v): 'on $v';
+      case Between(a, b): '$a...$b';
+      case Composite(arr): '(${arr.map(rangeToString).join(",")})';
+      case ValueOrLess(v): 'on $v or less';
+      case ValueOrMore(v): 'on $v or more';
+    };
   }
 
   public static function expressionsToString<T>(exprs: Array<DiceExpression<T>>, extractor: ExpressionExtractor)

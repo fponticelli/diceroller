@@ -22,7 +22,7 @@ enum Range {
   Exact(value: Int);
   Between(minInclusive: Int, maxInclusive: Int);
   ValueOrMore(value: Int);
-  ValueOrBelow(value: Int);
+  ValueOrLess(value: Int);
   Composite(ranges: Array<Range>);
 }
 

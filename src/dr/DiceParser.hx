@@ -50,8 +50,31 @@ class DiceParser {
 
   static var keepOrDrop = "keep".string().result(Keep) | "drop".string().result(Drop);
   static var lowOrHigh = ("lowest".string() | "low".string()).result(Low) | ("highest".string() | "high".string()).result(High);
-  static var MORE_LESS = "more".string() | "less".string();
-  static var OR_MORE_LESS = SKIP_WS("or".string()) + MORE_LESS / "or (more|less)";
+  static var explodeOrReroll = "explode".string().result(Explode) | "reroll".string().result(Reroll);
+  static var moreLess = "more".string().result(MoreLess.More) | "less".string().result(MoreLess.Less);
+  static var orMoreLess = SKIP_WS("or".string()) + moreLess / "or (more|less)";
+  static var on = "on".string() + WS + positive;
+  static var to = "to".string() + WS + positive;
+  static var range = [
+    on.flatMap(function(min) {
+      return OWS + positive.map(function(max) {
+        return Between(min, max);
+      });
+    }),
+    on.flatMap(function(value) {
+      return OWS + orMoreLess.map(function(ml) return switch ml {
+        case More: ValueOrMore(value);
+        case Less: ValueOrLess(value);
+      });
+    }),
+    on.map(Exact)
+  ].alt();
+
+/*
+enum Range {
+  Composite(ranges: Array<Range>);
+}
+*/
 
   static var SUM = "sum".string() / "sum";
   static var AVERAGE = "average".string().or("avg".string()) / "average";
@@ -104,19 +127,62 @@ class DiceParser {
     basicLiteral
   ].alt() / "dice set element";
 
-  static var basicDiceSet: ParseObject<BasicRoll<Unit>> = function() {
+  static var basicDiceArray: ParseObject<Array<BasicRoll<Unit>>> = function() {
     return [
       OPEN_SET_BRACKET + OWS + [
         basicDiceSetElement,
         basicDiceSet
-      ].alt().sepBy(OWS + ",".string() + OWS).skip(OWS + CLOSE_SET_BRACKET).map(function(arr) {
-        return Bag(arr, unit);
-      }),
-      basicDice
+      ].alt().sepBy(OWS + COMMA + OWS).skip(OWS + CLOSE_SET_BRACKET),
+      basicDice.map(function(v) return [v])
     ].alt();
   }.lazy() / "dice set";
 
+  static var basicDiceSet: ParseObject<BasicRoll<Unit>> = function() {
+    return basicDiceArray.map(Bag.bind(_, unit));
+  }.lazy() / "dice set";
+
   static var diceSet = basicDiceSet.map(Roll) / "dice set";
+
+  // static var diceBag = function() {
+    static var diceBag =  [
+      OPEN_SET_BRACKET + OWS +
+        die.sepBy(OWS + COMMA + OWS)
+           .skip(OWS + CLOSE_SET_BRACKET)
+           .map(DiceSet),
+      positive.flatMap(function(rolls) {
+        return die.map(RepeatDie.bind(rolls, _));
+      }),
+    ].alt();
+
+  static var explodeOrRerollBag = OWS + diceBag.flatMap(function(db) {
+    return OWS + explodeOrReroll.flatMap(function(er) {
+      return OWS + [
+        times.flatMap(function(t) {
+          var upTo = UpTo(t);
+          return WS + range.map(function(on) {
+            return RollBag(db, switch er {
+              case Explode:
+                Explode(upTo, on);
+              case Reroll:
+                Reroll(upTo, on);
+            }, unit);
+          });
+        }),
+        range.map(function(ml) {
+          return RollBag(db, switch er {
+            case Explode:
+              Explode(Always, Exact(1));
+            case Reroll:
+              Reroll(Always, Exact(1));
+          }, unit);
+        })
+      ].alt();
+    });
+  });
+
+  static var diceBagOp = [
+    explodeOrRerollBag
+  ].alt();
 
   static var basicExpressionSet: ParseObject<Array<DiceExpression<Unit>>> = function() {
     return OPEN_SET_BRACKET + OWS +
@@ -148,10 +214,10 @@ class DiceParser {
   static var expressionSetMax: ParseObject<DiceExpression<Unit>> =
     diceOrSet.skip(OWS + MAX).map.fn(RollExpressions(_, Max, unit)) / "maximum";
   static var expressionSetDropOrKeep: ParseObject<DiceExpression<Unit>> =
-    diceOrSet.skip(OWS).flatMap(function(expr) {
+    diceOrSet.skip(WS).flatMap(function(expr) {
       return keepOrDrop.flatMap(function(kd) {
-        return OWS + (lowOrHigh.flatMap(function(lh) {
-          return OWS + positive.map(function(value) {
+        return WS + (lowOrHigh.flatMap(function(lh) {
+          return WS + positive.map(function(value) {
             return switch kd {
               case Drop:
                 RollExpressions(expr, Drop(lh, value), unit);
@@ -230,6 +296,7 @@ class DiceParser {
 
   static var inlineExpression: ParseObject<DiceExpression<Unit>> = function() {
     return [
+      diceBagOp,
       expressionSetOp,
       diceSet,
       literal,
@@ -251,4 +318,14 @@ class DiceParser {
 enum DropKeep {
   Drop;
   Keep;
+}
+
+enum ExplodeReroll {
+  Explode;
+  Reroll;
+}
+
+enum MoreLess {
+  More;
+  Less;
 }

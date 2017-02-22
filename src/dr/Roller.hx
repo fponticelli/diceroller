@@ -65,12 +65,12 @@ class Roller<Meta> {
   }
 
   function extractRolls(dice, extractor)
-    return switch extractor {
+    return (switch extractor {
       case Explode(times, range):
         explodeRolls(diceBagToArrayOfDice(dice), times, range);
       case Reroll(times, range):
         rerollRolls(diceBagToArrayOfDice(dice), times, range);
-    };
+    });
 
   function sumDice<T>(rolls: Array<Die<Meta>>)
     return rolls.reduce(function(acc, roll) return algebra.sum(acc, roll.meta), algebra.zero);
@@ -150,16 +150,40 @@ class Roller<Meta> {
     };
 
   function explodeRolls<T>(dice: Array<Die<T>>, times: Times, range: Range): Array<Die<Meta>> {
-    var rolls = dice.map.fn(_.roll(algebra.die));
-    var explosives = [];
-    // TODO
-    // rolls
-    //       .filter.fn(algebra.compareToSides(_.meta, explodeOn) >= 0)
-    //       .map.fn(new Die(_.sides, thx.Unit.unit));
-    return rolls.concat(
-      explosives.length == 0 ? [] :
-      explodeRolls(explosives, times, range)
-    );
+    return switch times {
+      case Always:
+        explodeRollsTimes(dice, 1000, range); // TODO 1000 could be calculated a little better
+      case UpTo(value):
+        explodeRollsTimes(dice, value, range);
+    };
+  }
+
+  function explodeRollsTimes<T>(dice: Array<Die<T>>, times: Int, range: Range): Array<Die<Meta>> {
+    var rolls: Array<Die<Meta>> = dice.map.fn(_.roll(algebra.die));
+    if(times == 0 || rolls.length == 0)
+      return rolls;
+
+    var explosives = rolls
+          .filter.fn(compareToRange(_.meta, range))
+          .map.fn(new Die(_.sides, thx.Unit.unit));
+    return rolls.concat(explodeRollsTimes(explosives, times-1, range));
+  }
+
+  function compareToRange(v: Meta, range: Range): Bool {
+    return switch range {
+      case Exact(value):
+        algebra.compareToSides(v, value) == 0;
+      case Between(minInclusive, maxInclusive):
+        algebra.compareToSides(v, minInclusive) >= 0 && algebra.compareToSides(v, maxInclusive) <= 0;
+      case ValueOrMore(value):
+        algebra.compareToSides(v, value) >= 0;
+      case ValueOrLess(value):
+        algebra.compareToSides(v, value) <= 0;
+      case Composite(ranges):
+        ranges.reduce(function(acc, range) {
+          return acc ||  compareToRange(v, range);
+        }, false);
+    };
   }
 
   function rerollRolls<T>(dice: Array<Die<T>>, times: Times, range: Range): Array<Die<Meta>> {
