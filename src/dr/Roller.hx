@@ -141,15 +141,15 @@ class Roller<Result> {
     }
   }
 
-  function diceBagToArrayOfDice(group: DiceBag): Array<Die<Result>>
+  function diceBagToArrayOfDice(group: DiceBag): Array<Sides>
     return switch group {
       case DiceSet(dice):
-        dice.map(Die.new.bind(_, null)); // TODO remove null
+        dice;
       case RepeatDie(times, sides):
-        [for(i in 0...times) new Die(sides, null)]; // TODO remove null
+        [for(i in 0...times) sides];
     };
 
-  function explodeRolls(dice: Array<Die<Result>>, times: Times, range: Range): Array<DieResult<Result>> {
+  function explodeRolls(dice: Array<Sides>, times: Times, range: Range): Array<DieResult<Result>> {
     return switch times {
       case Always:
         explodeRollsTimes(dice, 1000, range); // TODO 1000 could be calculated a little better
@@ -158,15 +158,14 @@ class Roller<Result> {
     };
   }
 
-  function explodeRollsTimes(dice: Array<Die<Result>>, times: Int, range: Range): Array<DieResult<Result>> {
-    var rolls: Array<DieResult<Result>> = dice.map.fn({ result: algebra.die(_.sides), sides: _.sides });
+  function explodeRollsTimes(dice: Array<Sides>, times: Int, range: Range): Array<DieResult<Result>> {
+    var rolls: Array<DieResult<Result>> = dice.map.fn({ result: algebra.die(_), sides: _ });
     if(times == 0 || rolls.length == 0)
       return rolls;
 
     var explosives = rolls
-          .filter.fn(compareToRange(_.result, range))
-          .map.fn(new Die(_.sides, _.result));
-    return rolls.concat(explodeRollsTimes(explosives, times-1, range));
+          .filter.fn(compareToRange(_.result, range));
+    return rolls.concat(explodeRollsTimes(explosives.map.fn(_.sides), times-1, range));
   }
 
   function compareToRange(v: Result, range: Range): Bool {
@@ -186,8 +185,8 @@ class Roller<Result> {
     };
   }
 
-  function rerollRolls(dice: Array<Die<Result>>, times: Times, range: Range): Array<DieResult<Result>> {
-    var rolls = dice.map.fn({ result: algebra.die(_.sides), sides: _.sides });
+  function rerollRolls(dice: Array<Sides>, times: Times, range: Range): Array<DieResult<Result>> {
+    var rolls = dice.map.fn({ result: algebra.die(_), sides: _ });
     var rerolls = [];
     // TODO
     // rolls

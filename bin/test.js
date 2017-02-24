@@ -2909,28 +2909,6 @@ dr_DiceResult.UnaryOp = function(op,a,result) { var $x = ["UnaryOp",4,op,a,resul
 var dr_BasicRollResult = { __ename__ : ["dr","BasicRollResult"], __constructs__ : ["One","Literal"] };
 dr_BasicRollResult.One = function(die) { var $x = ["One",0,die]; $x.__enum__ = dr_BasicRollResult; return $x; };
 dr_BasicRollResult.Literal = function(value,result) { var $x = ["Literal",1,value,result]; $x.__enum__ = dr_BasicRollResult; return $x; };
-var dr_Die = function(sides,result) {
-	this.sides = sides;
-	this.result = result;
-};
-dr_Die.__name__ = ["dr","Die"];
-dr_Die.withSides = function(sides) {
-	return new dr_Die(sides,thx_Unit.unit);
-};
-dr_Die.prototype = {
-	sides: null
-	,result: null
-	,roll: function(random) {
-		return new dr_Die(this.sides,random(this.sides));
-	}
-	,toString: function() {
-		return "d" + (this.sides == 100 ? "%" : "" + this.sides);
-	}
-	,toStringWithMeta: function(f) {
-		return "d" + this.sides + " [" + f(this.result) + "]";
-	}
-	,__class__: dr_Die
-};
 var dr_Discrete = function(weights,values) {
 	this.weightedValues = [];
 	var _g1 = 0;
@@ -3363,21 +3341,16 @@ dr_Roller.prototype = {
 		switch(group[1]) {
 		case 0:
 			var dice = group[2];
-			var f = function(sides,result) {
-				return new dr_Die(sides,result);
-			};
-			return dice.map(function(a1) {
-				return f(a1,null);
-			});
+			return dice;
 		case 1:
-			var sides1 = group[3];
+			var sides = group[3];
 			var times = group[2];
 			var _g = [];
 			var _g2 = 0;
 			var _g1 = times;
 			while(_g2 < _g1) {
 				var i = _g2++;
-				_g.push(new dr_Die(sides1,null));
+				_g.push(sides);
 			}
 			return _g;
 		}
@@ -3394,17 +3367,17 @@ dr_Roller.prototype = {
 	,explodeRollsTimes: function(dice,times,range) {
 		var _gthis = this;
 		var rolls = dice.map(function(_) {
-			return { result : _gthis.algebra.die(_.sides), sides : _.sides};
+			return { result : _gthis.algebra.die(_), sides : _};
 		});
 		if(times == 0 || rolls.length == 0) {
 			return rolls;
 		}
 		var explosives = rolls.filter(function(_1) {
 			return _gthis.compareToRange(_1.result,range);
-		}).map(function(_2) {
-			return new dr_Die(_2.sides,_2.result);
 		});
-		return rolls.concat(this.explodeRollsTimes(explosives,times - 1,range));
+		return rolls.concat(this.explodeRollsTimes(explosives.map(function(_2) {
+			return _2.sides;
+		}),times - 1,range));
 	}
 	,compareToRange: function(v,range) {
 		var _gthis = this;
@@ -3441,7 +3414,7 @@ dr_Roller.prototype = {
 	,rerollRolls: function(dice,times,range) {
 		var _gthis = this;
 		var rolls = dice.map(function(_) {
-			return { result : _gthis.algebra.die(_.sides), sides : _.sides};
+			return { result : _gthis.algebra.die(_), sides : _};
 		});
 		var rerolls = [];
 		return rolls.concat(rerolls.length == 0 ? [] : this.rerollRolls(rerolls,times,range));
@@ -9273,9 +9246,6 @@ thx_Types.anyValueToString = function(value) {
 	}
 	return thx_Types.toString(Type["typeof"](value));
 };
-var thx_Unit = { __ename__ : ["thx","Unit"], __constructs__ : ["unit"] };
-thx_Unit.unit = ["unit",0];
-thx_Unit.unit.__enum__ = thx_Unit;
 var thx__$Validation_Validation_$Impl_$ = {};
 thx__$Validation_Validation_$Impl_$.__name__ = ["thx","_Validation","Validation_Impl_"];
 thx__$Validation_Validation_$Impl_$.get_either = function(this1) {
