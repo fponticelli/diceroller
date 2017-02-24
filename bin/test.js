@@ -3124,13 +3124,13 @@ dr_DiscreteAlgebra.prototype = {
 	}
 	,__class__: dr_DiscreteAlgebra
 };
-var dr_RollResult = { __ename__ : ["dr","RollResult"], __constructs__ : ["One","Literal","RollBag","RollExpressions","BinaryOp","UnaryOp"] };
-dr_RollResult.One = function(die) { var $x = ["One",0,die]; $x.__enum__ = dr_RollResult; return $x; };
-dr_RollResult.Literal = function(value,result) { var $x = ["Literal",1,value,result]; $x.__enum__ = dr_RollResult; return $x; };
-dr_RollResult.RollBag = function(dice,extractor,result) { var $x = ["RollBag",2,dice,extractor,result]; $x.__enum__ = dr_RollResult; return $x; };
-dr_RollResult.RollExpressions = function(exprs,aggregator,result) { var $x = ["RollExpressions",3,exprs,aggregator,result]; $x.__enum__ = dr_RollResult; return $x; };
-dr_RollResult.BinaryOp = function(op,a,b,result) { var $x = ["BinaryOp",4,op,a,b,result]; $x.__enum__ = dr_RollResult; return $x; };
-dr_RollResult.UnaryOp = function(op,a,result) { var $x = ["UnaryOp",5,op,a,result]; $x.__enum__ = dr_RollResult; return $x; };
+var dr_RollResult = { __ename__ : ["dr","RollResult"], __constructs__ : ["OneResult","LiteralResult","DiceMapResult","DiceReducerResult","BinaryOpResult","UnaryOpResult"] };
+dr_RollResult.OneResult = function(die) { var $x = ["OneResult",0,die]; $x.__enum__ = dr_RollResult; return $x; };
+dr_RollResult.LiteralResult = function(value,result) { var $x = ["LiteralResult",1,value,result]; $x.__enum__ = dr_RollResult; return $x; };
+dr_RollResult.DiceMapResult = function(dice,extractor,result) { var $x = ["DiceMapResult",2,dice,extractor,result]; $x.__enum__ = dr_RollResult; return $x; };
+dr_RollResult.DiceReducerResult = function(exprs,aggregator,result) { var $x = ["DiceReducerResult",3,exprs,aggregator,result]; $x.__enum__ = dr_RollResult; return $x; };
+dr_RollResult.BinaryOpResult = function(op,a,b,result) { var $x = ["BinaryOpResult",4,op,a,b,result]; $x.__enum__ = dr_RollResult; return $x; };
+dr_RollResult.UnaryOpResult = function(op,a,result) { var $x = ["UnaryOpResult",5,op,a,result]; $x.__enum__ = dr_RollResult; return $x; };
 var dr_Roller = function(algebra) {
 	this.algebra = algebra;
 };
@@ -3147,7 +3147,7 @@ dr_Roller.prototype = {
 		switch(expr[1]) {
 		case 0:
 			var sides = expr[2];
-			return dr_RollResult.One({ result : this.algebra.die(sides), sides : sides});
+			return dr_RollResult.OneResult({ result : this.algebra.die(sides), sides : sides});
 		case 1:
 			var sides1 = expr[3];
 			var times = expr[2];
@@ -3160,24 +3160,24 @@ dr_Roller.prototype = {
 			}
 			var rolls = _g;
 			var result = this.sumDice(rolls);
-			return dr_RollResult.RollExpressions(rolls.map(dr_RollResult.One),dr_DiceReduce.Sum,result);
+			return dr_RollResult.DiceReducerResult(rolls.map(dr_RollResult.OneResult),dr_DiceReduce.Sum,result);
 		case 2:
 			var value = expr[2];
-			return dr_RollResult.Literal(value,this.algebra.ofLiteral(value));
+			return dr_RollResult.LiteralResult(value,this.algebra.ofLiteral(value));
 		case 3:
 			var functor = expr[3];
 			var dice = expr[2];
 			var rolls1 = this.extractRolls(dice,functor);
 			var result1 = this.extractResult(rolls1,functor);
-			return dr_RollResult.RollBag(rolls1.map(function(_) {
-				return dr_RollResult.One(_);
+			return dr_RollResult.DiceMapResult(rolls1.map(function(_) {
+				return dr_RollResult.OneResult(_);
 			}),functor,result1);
 		case 4:
 			var aggregator = expr[3];
 			var exprs = expr[2];
 			var exaluatedExpressions = exprs.map($bind(this,this.roll));
 			var result2 = this.extractExpressionResults(exaluatedExpressions,aggregator);
-			return dr_RollResult.RollExpressions(exaluatedExpressions,aggregator,result2);
+			return dr_RollResult.DiceReducerResult(exaluatedExpressions,aggregator,result2);
 		case 5:
 			var b = expr[4];
 			var a = expr[3];
@@ -3186,19 +3186,19 @@ dr_Roller.prototype = {
 			var rb = this.roll(b);
 			switch(op[1]) {
 			case 0:
-				return dr_RollResult.BinaryOp(dr_DiceBinOp.Sum,ra,rb,this.algebra.sum(dr_DiceResultExtensions.getResult(ra),dr_DiceResultExtensions.getResult(rb)));
+				return dr_RollResult.BinaryOpResult(dr_DiceBinOp.Sum,ra,rb,this.algebra.sum(dr_DiceResultExtensions.getResult(ra),dr_DiceResultExtensions.getResult(rb)));
 			case 1:
-				return dr_RollResult.BinaryOp(dr_DiceBinOp.Difference,ra,rb,this.algebra.subtract(dr_DiceResultExtensions.getResult(ra),dr_DiceResultExtensions.getResult(rb)));
+				return dr_RollResult.BinaryOpResult(dr_DiceBinOp.Difference,ra,rb,this.algebra.subtract(dr_DiceResultExtensions.getResult(ra),dr_DiceResultExtensions.getResult(rb)));
 			case 2:
-				return dr_RollResult.BinaryOp(dr_DiceBinOp.Division,ra,rb,this.algebra.divide(dr_DiceResultExtensions.getResult(ra),dr_DiceResultExtensions.getResult(rb)));
+				return dr_RollResult.BinaryOpResult(dr_DiceBinOp.Division,ra,rb,this.algebra.divide(dr_DiceResultExtensions.getResult(ra),dr_DiceResultExtensions.getResult(rb)));
 			case 3:
-				return dr_RollResult.BinaryOp(dr_DiceBinOp.Multiplication,ra,rb,this.algebra.multiply(dr_DiceResultExtensions.getResult(ra),dr_DiceResultExtensions.getResult(rb)));
+				return dr_RollResult.BinaryOpResult(dr_DiceBinOp.Multiplication,ra,rb,this.algebra.multiply(dr_DiceResultExtensions.getResult(ra),dr_DiceResultExtensions.getResult(rb)));
 			}
 			break;
 		case 6:
 			var a1 = expr[3];
 			var ra1 = this.roll(a1);
-			return dr_RollResult.UnaryOp(dr_DiceUnOp.Negate,ra1,this.algebra.negate(dr_DiceResultExtensions.getResult(ra1)));
+			return dr_RollResult.UnaryOpResult(dr_DiceUnOp.Negate,ra1,this.algebra.negate(dr_DiceResultExtensions.getResult(ra1)));
 		}
 	}
 	,extractRolls: function(dice,functor) {

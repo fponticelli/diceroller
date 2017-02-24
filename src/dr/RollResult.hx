@@ -3,12 +3,12 @@ package dr;
 import dr.DiceExpression;
 
 enum RollResult<T> {
-  One(die: DieResult<T>);
-  Literal(value: Int, result: T);
-  RollBag(dice: Array<RollResult<T>>, extractor: DiceFunctor, result: T);
-  RollExpressions(exprs: Array<RollResult<T>>, aggregator: DiceReduce, result: T);
-  BinaryOp(op: DiceBinOp, a: RollResult<T>, b: RollResult<T>, result: T);
-  UnaryOp(op: DiceUnOp, a: RollResult<T>, result: T);
+  OneResult(die: DieResult<T>);
+  LiteralResult(value: Int, result: T);
+  DiceMapResult(dice: Array<RollResult<T>>, extractor: DiceFunctor, result: T);
+  DiceReducerResult(exprs: Array<RollResult<T>>, aggregator: DiceReduce, result: T);
+  BinaryOpResult(op: DiceBinOp, a: RollResult<T>, b: RollResult<T>, result: T);
+  UnaryOpResult(op: DiceUnOp, a: RollResult<T>, result: T);
 }
 
 typedef DieResult<T> = {

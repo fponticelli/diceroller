@@ -22,40 +22,40 @@ class Roller<Result> {
   public function roll(expr: DiceExpression): RollResult<Result> {
     return switch expr {
       case Die(sides):
-        One({ result: algebra.die(sides), sides: sides });
+        OneResult({ result: algebra.die(sides), sides: sides });
       case Dice(times, sides):
         var rolls = [for(i in 0...times) { result: algebra.die(sides), sides: sides }];
         var result = sumDice(rolls);
-        RollExpressions(
-          rolls.map(One),
+        DiceReducerResult(
+          rolls.map(OneResult),
           Sum,
           result);
       case Literal(value):
-        Literal(value, algebra.ofLiteral(value));
+        LiteralResult(value, algebra.ofLiteral(value));
       case DiceMap(dice, functor):
         var rolls = extractRolls(dice, functor);
         var result = extractResult(rolls, functor);
-        RollResult.RollBag(rolls.map.fn(RollResult.One(_)), functor, result);
+        DiceMapResult(rolls.map.fn(OneResult(_)), functor, result);
       case DiceReducer(exprs, aggregator):
         var exaluatedExpressions = exprs.map(roll),
             result = extractExpressionResults(exaluatedExpressions, aggregator);
-        RollExpressions(exaluatedExpressions, aggregator, result);
+        DiceReducerResult(exaluatedExpressions, aggregator, result);
       case BinaryOp(op, a, b):
         var ra = roll(a),
             rb = roll(b);
         switch op {
           case Sum:
-            BinaryOp(Sum, ra, rb, algebra.sum(ra.getResult(), rb.getResult()));
+            BinaryOpResult(Sum, ra, rb, algebra.sum(ra.getResult(), rb.getResult()));
           case Difference:
-            BinaryOp(Difference, ra, rb, algebra.subtract(ra.getResult(), rb.getResult()));
+            BinaryOpResult(Difference, ra, rb, algebra.subtract(ra.getResult(), rb.getResult()));
           case Division:
-            BinaryOp(Division, ra, rb, algebra.divide(ra.getResult(), rb.getResult()));
+            BinaryOpResult(Division, ra, rb, algebra.divide(ra.getResult(), rb.getResult()));
           case Multiplication:
-            BinaryOp(Multiplication, ra, rb, algebra.multiply(ra.getResult(), rb.getResult()));
+            BinaryOpResult(Multiplication, ra, rb, algebra.multiply(ra.getResult(), rb.getResult()));
         }
       case UnaryOp(Negate, a):
         var ra = roll(a);
-        UnaryOp(Negate, ra, algebra.negate(ra.getResult()));
+        UnaryOpResult(Negate, ra, algebra.negate(ra.getResult()));
     };
   }
 
@@ -108,10 +108,11 @@ class Roller<Result> {
     };
   }
 
+  // TODO remove
   function flattenExprs(exprs: Array<RollResult<Result>>): Array<RollResult<Result>> {
     return if(exprs.length == 1) {
       switch exprs[0] {
-        case RollExpressions(exprs, _):
+        case DiceReducerResult(exprs, _):
           exprs;
         case _:
           exprs;

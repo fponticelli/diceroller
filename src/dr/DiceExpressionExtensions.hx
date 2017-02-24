@@ -108,14 +108,14 @@ class DiceExpressionExtensions {
 class DiceResultExtensions {
   public static function getResult<T>(expr: RollResult<T>): T {
     return switch expr {
-      case One(die):
+      case OneResult(die):
         die.result;
-      case RollBag(_, _, result) |
-           RollExpressions(_, _, result) |
-           BinaryOp(_, _, _, result) |
-           UnaryOp(_, _, result) |
+      case DiceMapResult(_, _, result) |
+           DiceReducerResult(_, _, result) |
+           BinaryOpResult(_, _, _, result) |
+           UnaryOpResult(_, _, result) |
           //  Roll(Bag(_, result)) |
-           Literal(_, result):
+           LiteralResult(_, result):
         result;
     };
   }
