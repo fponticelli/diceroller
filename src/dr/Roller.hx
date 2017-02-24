@@ -108,7 +108,6 @@ class Roller<Result> {
     };
   }
 
-  // TODO remove
   function flattenExprs(exprs: Array<RollResult<Result>>): Array<RollResult<Result>> {
     return if(exprs.length == 1) {
       switch exprs[0] {
@@ -159,15 +158,21 @@ class Roller<Result> {
   }
 
   function rerollRolls(dice: Array<Sides>, times: Times, range: Range): Array<DieResult<Result>> {
-    var rolls = dice.map.fn({ result: algebra.die(_), sides: _ });
-    var rerolls = [];
-    // TODO
-    // rolls
-    //       .filter.fn(algebra.compareToSides(_.result, explodeOn) >= 0)
-    //       .map.fn(new Die(_.sides, thx.Unit.unit));
-    return rolls.concat(
-      rerolls.length == 0 ? [] :
-      rerollRolls(rerolls, times, range)
-    );
+    return switch times {
+      case Always:
+        rerollRollsTimes(dice, 1000, range); // TODO 1000 could be calculated a little better
+      case UpTo(value):
+        rerollRollsTimes(dice, value, range);
+    };
+  }
+
+  function rerollRollsTimes(dice: Array<Sides>, times: Int, range: Range): Array<DieResult<Result>> {
+    var rolls: Array<DieResult<Result>> = dice.map.fn({ result: algebra.die(_), sides: _ });
+    if(times == 0 || rolls.length == 0)
+      return rolls;
+
+    var rerolls = rolls.filter.fn(compareToRange(_.result, range));
+    var keeprolls = rolls.filter.fn(!compareToRange(_.result, range));
+    return keeprolls.concat(rerollRollsTimes(rerolls.map.fn(_.sides), times-1, range));
   }
 }

@@ -3,7 +3,6 @@ package dr;
 using thx.Strings;
 import dr.DiceExpression;
 using thx.Arrays;
-import haxe.ds.Option;
 
 class DiceExpressionExtensions {
   public static function toString(expr: DiceExpression) return switch expr {
@@ -57,7 +56,6 @@ class DiceExpressionExtensions {
   }
 
   public static function timesToString(times: Times) {
-    // TODO
     return switch times {
       case Always: "";
       case UpTo(1): "once";
@@ -114,7 +112,6 @@ class DiceResultExtensions {
            DiceReducerResult(_, _, result) |
            BinaryOpResult(_, _, _, result) |
            UnaryOpResult(_, _, result) |
-          //  Roll(Bag(_, result)) |
            LiteralResult(_, result):
         result;
     };

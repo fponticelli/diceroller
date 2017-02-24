@@ -83,7 +83,6 @@ class DiceParser {
 
 
   static var literal = positive.map.fn(Literal(_)) / "literal";
-  // static var literal = basicLiteral.map(Roll) / "literal";
 
   static var DEFAULT_DIE_SIDES = 6;
   static var die = [
@@ -104,7 +103,6 @@ class DiceParser {
     }),
     die.map.fn(Die(_))
   ].alt() / "basic dice";
-  // static var dice = basicDice.map(Roll) / "dice";
 
   static var basicDiceSetElement = [
     basicDice,
@@ -121,24 +119,16 @@ class DiceParser {
     ].alt();
   }.lazy() / "dice set";
 
-  // static var diceSetArray: ParseObject<Array<DiceExpression>> = function() {
-  //   return basicDiceArray.map(RollExpressions.bind(_, Sum));
-  // }.lazy() / "dice set";
-
   static var diceSet = basicDiceArray.map(DiceReducer.bind(_, Sum)) / "dice set";
 
   static var diceMap =  [
     OPEN_SET_BRACKET + OWS +
       die.sepBy(OWS + COMMA + OWS)
-          .skip(OWS + CLOSE_SET_BRACKET)
-          // .map(DiceArray)
-          ,
+          .skip(OWS + CLOSE_SET_BRACKET),
     positive.flatMap(function(rolls) {
       return die.map(function(sides) {
         return [for(i in 0...rolls) sides];
-      }
-        // RepeatDie.bind(rolls, _)
-      );
+      });
     }),
   ].alt();
 

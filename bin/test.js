@@ -3345,12 +3345,31 @@ dr_Roller.prototype = {
 		}
 	}
 	,rerollRolls: function(dice,times,range) {
+		switch(times[1]) {
+		case 0:
+			return this.rerollRollsTimes(dice,1000,range);
+		case 1:
+			var value = times[2];
+			return this.rerollRollsTimes(dice,value,range);
+		}
+	}
+	,rerollRollsTimes: function(dice,times,range) {
 		var _gthis = this;
 		var rolls = dice.map(function(_) {
 			return { result : _gthis.algebra.die(_), sides : _};
 		});
-		var rerolls = [];
-		return rolls.concat(rerolls.length == 0 ? [] : this.rerollRolls(rerolls,times,range));
+		if(times == 0 || rolls.length == 0) {
+			return rolls;
+		}
+		var rerolls = rolls.filter(function(_1) {
+			return _gthis.compareToRange(_1.result,range);
+		});
+		var keeprolls = rolls.filter(function(_2) {
+			return !_gthis.compareToRange(_2.result,range);
+		});
+		return keeprolls.concat(this.rerollRollsTimes(rerolls.map(function(_3) {
+			return _3.sides;
+		}),times - 1,range));
 	}
 	,__class__: dr_Roller
 };
