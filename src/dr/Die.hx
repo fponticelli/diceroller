@@ -7,11 +7,11 @@ class Die<T> {
     return new Die(sides, Unit.unit);
 
   public var sides(default, null): Int;
-  public var meta(default, null): T;
+  public var result(default, null): T;
 
-  public function new(sides: Int, meta: T) {
+  public function new(sides: Int, result: T) {
     this.sides = sides;
-    this.meta = meta;
+    this.result = result;
   }
 
   public function roll<Result>(random: Sides -> Result): Die<Result>
@@ -21,5 +21,5 @@ class Die<T> {
     return "d" + (sides == 100 ? "%" : '$sides');
 
   public function toStringWithMeta(f: T -> String)
-    return 'd$sides [${f(meta)}]';
+    return 'd$sides [${f(result)}]';
 }

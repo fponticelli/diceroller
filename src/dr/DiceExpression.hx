@@ -1,11 +1,11 @@
 package dr;
 
-enum DiceExpression<T> {
-  Roll(basic: BasicRoll<T>);
-  RollBag(dice: DiceBag<T>, extractor: BagExtractor, meta: T);
-  RollExpressions(exprs: Array<DiceExpression<T>>, extractor: ExpressionExtractor, meta: T);
-  BinaryOp(op: DiceBinOp, a: DiceExpression<T>, b: DiceExpression<T>, meta: T);
-  UnaryOp(op: DiceUnOp, a: DiceExpression<T>, meta: T);
+enum DiceExpression {
+  Roll(basic: BasicRoll);
+  RollBag(dice: DiceBag, extractor: BagExtractor);
+  RollExpressions(exprs: Array<DiceExpression>, extractor: ExpressionExtractor);
+  BinaryOp(op: DiceBinOp, a: DiceExpression, b: DiceExpression);
+  UnaryOp(op: DiceUnOp, a: DiceExpression);
 }
 
 enum BagExtractor {
@@ -26,16 +26,16 @@ enum Range {
   Composite(ranges: Array<Range>);
 }
 
-enum BasicRoll<T> {
-  One(die: Die<T>);
-  Bag(list: Array<BasicRoll<T>>, meta: T);
-  Repeat(times: Int, die: Die<T>, meta: T);
-  Literal(value: Int, meta: T);
+enum BasicRoll {
+  One(sides: Int);
+  Bag(list: Array<BasicRoll>);
+  Repeat(times: Int, sides: Int);
+  Literal(value: Int);
 }
 
-enum DiceBag<T> {
-  DiceSet(dice: Array<Die<T>>);
-  RepeatDie(times: Int, die: Die<T>);
+enum DiceBag {
+  DiceSet(dice: Array<Sides>);
+  RepeatDie(times: Int, sides: Sides);
 }
 
 enum ExpressionExtractor {

@@ -5,12 +5,11 @@ import parsihax.ParseObject;
 using parsihax.Parser;
 using thx.Arrays;
 using thx.Functions;
-import thx.Unit;
 import thx.Validation;
 import dr.DiceExpression;
 
 class DiceParser {
-  public static function parse(s: String): Validation<String, DiceExpression<Unit>> {
+  public static function parse(s: String): Validation<String, DiceExpression> {
     return switch grammar.apply(s) {
       case { status: true, value: value }:
         Validation.success(value);
@@ -70,12 +69,6 @@ class DiceParser {
     on.map(Exact)
   ].alt();
 
-/*
-enum Range {
-  Composite(ranges: Array<Range>);
-}
-*/
-
   static var SUM = "sum".string() / "sum";
   static var AVERAGE = "average".string().or("avg".string()) / "average";
   static var MIN = "minimum".string().or("min".string()) / "minimum";
@@ -88,24 +81,15 @@ enum Range {
     SKIP_OWS(positive).skip("times".string())
   ].alt() / "times";
 
-// POSITIVE_SEQUENCE = OPEN_PAREN, { WS }, POSITIVE, { WS }, {COMMA, { WS }, POSITIVE, { WS } }, CLOSE_PAREN;
-// MATCH =
-//   POSITIVE, [ OR_MORE_LESS ] |
-//   (POSITIVE, { WS }, "...", { WS }, POSITIVE) |
-//   POSITIVE_SEQUENCE;
-// MAP_KEY_VALUE_PAIR = MATCH,  { WS }, ":", { WS }, NUMBER;
-// MAP_SEQUENCE = OPEN_PAREN, { WS }, MAP_KEY_VALUE_PAIR, { WS }, {COMMA, { WS }, MAP_KEY_VALUE_PAIR, { WS } }, CLOSE_PAREN;
 
-
-  static var basicLiteral = positive.map.fn(Literal(_, unit)) / "basic literal";
+  static var basicLiteral = positive.map.fn(Literal(_)) / "basic literal";
   static var literal = basicLiteral.map(Roll) / "literal";
-  static function toDie(sides: Int) return new Die(sides, unit);
 
   static var DEFAULT_DIE_SIDES = 6;
   static var die = [
-      (D + PERCENT).result(toDie(100)),
-      (D + positive).map(toDie),
-      D.result(toDie(DEFAULT_DIE_SIDES))
+      (D + PERCENT).result(100),
+      (D + positive),
+      D.result(DEFAULT_DIE_SIDES)
     ].alt() / "one die";
 
   static var basicDice = [
@@ -114,7 +98,7 @@ enum Range {
         return if(rolls == 1) {
           One(die);
         } else {
-          Repeat(rolls, die, unit);
+          Repeat(rolls, die);
         }
       });
     }),
@@ -127,7 +111,7 @@ enum Range {
     basicLiteral
   ].alt() / "dice set element";
 
-  static var basicDiceArray: ParseObject<Array<BasicRoll<Unit>>> = function() {
+  static var basicDiceArray: ParseObject<Array<BasicRoll>> = function() {
     return [
       OPEN_SET_BRACKET + OWS + [
         basicDiceSetElement,
@@ -137,8 +121,8 @@ enum Range {
     ].alt();
   }.lazy() / "dice set";
 
-  static var basicDiceSet: ParseObject<BasicRoll<Unit>> = function() {
-    return basicDiceArray.map(Bag.bind(_, unit));
+  static var basicDiceSet: ParseObject<BasicRoll> = function() {
+    return basicDiceArray.map(Bag);
   }.lazy() / "dice set";
 
   static var diceSet = basicDiceSet.map(Roll) / "dice set";
@@ -165,7 +149,7 @@ enum Range {
                 Explode(upTo, on);
               case Reroll:
                 Reroll(upTo, on);
-            }, unit);
+            });
           });
         }),
         range.map(function(ml) {
@@ -174,7 +158,7 @@ enum Range {
               Explode(Always, Exact(1));
             case Reroll:
               Reroll(Always, Exact(1));
-          }, unit);
+          });
         })
       ].alt();
     });
@@ -184,7 +168,7 @@ enum Range {
     explodeOrRerollBag
   ].alt();
 
-  static var basicExpressionSet: ParseObject<Array<DiceExpression<Unit>>> = function() {
+  static var basicExpressionSet: ParseObject<Array<DiceExpression>> = function() {
     return OPEN_SET_BRACKET + OWS +
       expression
         .sepBy(OWS + ",".string() + OWS)
@@ -194,7 +178,7 @@ enum Range {
   static var diceOrSet = [
     diceSet.map(function(v) {
       return switch v {
-        case Roll(Bag(list, _)):
+        case Roll(Bag(list)):
           list.map(Roll);
         case _:
           [v];
@@ -203,35 +187,35 @@ enum Range {
     basicExpressionSet
   ].alt();
 
-  static var expressionSetImplicit: ParseObject<DiceExpression<Unit>> =
-    diceOrSet.map.fn(RollExpressions(_, Sum, unit)) / "implicit sum";
-  static var expressionSetSum: ParseObject<DiceExpression<Unit>> =
-    diceOrSet.skip(OWS + SUM).map.fn(RollExpressions(_, Sum, unit)) / "sum";
-  static var expressionSetAverage: ParseObject<DiceExpression<Unit>> =
-    diceOrSet.skip(OWS + AVERAGE).map.fn(RollExpressions(_, Average, unit)) / "average";
-  static var expressionSetMin: ParseObject<DiceExpression<Unit>> =
-    diceOrSet.skip(OWS + MIN).map.fn(RollExpressions(_, Min, unit)) / "minimum";
-  static var expressionSetMax: ParseObject<DiceExpression<Unit>> =
-    diceOrSet.skip(OWS + MAX).map.fn(RollExpressions(_, Max, unit)) / "maximum";
-  static var expressionSetDropOrKeep: ParseObject<DiceExpression<Unit>> =
+  static var expressionSetImplicit: ParseObject<DiceExpression> =
+    diceOrSet.map.fn(RollExpressions(_, Sum)) / "implicit sum";
+  static var expressionSetSum: ParseObject<DiceExpression> =
+    diceOrSet.skip(OWS + SUM).map.fn(RollExpressions(_, Sum)) / "sum";
+  static var expressionSetAverage: ParseObject<DiceExpression> =
+    diceOrSet.skip(OWS + AVERAGE).map.fn(RollExpressions(_, Average)) / "average";
+  static var expressionSetMin: ParseObject<DiceExpression> =
+    diceOrSet.skip(OWS + MIN).map.fn(RollExpressions(_, Min)) / "minimum";
+  static var expressionSetMax: ParseObject<DiceExpression> =
+    diceOrSet.skip(OWS + MAX).map.fn(RollExpressions(_, Max)) / "maximum";
+  static var expressionSetDropOrKeep: ParseObject<DiceExpression> =
     diceOrSet.skip(WS).flatMap(function(expr) {
       return keepOrDrop.flatMap(function(kd) {
         return WS + (lowOrHigh.flatMap(function(lh) {
           return WS + positive.map(function(value) {
             return switch kd {
               case Drop:
-                RollExpressions(expr, Drop(lh, value), unit);
+                RollExpressions(expr, Drop(lh, value));
               case Keep:
-                RollExpressions(expr, Keep(lh, value), unit);
+                RollExpressions(expr, Keep(lh, value));
             };
           });
         }) |
           positive.map(function(value) {
             return switch kd {
               case Drop:
-                RollExpressions(expr, Drop(Low, value), unit);
+                RollExpressions(expr, Drop(Low, value));
               case Keep:
-                RollExpressions(expr, Keep(High, value), unit);
+                RollExpressions(expr, Keep(High, value));
             };
           })
         );
@@ -247,9 +231,9 @@ enum Range {
     expressionSetImplicit
   ].alt();
 
-  static var negate: ParseObject<DiceExpression<Unit>> = function() {
+  static var negate: ParseObject<DiceExpression> = function() {
     return MINUS + inlineExpression.map(function(expr) {
-      return UnaryOp(Negate, expr, unit);
+      return UnaryOp(Negate, expr);
     });
   }.lazy() / "negate";
 
@@ -262,26 +246,26 @@ enum Range {
 
   static var opRight = OWS + binOpSymbol.flatMap(function(o: DiceBinOp) {
       return OWS +
-        inlineExpression.map(function(b: DiceExpression<Unit>) {
+        inlineExpression.map(function(b: DiceExpression) {
           return { op: o, right: b };
         });
     });
 
-  static var binop: ParseObject<DiceExpression<Unit>> =
+  static var binop: ParseObject<DiceExpression> =
     function() {
       return inlineExpression.flatMap(
-        function(left: DiceExpression<Unit>) {
+        function(left: DiceExpression) {
           return opRight.times(1, 1000).map(function(a) {
             return a.reduce(function(left, item) {
               return switch item.op {
                 case Sum | Difference:
-                  return BinaryOp(item.op, left, item.right, unit);
+                  return BinaryOp(item.op, left, item.right);
                 case Multiplication | Division: // this seems too complicated but it works for now
                   return switch left {
-                    case BinaryOp(o, l, r, _):
-                      BinaryOp(o, l, BinaryOp(item.op, r, item.right, unit), unit);
+                    case BinaryOp(o, l, r):
+                      BinaryOp(o, l, BinaryOp(item.op, r, item.right));
                     case other:
-                      BinaryOp(item.op, left, item.right, unit);
+                      BinaryOp(item.op, left, item.right);
                   };
               };
             }, left);
@@ -294,7 +278,7 @@ enum Range {
     binop
   ].alt();
 
-  static var inlineExpression: ParseObject<DiceExpression<Unit>> = function() {
+  static var inlineExpression: ParseObject<DiceExpression> = function() {
     return [
       diceBagOp,
       expressionSetOp,
@@ -304,7 +288,7 @@ enum Range {
     ].alt();
   }.lazy() / "inline expression";
 
-  static var expression: ParseObject<DiceExpression<Unit>> = function() {
+  static var expression: ParseObject<DiceExpression> = function() {
     return [
       expressionOperations,
       inlineExpression

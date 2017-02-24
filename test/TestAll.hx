@@ -127,9 +127,9 @@ class TestAll {
         var expected = null == t.p ? t.t : t.p;
         var f = t.t != expected ? ' for "${t.t}"' : "";
         Assert.equals(expected, serialized, 'expected serialization to be "${expected}" but it is "${serialized}"$f', t.pos);
-        var minr = min().roll(v).getMeta();
+        var minr = min().roll(v).getResult();
         Assert.equals(t.min, minr, 'expected min to be ${t.min} but it is $minr', t.pos);
-        var maxr = max().roll(v).getMeta();
+        var maxr = max().roll(v).getResult();
         var expectedmax = null == t.max ? t.min : t.max;
         Assert.equals(expectedmax, maxr, 'expected max to be $expectedmax but it is $maxr', t.pos);
     }
@@ -138,11 +138,11 @@ class TestAll {
   public function testDiscrete() {
     var expr = unsafeParse("1d6"),
         roller = discrete(),
-        discrete = roller.roll(expr).getMeta();
+        discrete = roller.roll(expr).getResult();
     for(v in discrete.probabilities())
       Assert.floatEquals(0.16666666, v);
     Assert.same([1, 2, 3, 4, 5, 6], discrete.values());
-    // trace(roller.roll(unsafeParse("5d6 drop 2")).getMeta().toString());
+    // trace(roller.roll(unsafeParse("5d6 drop 2")).getResult().toString());
   }
 
   inline public function pos(?pos: haxe.PosInfos) return pos;
