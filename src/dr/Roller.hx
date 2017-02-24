@@ -3,7 +3,7 @@ package dr;
 using thx.Arrays;
 using thx.Functions;
 import dr.DiceExpression;
-import dr.DiceResult;
+import dr.RollResult;
 using dr.DiceExpressionExtensions;
 import dr.DiceExpressionExtensions.DiceResultExtensions.getResult;
 import dr.Algebra;
@@ -19,14 +19,23 @@ class Roller<Result> {
     this.algebra = algebra;
   }
 
-  public function roll(expr: DiceExpression): DiceResult<Result> {
+  public function roll(expr: DiceExpression): RollResult<Result> {
     return switch expr {
-      case Roll(roll):
-        basicRoll(roll);
+      case One(sides):
+        One({ result: algebra.die(sides), sides: sides });
+      case Repeat(times, sides):
+        var rolls = [for(i in 0...times) { result: algebra.die(sides), sides: sides }];
+        var result = sumDice(rolls);
+        RollExpressions(
+          rolls.map(One),
+          Sum,
+          result);
+      case Literal(value):
+        Literal(value, algebra.ofLiteral(value));
       case RollBag(dice, extractor):
         var rolls = extractRolls(dice, extractor);
         var result = extractResult(rolls, extractor);
-        DiceResult.RollBag(rolls.map.fn(DiceResult.Roll(BasicRollResult.One(_))), extractor, result);
+        RollResult.RollBag(rolls.map.fn(RollResult.One(_)), extractor, result);
       case RollExpressions(exprs, extractor):
         var exaluatedExpressions = exprs.map(roll),
             result = extractExpressionResults(exaluatedExpressions, extractor);
@@ -50,27 +59,6 @@ class Roller<Result> {
     };
   }
 
-  function basicRoll(roll: BasicRoll): DiceResult<Result> return switch roll {
-    case One(sides):
-      Roll(One({ result: algebra.die(sides), sides: sides }));
-    case Bag(list):
-      var rolls = list.map(basicRoll);
-      var result = sumResults(rolls);
-      DiceResult.RollExpressions(
-        rolls,
-        Sum,
-        result);
-    case Repeat(times, sides):
-      var rolls = [for(i in 0...times) { result: algebra.die(sides), sides: sides }];
-      var result = sumDice(rolls);
-      DiceResult.RollExpressions(
-        rolls.map.fn(DiceResult.Roll(BasicRollResult.One(_))),
-        Sum,
-        result);
-    case Literal(value):
-      Roll(Literal(value, algebra.ofLiteral(value)));
-  }
-
   function extractRolls(dice, extractor): Array<DieResult<Result>>
     return (switch extractor {
       case Explode(times, range):
@@ -82,15 +70,7 @@ class Roller<Result> {
   function sumDice(rolls: Array<DieResult<Result>>)
     return rolls.reduce(function(acc, roll) return algebra.sum(acc, roll.result), algebra.zero);
 
-  function sumBasicRoll(rolls: Array<BasicRollResult<Result>>)
-    return rolls.reduce(function(acc, roll) return algebra.sum(acc, switch roll {
-      case One(die):
-        die.result;
-      case Literal(_, result):
-        result;
-    }), algebra.zero);
-
-  function sumResults(rolls: Array<DiceResult<Result>>)
+  function sumResults(rolls: Array<RollResult<Result>>)
     return rolls.map.fn(_.getResult()).reduce(algebra.sum, algebra.zero);
 
   function extractResult(rolls: Array<DieResult<Result>>, extractor: BagExtractor)
@@ -100,7 +80,7 @@ class Roller<Result> {
         rolls.map.fn(_.result).reduce(algebra.sum, algebra.zero);
     };
 
-  function extractExpressionResults(exprs: Array<DiceResult<Result>>, extractor: ExpressionExtractor) {
+  function extractExpressionResults(exprs: Array<RollResult<Result>>, extractor: ExpressionExtractor) {
     exprs = flattenExprs(exprs);
     return switch extractor {
       case Average:
@@ -128,7 +108,7 @@ class Roller<Result> {
     };
   }
 
-  function flattenExprs(exprs: Array<DiceResult<Result>>): Array<DiceResult<Result>> {
+  function flattenExprs(exprs: Array<RollResult<Result>>): Array<RollResult<Result>> {
     return if(exprs.length == 1) {
       switch exprs[0] {
         case RollExpressions(exprs, _):

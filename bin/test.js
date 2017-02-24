@@ -692,12 +692,14 @@ dr_IntAlgebra.prototype = {
 	}
 	,__class__: dr_IntAlgebra
 };
-var dr_DiceExpression = { __ename__ : ["dr","DiceExpression"], __constructs__ : ["Roll","RollBag","RollExpressions","BinaryOp","UnaryOp"] };
-dr_DiceExpression.Roll = function(basic) { var $x = ["Roll",0,basic]; $x.__enum__ = dr_DiceExpression; return $x; };
-dr_DiceExpression.RollBag = function(dice,extractor) { var $x = ["RollBag",1,dice,extractor]; $x.__enum__ = dr_DiceExpression; return $x; };
-dr_DiceExpression.RollExpressions = function(exprs,extractor) { var $x = ["RollExpressions",2,exprs,extractor]; $x.__enum__ = dr_DiceExpression; return $x; };
-dr_DiceExpression.BinaryOp = function(op,a,b) { var $x = ["BinaryOp",3,op,a,b]; $x.__enum__ = dr_DiceExpression; return $x; };
-dr_DiceExpression.UnaryOp = function(op,a) { var $x = ["UnaryOp",4,op,a]; $x.__enum__ = dr_DiceExpression; return $x; };
+var dr_DiceExpression = { __ename__ : ["dr","DiceExpression"], __constructs__ : ["One","Repeat","Literal","RollBag","RollExpressions","BinaryOp","UnaryOp"] };
+dr_DiceExpression.One = function(sides) { var $x = ["One",0,sides]; $x.__enum__ = dr_DiceExpression; return $x; };
+dr_DiceExpression.Repeat = function(times,sides) { var $x = ["Repeat",1,times,sides]; $x.__enum__ = dr_DiceExpression; return $x; };
+dr_DiceExpression.Literal = function(value) { var $x = ["Literal",2,value]; $x.__enum__ = dr_DiceExpression; return $x; };
+dr_DiceExpression.RollBag = function(dice,extractor) { var $x = ["RollBag",3,dice,extractor]; $x.__enum__ = dr_DiceExpression; return $x; };
+dr_DiceExpression.RollExpressions = function(exprs,extractor) { var $x = ["RollExpressions",4,exprs,extractor]; $x.__enum__ = dr_DiceExpression; return $x; };
+dr_DiceExpression.BinaryOp = function(op,a,b) { var $x = ["BinaryOp",5,op,a,b]; $x.__enum__ = dr_DiceExpression; return $x; };
+dr_DiceExpression.UnaryOp = function(op,a) { var $x = ["UnaryOp",6,op,a]; $x.__enum__ = dr_DiceExpression; return $x; };
 var dr_BagExtractor = { __ename__ : ["dr","BagExtractor"], __constructs__ : ["Explode","Reroll"] };
 dr_BagExtractor.Explode = function(times,range) { var $x = ["Explode",0,times,range]; $x.__enum__ = dr_BagExtractor; return $x; };
 dr_BagExtractor.Reroll = function(times,range) { var $x = ["Reroll",1,times,range]; $x.__enum__ = dr_BagExtractor; return $x; };
@@ -711,11 +713,6 @@ dr_Range.Between = function(minInclusive,maxInclusive) { var $x = ["Between",1,m
 dr_Range.ValueOrMore = function(value) { var $x = ["ValueOrMore",2,value]; $x.__enum__ = dr_Range; return $x; };
 dr_Range.ValueOrLess = function(value) { var $x = ["ValueOrLess",3,value]; $x.__enum__ = dr_Range; return $x; };
 dr_Range.Composite = function(ranges) { var $x = ["Composite",4,ranges]; $x.__enum__ = dr_Range; return $x; };
-var dr_BasicRoll = { __ename__ : ["dr","BasicRoll"], __constructs__ : ["One","Bag","Repeat","Literal"] };
-dr_BasicRoll.One = function(sides) { var $x = ["One",0,sides]; $x.__enum__ = dr_BasicRoll; return $x; };
-dr_BasicRoll.Bag = function(list) { var $x = ["Bag",1,list]; $x.__enum__ = dr_BasicRoll; return $x; };
-dr_BasicRoll.Repeat = function(times,sides) { var $x = ["Repeat",2,times,sides]; $x.__enum__ = dr_BasicRoll; return $x; };
-dr_BasicRoll.Literal = function(value) { var $x = ["Literal",3,value]; $x.__enum__ = dr_BasicRoll; return $x; };
 var dr_DiceBag = { __ename__ : ["dr","DiceBag"], __constructs__ : ["DiceSet","RepeatDie"] };
 dr_DiceBag.DiceSet = function(dice) { var $x = ["DiceSet",0,dice]; $x.__enum__ = dr_DiceBag; return $x; };
 dr_DiceBag.RepeatDie = function(times,sides) { var $x = ["RepeatDie",1,times,sides]; $x.__enum__ = dr_DiceBag; return $x; };
@@ -752,17 +749,24 @@ dr_DiceExpressionExtensions.__name__ = ["dr","DiceExpressionExtensions"];
 dr_DiceExpressionExtensions.toString = function(expr) {
 	switch(expr[1]) {
 	case 0:
-		var roll = expr[2];
-		return dr_DiceExpressionExtensions.rollToString(roll);
+		var sides = expr[2];
+		return dr_DiceExpressionExtensions.diceToString(1,sides);
 	case 1:
+		var sides1 = expr[3];
+		var times = expr[2];
+		return dr_DiceExpressionExtensions.diceToString(times,sides1);
+	case 2:
+		var value = expr[2];
+		return "" + value;
+	case 3:
 		var extractor = expr[3];
 		var dice = expr[2];
 		return dr_DiceExpressionExtensions.diceBagToString(dice,extractor);
-	case 2:
+	case 4:
 		var extractor1 = expr[3];
 		var exprs = expr[2];
 		return dr_DiceExpressionExtensions.expressionsToString(exprs,extractor1);
-	case 3:
+	case 5:
 		var b = expr[4];
 		var a = expr[3];
 		var op = expr[2];
@@ -783,26 +787,9 @@ dr_DiceExpressionExtensions.toString = function(expr) {
 			break;
 		}
 		return tmp + tmp1 + " " + dr_DiceExpressionExtensions.toString(b);
-	case 4:
+	case 6:
 		var a1 = expr[3];
 		return "-" + dr_DiceExpressionExtensions.toString(a1);
-	}
-};
-dr_DiceExpressionExtensions.rollToString = function(roll) {
-	switch(roll[1]) {
-	case 0:
-		var sides = roll[2];
-		return dr_DiceExpressionExtensions.diceToString(1,sides);
-	case 1:
-		var list = roll[2];
-		return "{" + list.map(dr_DiceExpressionExtensions.rollToString).join(",") + "}";
-	case 2:
-		var sides1 = roll[3];
-		var times = roll[2];
-		return dr_DiceExpressionExtensions.diceToString(times,sides1);
-	case 3:
-		var value = roll[2];
-		return "" + value;
 	}
 };
 dr_DiceExpressionExtensions.diceToString = function(times,sides) {
@@ -924,14 +911,22 @@ dr_DiceExpressionExtensions.expressionExtractorToString = function(extractor) {
 dr_DiceExpressionExtensions.needsBraces = function(expr) {
 	switch(expr[1]) {
 	case 0:
+		var sides = expr[2];
 		return false;
 	case 1:
+		var sides1 = expr[3];
+		var times = expr[2];
 		return false;
 	case 2:
+		var value = expr[2];
 		return false;
 	case 3:
-		return true;
+		return false;
 	case 4:
+		return false;
+	case 5:
+		return true;
+	case 6:
 		return false;
 	}
 };
@@ -940,25 +935,21 @@ dr_DiceResultExtensions.__name__ = ["dr","DiceResultExtensions"];
 dr_DiceResultExtensions.getResult = function(expr) {
 	switch(expr[1]) {
 	case 0:
-		switch(expr[2][1]) {
-		case 0:
-			var die = expr[2][2];
-			return die.result;
-		case 1:
-			var result = expr[2][3];
-			return result;
-		}
-		break;
+		var die = expr[2];
+		return die.result;
 	case 1:
+		var result = expr[3];
+		return result;
+	case 2:
 		var result1 = expr[4];
 		return result1;
-	case 2:
+	case 3:
 		var result2 = expr[4];
 		return result2;
-	case 3:
+	case 4:
 		var result3 = expr[5];
 		return result3;
-	case 4:
+	case 5:
 		var result4 = expr[4];
 		return result4;
 	}
@@ -2900,15 +2891,6 @@ dr_DiceParser.SKIP_WS = function(parser) {
 dr_DiceParser.SKIP_OWS = function(parser) {
 	return parsihax_Parser.skip(parser,dr_DiceParser.OWS);
 };
-var dr_DiceResult = { __ename__ : ["dr","DiceResult"], __constructs__ : ["Roll","RollBag","RollExpressions","BinaryOp","UnaryOp"] };
-dr_DiceResult.Roll = function(basic) { var $x = ["Roll",0,basic]; $x.__enum__ = dr_DiceResult; return $x; };
-dr_DiceResult.RollBag = function(dice,extractor,result) { var $x = ["RollBag",1,dice,extractor,result]; $x.__enum__ = dr_DiceResult; return $x; };
-dr_DiceResult.RollExpressions = function(exprs,extractor,result) { var $x = ["RollExpressions",2,exprs,extractor,result]; $x.__enum__ = dr_DiceResult; return $x; };
-dr_DiceResult.BinaryOp = function(op,a,b,result) { var $x = ["BinaryOp",3,op,a,b,result]; $x.__enum__ = dr_DiceResult; return $x; };
-dr_DiceResult.UnaryOp = function(op,a,result) { var $x = ["UnaryOp",4,op,a,result]; $x.__enum__ = dr_DiceResult; return $x; };
-var dr_BasicRollResult = { __ename__ : ["dr","BasicRollResult"], __constructs__ : ["One","Literal"] };
-dr_BasicRollResult.One = function(die) { var $x = ["One",0,die]; $x.__enum__ = dr_BasicRollResult; return $x; };
-dr_BasicRollResult.Literal = function(value,result) { var $x = ["Literal",1,value,result]; $x.__enum__ = dr_BasicRollResult; return $x; };
 var dr_Discrete = function(weights,values) {
 	this.weightedValues = [];
 	var _g1 = 0;
@@ -3149,6 +3131,13 @@ dr_DiscreteAlgebra.prototype = {
 	}
 	,__class__: dr_DiscreteAlgebra
 };
+var dr_RollResult = { __ename__ : ["dr","RollResult"], __constructs__ : ["One","Literal","RollBag","RollExpressions","BinaryOp","UnaryOp"] };
+dr_RollResult.One = function(die) { var $x = ["One",0,die]; $x.__enum__ = dr_RollResult; return $x; };
+dr_RollResult.Literal = function(value,result) { var $x = ["Literal",1,value,result]; $x.__enum__ = dr_RollResult; return $x; };
+dr_RollResult.RollBag = function(dice,extractor,result) { var $x = ["RollBag",2,dice,extractor,result]; $x.__enum__ = dr_RollResult; return $x; };
+dr_RollResult.RollExpressions = function(exprs,extractor,result) { var $x = ["RollExpressions",3,exprs,extractor,result]; $x.__enum__ = dr_RollResult; return $x; };
+dr_RollResult.BinaryOp = function(op,a,b,result) { var $x = ["BinaryOp",4,op,a,b,result]; $x.__enum__ = dr_RollResult; return $x; };
+dr_RollResult.UnaryOp = function(op,a,result) { var $x = ["UnaryOp",5,op,a,result]; $x.__enum__ = dr_RollResult; return $x; };
 var dr_Roller = function(algebra) {
 	this.algebra = algebra;
 };
@@ -3164,58 +3153,11 @@ dr_Roller.prototype = {
 	,roll: function(expr) {
 		switch(expr[1]) {
 		case 0:
-			var roll = expr[2];
-			return this.basicRoll(roll);
+			var sides = expr[2];
+			return dr_RollResult.One({ result : this.algebra.die(sides), sides : sides});
 		case 1:
-			var extractor = expr[3];
-			var dice = expr[2];
-			var rolls = this.extractRolls(dice,extractor);
-			var result = this.extractResult(rolls,extractor);
-			return dr_DiceResult.RollBag(rolls.map(function(_) {
-				return dr_DiceResult.Roll(dr_BasicRollResult.One(_));
-			}),extractor,result);
-		case 2:
-			var extractor1 = expr[3];
-			var exprs = expr[2];
-			var exaluatedExpressions = exprs.map($bind(this,this.roll));
-			var result1 = this.extractExpressionResults(exaluatedExpressions,extractor1);
-			return dr_DiceResult.RollExpressions(exaluatedExpressions,extractor1,result1);
-		case 3:
-			var b = expr[4];
-			var a = expr[3];
-			var op = expr[2];
-			var ra = this.roll(a);
-			var rb = this.roll(b);
-			switch(op[1]) {
-			case 0:
-				return dr_DiceResult.BinaryOp(dr_DiceBinOp.Sum,ra,rb,this.algebra.sum(dr_DiceResultExtensions.getResult(ra),dr_DiceResultExtensions.getResult(rb)));
-			case 1:
-				return dr_DiceResult.BinaryOp(dr_DiceBinOp.Difference,ra,rb,this.algebra.subtract(dr_DiceResultExtensions.getResult(ra),dr_DiceResultExtensions.getResult(rb)));
-			case 2:
-				return dr_DiceResult.BinaryOp(dr_DiceBinOp.Division,ra,rb,this.algebra.divide(dr_DiceResultExtensions.getResult(ra),dr_DiceResultExtensions.getResult(rb)));
-			case 3:
-				return dr_DiceResult.BinaryOp(dr_DiceBinOp.Multiplication,ra,rb,this.algebra.multiply(dr_DiceResultExtensions.getResult(ra),dr_DiceResultExtensions.getResult(rb)));
-			}
-			break;
-		case 4:
-			var a1 = expr[3];
-			var ra1 = this.roll(a1);
-			return dr_DiceResult.UnaryOp(dr_DiceUnOp.Negate,ra1,this.algebra.negate(dr_DiceResultExtensions.getResult(ra1)));
-		}
-	}
-	,basicRoll: function(roll) {
-		switch(roll[1]) {
-		case 0:
-			var sides = roll[2];
-			return dr_DiceResult.Roll(dr_BasicRollResult.One({ result : this.algebra.die(sides), sides : sides}));
-		case 1:
-			var list = roll[2];
-			var rolls = list.map($bind(this,this.basicRoll));
-			var result = this.sumResults(rolls);
-			return dr_DiceResult.RollExpressions(rolls,dr_ExpressionExtractor.Sum,result);
-		case 2:
-			var sides1 = roll[3];
-			var times = roll[2];
+			var sides1 = expr[3];
+			var times = expr[2];
 			var _g = [];
 			var _g2 = 0;
 			var _g1 = times;
@@ -3223,14 +3165,47 @@ dr_Roller.prototype = {
 				var i = _g2++;
 				_g.push({ result : this.algebra.die(sides1), sides : sides1});
 			}
-			var rolls1 = _g;
-			var result1 = this.sumDice(rolls1);
-			return dr_DiceResult.RollExpressions(rolls1.map(function(_) {
-				return dr_DiceResult.Roll(dr_BasicRollResult.One(_));
-			}),dr_ExpressionExtractor.Sum,result1);
+			var rolls = _g;
+			var result = this.sumDice(rolls);
+			return dr_RollResult.RollExpressions(rolls.map(dr_RollResult.One),dr_ExpressionExtractor.Sum,result);
+		case 2:
+			var value = expr[2];
+			return dr_RollResult.Literal(value,this.algebra.ofLiteral(value));
 		case 3:
-			var value = roll[2];
-			return dr_DiceResult.Roll(dr_BasicRollResult.Literal(value,this.algebra.ofLiteral(value)));
+			var extractor = expr[3];
+			var dice = expr[2];
+			var rolls1 = this.extractRolls(dice,extractor);
+			var result1 = this.extractResult(rolls1,extractor);
+			return dr_RollResult.RollBag(rolls1.map(function(_) {
+				return dr_RollResult.One(_);
+			}),extractor,result1);
+		case 4:
+			var extractor1 = expr[3];
+			var exprs = expr[2];
+			var exaluatedExpressions = exprs.map($bind(this,this.roll));
+			var result2 = this.extractExpressionResults(exaluatedExpressions,extractor1);
+			return dr_RollResult.RollExpressions(exaluatedExpressions,extractor1,result2);
+		case 5:
+			var b = expr[4];
+			var a = expr[3];
+			var op = expr[2];
+			var ra = this.roll(a);
+			var rb = this.roll(b);
+			switch(op[1]) {
+			case 0:
+				return dr_RollResult.BinaryOp(dr_DiceBinOp.Sum,ra,rb,this.algebra.sum(dr_DiceResultExtensions.getResult(ra),dr_DiceResultExtensions.getResult(rb)));
+			case 1:
+				return dr_RollResult.BinaryOp(dr_DiceBinOp.Difference,ra,rb,this.algebra.subtract(dr_DiceResultExtensions.getResult(ra),dr_DiceResultExtensions.getResult(rb)));
+			case 2:
+				return dr_RollResult.BinaryOp(dr_DiceBinOp.Division,ra,rb,this.algebra.divide(dr_DiceResultExtensions.getResult(ra),dr_DiceResultExtensions.getResult(rb)));
+			case 3:
+				return dr_RollResult.BinaryOp(dr_DiceBinOp.Multiplication,ra,rb,this.algebra.multiply(dr_DiceResultExtensions.getResult(ra),dr_DiceResultExtensions.getResult(rb)));
+			}
+			break;
+		case 6:
+			var a1 = expr[3];
+			var ra1 = this.roll(a1);
+			return dr_RollResult.UnaryOp(dr_DiceUnOp.Negate,ra1,this.algebra.negate(dr_DiceResultExtensions.getResult(ra1)));
 		}
 	}
 	,extractRolls: function(dice,extractor) {
@@ -3249,23 +3224,6 @@ dr_Roller.prototype = {
 		var _gthis = this;
 		return thx_Arrays.reduce(rolls,function(acc,roll) {
 			return _gthis.algebra.sum(acc,roll.result);
-		},this.algebra.zero);
-	}
-	,sumBasicRoll: function(rolls) {
-		var _gthis = this;
-		return thx_Arrays.reduce(rolls,function(acc,roll) {
-			var tmp;
-			switch(roll[1]) {
-			case 0:
-				var die = roll[2];
-				tmp = die.result;
-				break;
-			case 1:
-				var result = roll[3];
-				tmp = result;
-				break;
-			}
-			return _gthis.algebra.sum(acc,tmp);
 		},this.algebra.zero);
 	}
 	,sumResults: function(rolls) {
@@ -3327,7 +3285,7 @@ dr_Roller.prototype = {
 	,flattenExprs: function(exprs) {
 		if(exprs.length == 1) {
 			var _g = exprs[0];
-			if(_g[1] == 2) {
+			if(_g[1] == 3) {
 				var exprs1 = _g[2];
 				return exprs1;
 			} else {
@@ -14123,17 +14081,16 @@ dr_DiceParser.AVERAGE = parsihax_Parser["as"](parsihax_Parser.or(parsihax_Parser
 dr_DiceParser.MIN = parsihax_Parser["as"](parsihax_Parser.or(parsihax_Parser.string("minimum"),parsihax_Parser.string("min")),"minimum");
 dr_DiceParser.MAX = parsihax_Parser["as"](parsihax_Parser.or(parsihax_Parser.string("maximum"),parsihax_Parser.string("max")),"maximum");
 dr_DiceParser.times = parsihax_Parser["as"](parsihax_Parser.alt([parsihax_Parser.result(parsihax_Parser.string("once"),1),parsihax_Parser.result(parsihax_Parser.string("twice"),2),parsihax_Parser.result(parsihax_Parser.string("thrice"),3),parsihax_Parser.skip(dr_DiceParser.SKIP_OWS(dr_DiceParser.positive),parsihax_Parser.string("times"))]),"times");
-dr_DiceParser.basicLiteral = (function($this) {
+dr_DiceParser.literal = (function($this) {
 	var $r;
 	var _e = dr_DiceParser.positive;
 	$r = parsihax_Parser["as"]((function(fun) {
 		return parsihax_Parser.map(_e,fun);
 	})(function(_) {
-		return dr_BasicRoll.Literal(_);
-	}),"basic literal");
+		return dr_DiceExpression.Literal(_);
+	}),"literal");
 	return $r;
 }(this));
-dr_DiceParser.literal = parsihax_Parser["as"](parsihax_Parser.map(dr_DiceParser.basicLiteral,dr_DiceExpression.Roll),"literal");
 dr_DiceParser.DEFAULT_DIE_SIDES = 6;
 dr_DiceParser.die = parsihax_Parser["as"](parsihax_Parser.alt([parsihax_Parser.result(parsihax_Parser.then(dr_DiceParser.D,dr_DiceParser.PERCENT),100),parsihax_Parser.then(dr_DiceParser.D,dr_DiceParser.positive),parsihax_Parser.result(dr_DiceParser.D,dr_DiceParser.DEFAULT_DIE_SIDES)]),"one die");
 dr_DiceParser.basicDice = (function($this) {
@@ -14141,9 +14098,9 @@ dr_DiceParser.basicDice = (function($this) {
 	var l = parsihax_Parser.flatMap(dr_DiceParser.positive,function(rolls) {
 		return parsihax_Parser.map(dr_DiceParser.die,function(die) {
 			if(rolls == 1) {
-				return dr_BasicRoll.One(die);
+				return dr_DiceExpression.One(die);
 			} else {
-				return dr_BasicRoll.Repeat(rolls,die);
+				return dr_DiceExpression.Repeat(rolls,die);
 			}
 		});
 	});
@@ -14151,20 +14108,19 @@ dr_DiceParser.basicDice = (function($this) {
 	$r = parsihax_Parser["as"](parsihax_Parser.alt([l,(function(fun) {
 		return parsihax_Parser.map(_e,fun);
 	})(function(_) {
-		return dr_BasicRoll.One(_);
+		return dr_DiceExpression.One(_);
 	})]),"basic dice");
 	return $r;
 }(this));
-dr_DiceParser.basicDiceSetElement = parsihax_Parser["as"](parsihax_Parser.alt([dr_DiceParser.basicDice,dr_DiceParser.basicLiteral]),"dice set element");
+dr_DiceParser.basicDiceSetElement = parsihax_Parser["as"](parsihax_Parser.alt([dr_DiceParser.basicDice,dr_DiceParser.literal]),"dice set element");
 dr_DiceParser.basicDiceArray = parsihax_Parser["as"](parsihax_Parser.lazy(function() {
-	return parsihax_Parser.alt([parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OPEN_SET_BRACKET,dr_DiceParser.OWS),parsihax_Parser.skip(parsihax_Parser.or(parsihax_Parser.sepBy1(parsihax_Parser.alt([dr_DiceParser.basicDiceSetElement,dr_DiceParser.basicDiceSet]),parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OWS,dr_DiceParser.COMMA),dr_DiceParser.OWS)),parsihax_Parser.succeed([])),parsihax_Parser.then(dr_DiceParser.OWS,dr_DiceParser.CLOSE_SET_BRACKET))),parsihax_Parser.map(dr_DiceParser.basicDice,function(v) {
+	return parsihax_Parser.alt([parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OPEN_SET_BRACKET,dr_DiceParser.OWS),parsihax_Parser.skip(parsihax_Parser.or(parsihax_Parser.sepBy1(parsihax_Parser.alt([dr_DiceParser.basicDiceSetElement,dr_DiceParser.diceSet]),parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OWS,dr_DiceParser.COMMA),dr_DiceParser.OWS)),parsihax_Parser.succeed([])),parsihax_Parser.then(dr_DiceParser.OWS,dr_DiceParser.CLOSE_SET_BRACKET))),parsihax_Parser.map(dr_DiceParser.basicDice,function(v) {
 		return [v];
 	})]);
 }),"dice set");
-dr_DiceParser.basicDiceSet = parsihax_Parser["as"](parsihax_Parser.lazy(function() {
-	return parsihax_Parser.map(dr_DiceParser.basicDiceArray,dr_BasicRoll.Bag);
+dr_DiceParser.diceSet = parsihax_Parser["as"](parsihax_Parser.map(dr_DiceParser.basicDiceArray,function(a1) {
+	return dr_DiceExpression.RollExpressions(a1,dr_ExpressionExtractor.Sum);
 }),"dice set");
-dr_DiceParser.diceSet = parsihax_Parser["as"](parsihax_Parser.map(dr_DiceParser.basicDiceSet,dr_DiceExpression.Roll),"dice set");
 dr_DiceParser.diceBag = parsihax_Parser.alt([parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OPEN_SET_BRACKET,dr_DiceParser.OWS),parsihax_Parser.map(parsihax_Parser.skip(parsihax_Parser.or(parsihax_Parser.sepBy1(dr_DiceParser.die,parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OWS,dr_DiceParser.COMMA),dr_DiceParser.OWS)),parsihax_Parser.succeed([])),parsihax_Parser.then(dr_DiceParser.OWS,dr_DiceParser.CLOSE_SET_BRACKET)),dr_DiceBag.DiceSet)),parsihax_Parser.flatMap(dr_DiceParser.positive,function(rolls) {
 	var a1 = rolls;
 	return parsihax_Parser.map(dr_DiceParser.die,function(a2) {
@@ -14206,13 +14162,9 @@ dr_DiceParser.basicExpressionSet = parsihax_Parser["as"](parsihax_Parser.lazy(fu
 	return parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OPEN_SET_BRACKET,dr_DiceParser.OWS),parsihax_Parser.skip(parsihax_Parser.or(parsihax_Parser.sepBy1(dr_DiceParser.expression,parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.string(",")),dr_DiceParser.OWS)),parsihax_Parser.succeed([])),parsihax_Parser.then(dr_DiceParser.OWS,dr_DiceParser.CLOSE_SET_BRACKET)));
 }),"expression set");
 dr_DiceParser.diceOrSet = parsihax_Parser.alt([parsihax_Parser.map(dr_DiceParser.diceSet,function(v) {
-	if(v[1] == 0) {
-		if(v[2][1] == 1) {
-			var list = v[2][2];
-			return list.map(dr_DiceExpression.Roll);
-		} else {
-			return [v];
-		}
+	if(v[1] == 4) {
+		var list = v[2];
+		return list;
 	} else {
 		return [v];
 	}
@@ -14309,7 +14261,7 @@ dr_DiceParser.binop = parsihax_Parser.lazy(function() {
 				case 0:case 1:
 					return dr_DiceExpression.BinaryOp(item.op,left1,item.right);
 				case 2:case 3:
-					if(left1[1] == 3) {
+					if(left1[1] == 5) {
 						var r = left1[4];
 						var l = left1[3];
 						var o = left1[2];

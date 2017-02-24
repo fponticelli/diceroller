@@ -5,8 +5,12 @@ import dr.DiceExpression;
 
 class DiceExpressionExtensions {
   public static function toString(expr: DiceExpression) return switch expr {
-    case Roll(roll):
-      rollToString(roll);
+    case Literal(value):
+      '$value';
+    case One(sides):
+      diceToString(1, sides);
+    case Repeat(times, sides):
+      diceToString(times, sides);
     case RollBag(dice, extractor):
       diceBagToString(dice, extractor);
     case RollExpressions(exprs, extractor):
@@ -21,18 +25,6 @@ class DiceExpressionExtensions {
     case UnaryOp(Negate, a):
       "-" + toString(a);
   }
-
-  public static function rollToString(roll: BasicRoll)
-    return switch roll {
-      case Literal(value):
-        '$value';
-      case One(sides):
-        diceToString(1, sides);
-      case Bag(list):
-        '{' + list.map(rollToString).join(",") + '}';
-      case Repeat(times, sides):
-        diceToString(times, sides);
-    };
 
   public static function diceToString(times: Int, sides: Int) {
     return switch [times, sides] {
@@ -97,7 +89,9 @@ class DiceExpressionExtensions {
 
   public static function needsBraces(expr) return switch expr {
     case BinaryOp(_, _, _): true;
-    case Roll(_): false;
+    case Literal(value): false;
+    case One(sides): false;
+    case Repeat(times, sides): false;
     case RollBag(_): false;
     case RollExpressions(_): false;
     case UnaryOp(_): false;
@@ -105,16 +99,16 @@ class DiceExpressionExtensions {
 }
 
 class DiceResultExtensions {
-  public static function getResult<T>(expr: DiceResult<T>): T {
+  public static function getResult<T>(expr: RollResult<T>): T {
     return switch expr {
-      case Roll(One(die)):
+      case One(die):
         die.result;
       case RollBag(_, _, result) |
            RollExpressions(_, _, result) |
            BinaryOp(_, _, _, result) |
            UnaryOp(_, _, result) |
           //  Roll(Bag(_, result)) |
-           Roll(Literal(_, result)):
+           Literal(_, result):
         result;
     };
   }

@@ -1,7 +1,9 @@
 package dr;
 
 enum DiceExpression {
-  Roll(basic: BasicRoll);
+  One(sides: Int);
+  Repeat(times: Int, sides: Int);
+  Literal(value: Int);
   RollBag(dice: DiceBag, extractor: BagExtractor);
   RollExpressions(exprs: Array<DiceExpression>, extractor: ExpressionExtractor);
   BinaryOp(op: DiceBinOp, a: DiceExpression, b: DiceExpression);
@@ -24,13 +26,6 @@ enum Range {
   ValueOrMore(value: Int);
   ValueOrLess(value: Int);
   Composite(ranges: Array<Range>);
-}
-
-enum BasicRoll {
-  One(sides: Int);
-  Bag(list: Array<BasicRoll>);
-  Repeat(times: Int, sides: Int);
-  Literal(value: Int);
 }
 
 enum DiceBag {

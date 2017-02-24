@@ -82,8 +82,8 @@ class DiceParser {
   ].alt() / "times";
 
 
-  static var basicLiteral = positive.map.fn(Literal(_)) / "basic literal";
-  static var literal = basicLiteral.map(Roll) / "literal";
+  static var literal = positive.map.fn(Literal(_)) / "literal";
+  // static var literal = basicLiteral.map(Roll) / "literal";
 
   static var DEFAULT_DIE_SIDES = 6;
   static var die = [
@@ -108,35 +108,34 @@ class DiceParser {
 
   static var basicDiceSetElement = [
     basicDice,
-    basicLiteral
+    literal
   ].alt() / "dice set element";
 
-  static var basicDiceArray: ParseObject<Array<BasicRoll>> = function() {
+  static var basicDiceArray: ParseObject<Array<DiceExpression>> = function() {
     return [
       OPEN_SET_BRACKET + OWS + [
         basicDiceSetElement,
-        basicDiceSet
+        diceSet
       ].alt().sepBy(OWS + COMMA + OWS).skip(OWS + CLOSE_SET_BRACKET),
       basicDice.map(function(v) return [v])
     ].alt();
   }.lazy() / "dice set";
 
-  static var basicDiceSet: ParseObject<BasicRoll> = function() {
-    return basicDiceArray.map(Bag);
-  }.lazy() / "dice set";
+  // static var diceSetArray: ParseObject<Array<DiceExpression>> = function() {
+  //   return basicDiceArray.map(RollExpressions.bind(_, Sum));
+  // }.lazy() / "dice set";
 
-  static var diceSet = basicDiceSet.map(Roll) / "dice set";
+  static var diceSet = basicDiceArray.map(RollExpressions.bind(_, Sum)) / "dice set";
 
-  // static var diceBag = function() {
-    static var diceBag =  [
-      OPEN_SET_BRACKET + OWS +
-        die.sepBy(OWS + COMMA + OWS)
-           .skip(OWS + CLOSE_SET_BRACKET)
-           .map(DiceSet),
-      positive.flatMap(function(rolls) {
-        return die.map(RepeatDie.bind(rolls, _));
-      }),
-    ].alt();
+  static var diceBag =  [
+    OPEN_SET_BRACKET + OWS +
+      die.sepBy(OWS + COMMA + OWS)
+          .skip(OWS + CLOSE_SET_BRACKET)
+          .map(DiceSet),
+    positive.flatMap(function(rolls) {
+      return die.map(RepeatDie.bind(rolls, _));
+    }),
+  ].alt();
 
   static var explodeOrRerollBag = OWS + diceBag.flatMap(function(db) {
     return OWS + explodeOrReroll.flatMap(function(er) {
@@ -178,8 +177,8 @@ class DiceParser {
   static var diceOrSet = [
     diceSet.map(function(v) {
       return switch v {
-        case Roll(Bag(list)):
-          list.map(Roll);
+        case RollExpressions(list, _):
+          list;
         case _:
           [v];
       };
