@@ -2,19 +2,21 @@ package dr;
 
 using thx.Strings;
 import dr.DiceExpression;
+using thx.Arrays;
+import haxe.ds.Option;
 
 class DiceExpressionExtensions {
   public static function toString(expr: DiceExpression) return switch expr {
     case Literal(value):
       '$value';
-    case One(sides):
+    case Die(sides):
       diceToString(1, sides);
-    case Repeat(times, sides):
+    case Dice(times, sides):
       diceToString(times, sides);
-    case RollBag(dice, extractor):
-      diceBagToString(dice, extractor);
-    case RollExpressions(exprs, extractor):
-      expressionsToString(exprs, extractor);
+    case DiceMap(dice, functor):
+      diceBagToString(dice, functor);
+    case DiceReducer(exprs, aggregator):
+      expressionsToString(exprs, aggregator);
     case BinaryOp(op, a, b):
       toString(a) + " " + (switch op {
         case Sum: "+";
@@ -35,19 +37,24 @@ class DiceExpressionExtensions {
     }
   }
 
-  public static function diceBagToString<T>(group: DiceBag, extractor: BagExtractor)
-    return (switch group {
-      case DiceSet(dice):
-        var s = dice.map(diceToString.bind(1, _)).join(",");
-         '{' + s + '}';
-      case RepeatDie(times, sides):
-        diceToString(times, sides);
-    }) + (switch extractor {
+  public static function diceBagToString<T>(dice: Array<Sides>, functor: DiceFunctor) {
+    return sidesToString(dice) +
+    (switch functor {
       case Explode(times, range):
-        [' explode'].concat([timesToString(times)]).concat([rangeToString(range)]).filter(Strings.hasContent).join(" ");
+        [" explode"].concat([timesToString(times)]).concat([rangeToString(range)]).filter(Strings.hasContent).join(" ");
       case Reroll(times, range):
-        [' reroll'].concat([timesToString(times)]).concat([rangeToString(range)]).filter(Strings.hasContent).join(" ");
+        [" reroll"].concat([timesToString(times)]).concat([rangeToString(range)]).filter(Strings.hasContent).join(" ");
     });
+  }
+
+  public static function sidesToString(dice: Array<Sides>) {
+    return if(dice.distinct().length == 1) {
+      diceToString(dice.length, dice[0]);
+    } else {
+      var s = dice.map(diceToString.bind(1, _)).join(",");
+      '{' + s + '}';
+    }
+  }
 
   public static function timesToString(times: Times) {
     // TODO
@@ -69,14 +76,14 @@ class DiceExpressionExtensions {
     };
   }
 
-  public static function expressionsToString<T>(exprs: Array<DiceExpression>, extractor: ExpressionExtractor)
+  public static function expressionsToString<T>(exprs: Array<DiceExpression>, aggregator: DiceReduce)
     return
       (exprs.length == 1 && !needsBraces(exprs[0]) ?
         exprs.map(toString).join(",") :
         '{' + exprs.map(toString).join(",") + '}') +
-        expressionExtractorToString(extractor);
+        expressionExtractorToString(aggregator);
 
-  public static function expressionExtractorToString(extractor) return switch extractor {
+  public static function expressionExtractorToString(aggregator) return switch aggregator {
     case Sum: "";
     case Average: " average";
     case Min: " min";
@@ -90,10 +97,10 @@ class DiceExpressionExtensions {
   public static function needsBraces(expr) return switch expr {
     case BinaryOp(_, _, _): true;
     case Literal(value): false;
-    case One(sides): false;
-    case Repeat(times, sides): false;
-    case RollBag(_): false;
-    case RollExpressions(_): false;
+    case Die(sides): false;
+    case Dice(times, sides): false;
+    case DiceMap(_): false;
+    case DiceReducer(_): false;
     case UnaryOp(_): false;
   }
 }

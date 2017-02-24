@@ -96,13 +96,13 @@ class DiceParser {
     positive.flatMap(function(rolls) {
       return die.map(function(die) {
         return if(rolls == 1) {
-          One(die);
+          Die(die);
         } else {
-          Repeat(rolls, die);
+          Dice(rolls, die);
         }
       });
     }),
-    die.map.fn(One(_))
+    die.map.fn(Die(_))
   ].alt() / "basic dice";
   // static var dice = basicDice.map(Roll) / "dice";
 
@@ -125,25 +125,30 @@ class DiceParser {
   //   return basicDiceArray.map(RollExpressions.bind(_, Sum));
   // }.lazy() / "dice set";
 
-  static var diceSet = basicDiceArray.map(RollExpressions.bind(_, Sum)) / "dice set";
+  static var diceSet = basicDiceArray.map(DiceReducer.bind(_, Sum)) / "dice set";
 
-  static var diceBag =  [
+  static var diceMap =  [
     OPEN_SET_BRACKET + OWS +
       die.sepBy(OWS + COMMA + OWS)
           .skip(OWS + CLOSE_SET_BRACKET)
-          .map(DiceSet),
+          // .map(DiceArray)
+          ,
     positive.flatMap(function(rolls) {
-      return die.map(RepeatDie.bind(rolls, _));
+      return die.map(function(sides) {
+        return [for(i in 0...rolls) sides];
+      }
+        // RepeatDie.bind(rolls, _)
+      );
     }),
   ].alt();
 
-  static var explodeOrRerollBag = OWS + diceBag.flatMap(function(db) {
+  static var explodeOrRerollBag = OWS + diceMap.flatMap(function(db) {
     return OWS + explodeOrReroll.flatMap(function(er) {
       return OWS + [
         times.flatMap(function(t) {
           var upTo = UpTo(t);
           return WS + range.map(function(on) {
-            return RollBag(db, switch er {
+            return DiceMap(db, switch er {
               case Explode:
                 Explode(upTo, on);
               case Reroll:
@@ -152,7 +157,7 @@ class DiceParser {
           });
         }),
         range.map(function(ml) {
-          return RollBag(db, switch er {
+          return DiceMap(db, switch er {
             case Explode:
               Explode(Always, Exact(1));
             case Reroll:
@@ -163,7 +168,7 @@ class DiceParser {
     });
   });
 
-  static var diceBagOp = [
+  static var diceMapOp = [
     explodeOrRerollBag
   ].alt();
 
@@ -177,7 +182,7 @@ class DiceParser {
   static var diceOrSet = [
     diceSet.map(function(v) {
       return switch v {
-        case RollExpressions(list, _):
+        case DiceReducer(list, _):
           list;
         case _:
           [v];
@@ -187,15 +192,15 @@ class DiceParser {
   ].alt();
 
   static var expressionSetImplicit: ParseObject<DiceExpression> =
-    diceOrSet.map.fn(RollExpressions(_, Sum)) / "implicit sum";
+    diceOrSet.map.fn(DiceReducer(_, Sum)) / "implicit sum";
   static var expressionSetSum: ParseObject<DiceExpression> =
-    diceOrSet.skip(OWS + SUM).map.fn(RollExpressions(_, Sum)) / "sum";
+    diceOrSet.skip(OWS + SUM).map.fn(DiceReducer(_, Sum)) / "sum";
   static var expressionSetAverage: ParseObject<DiceExpression> =
-    diceOrSet.skip(OWS + AVERAGE).map.fn(RollExpressions(_, Average)) / "average";
+    diceOrSet.skip(OWS + AVERAGE).map.fn(DiceReducer(_, Average)) / "average";
   static var expressionSetMin: ParseObject<DiceExpression> =
-    diceOrSet.skip(OWS + MIN).map.fn(RollExpressions(_, Min)) / "minimum";
+    diceOrSet.skip(OWS + MIN).map.fn(DiceReducer(_, Min)) / "minimum";
   static var expressionSetMax: ParseObject<DiceExpression> =
-    diceOrSet.skip(OWS + MAX).map.fn(RollExpressions(_, Max)) / "maximum";
+    diceOrSet.skip(OWS + MAX).map.fn(DiceReducer(_, Max)) / "maximum";
   static var expressionSetDropOrKeep: ParseObject<DiceExpression> =
     diceOrSet.skip(WS).flatMap(function(expr) {
       return keepOrDrop.flatMap(function(kd) {
@@ -203,18 +208,18 @@ class DiceParser {
           return WS + positive.map(function(value) {
             return switch kd {
               case Drop:
-                RollExpressions(expr, Drop(lh, value));
+                DiceReducer(expr, Drop(lh, value));
               case Keep:
-                RollExpressions(expr, Keep(lh, value));
+                DiceReducer(expr, Keep(lh, value));
             };
           });
         }) |
           positive.map(function(value) {
             return switch kd {
               case Drop:
-                RollExpressions(expr, Drop(Low, value));
+                DiceReducer(expr, Drop(Low, value));
               case Keep:
-                RollExpressions(expr, Keep(High, value));
+                DiceReducer(expr, Keep(High, value));
             };
           })
         );
@@ -279,7 +284,7 @@ class DiceParser {
 
   static var inlineExpression: ParseObject<DiceExpression> = function() {
     return [
-      diceBagOp,
+      diceMapOp,
       expressionSetOp,
       diceSet,
       literal,

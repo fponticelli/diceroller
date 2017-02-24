@@ -1,16 +1,25 @@
 package dr;
 
 enum DiceExpression {
-  One(sides: Int);
-  Repeat(times: Int, sides: Int);
+  Die(sides: Int);
+  Dice(times: Int, sides: Int);
   Literal(value: Int);
-  RollBag(dice: DiceBag, extractor: BagExtractor);
-  RollExpressions(exprs: Array<DiceExpression>, extractor: ExpressionExtractor);
+  DiceMap(dice: Array<Sides>, extractor: DiceFunctor);
+  DiceReducer(exprs: Array<DiceExpression>, extractor: DiceReduce);
   BinaryOp(op: DiceBinOp, a: DiceExpression, b: DiceExpression);
   UnaryOp(op: DiceUnOp, a: DiceExpression);
 }
 
-enum BagExtractor {
+enum DiceReduce {
+  Sum;
+  Average;
+  Min;
+  Max;
+  Drop(dir: LowHigh, value: Int);
+  Keep(dir: LowHigh, value: Int);
+}
+
+enum DiceFunctor {
   Explode(times: Times, range: Range);
   Reroll(times: Times, range: Range);
 }
@@ -26,20 +35,6 @@ enum Range {
   ValueOrMore(value: Int);
   ValueOrLess(value: Int);
   Composite(ranges: Array<Range>);
-}
-
-enum DiceBag {
-  DiceSet(dice: Array<Sides>);
-  RepeatDie(times: Int, sides: Sides);
-}
-
-enum ExpressionExtractor {
-  Sum;
-  Average;
-  Min;
-  Max;
-  Drop(dir: LowHigh, value: Int);
-  Keep(dir: LowHigh, value: Int);
 }
 
 enum LowHigh {
