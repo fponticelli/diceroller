@@ -1,8 +1,8 @@
 package dr;
 
-using thx.Strings;
 import dr.DiceExpression;
 using thx.Arrays;
+using thx.Strings;
 
 class DiceExpressionExtensions {
   public static function toString(expr: DiceExpression) return switch expr {
@@ -100,20 +100,5 @@ class DiceExpressionExtensions {
     case DiceMap(_): false;
     case DiceReducer(_): false;
     case UnaryOp(_): false;
-  }
-}
-
-class DiceResultExtensions {
-  public static function getResult<T>(expr: RollResult<T>): T {
-    return switch expr {
-      case OneResult(die):
-        die.result;
-      case DiceMapResult(_, _, result) |
-           DiceReducerResult(_, _, result) |
-           BinaryOpResult(_, _, _, result) |
-           UnaryOpResult(_, _, result) |
-           LiteralResult(_, result):
-        result;
-    };
   }
 }

@@ -469,7 +469,7 @@ TestAll.prototype = {
 		});
 	}
 	,testParseAndBoundaries: function() {
-		var tests = [{ min : 1, t : "1", pos : { fileName : "TestAll.hx", lineNumber : 27, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, t : "2", pos : { fileName : "TestAll.hx", lineNumber : 28, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "D", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 29, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 30, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1d", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 31, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1D", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 32, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1d6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 33, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1D6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 34, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d6", pos : { fileName : "TestAll.hx", lineNumber : 35, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "D6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 36, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : " d6 ", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 37, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d6 ", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 38, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : " d6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 39, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 100, t : "d%", pos : { fileName : "TestAll.hx", lineNumber : 40, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 300, t : "3d100", p : "3d%", pos : { fileName : "TestAll.hx", lineNumber : 41, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 8, t : "{d8}", p : "d8", pos : { fileName : "TestAll.hx", lineNumber : 43, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 2, t : "{2}", p : "2", pos : { fileName : "TestAll.hx", lineNumber : 44, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "{2,3}", pos : { fileName : "TestAll.hx", lineNumber : 45, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 6, t : "{2d3}", p : "2d3", pos : { fileName : "TestAll.hx", lineNumber : 46, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 14, t : "{d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 47, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 14, t : "{ d6 , d8 }", p : "{d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 48, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 18, t : "{d4,d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 49, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, max : 20, t : "{2,d4,d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 50, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 6, max : 30, t : "{2,d4,3d8}", pos : { fileName : "TestAll.hx", lineNumber : 51, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, max : 58, t : "{{2,d4,3d8},d4,3d8}", pos : { fileName : "TestAll.hx", lineNumber : 52, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -6, t : "-6", pos : { fileName : "TestAll.hx", lineNumber : 54, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -1, max : -6, t : "-d6", pos : { fileName : "TestAll.hx", lineNumber : 55, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -2, max : -10, t : "-{d6,d4}", pos : { fileName : "TestAll.hx", lineNumber : 56, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "2+3", p : "2 + 3", pos : { fileName : "TestAll.hx", lineNumber : 57, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, t : "2-1", p : "2 - 1", pos : { fileName : "TestAll.hx", lineNumber : 58, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 0, t : "2-1-1", p : "2 - 1 - 1", pos : { fileName : "TestAll.hx", lineNumber : 59, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 6, max : 25, t : "3 + d6 + 2d8", pos : { fileName : "TestAll.hx", lineNumber : 60, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 0, max : 19, t : "-3 + d6 + 2d8", pos : { fileName : "TestAll.hx", lineNumber : 61, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -2, max : 7, t : "-3 + -d6 + 2d8", pos : { fileName : "TestAll.hx", lineNumber : 62, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, max : 24, t : "d6 + 2d8 + 2", pos : { fileName : "TestAll.hx", lineNumber : 63, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 48, t : "d6 * 2d8 / 2", pos : { fileName : "TestAll.hx", lineNumber : 64, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 14, max : 14, t : "2 + 3 * 4", pos : { fileName : "TestAll.hx", lineNumber : 65, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -10, t : "2 + -3 * 4", pos : { fileName : "TestAll.hx", lineNumber : 66, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -10, t : "2 + 3 * -4", pos : { fileName : "TestAll.hx", lineNumber : 67, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, t : "-2 + 3 * 4", pos : { fileName : "TestAll.hx", lineNumber : 68, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 14, t : "2 + {3 * 4}", pos : { fileName : "TestAll.hx", lineNumber : 69, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 4, t : "100 / 25", pos : { fileName : "TestAll.hx", lineNumber : 71, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 75, t : "25 * 3", pos : { fileName : "TestAll.hx", lineNumber : 72, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, t : "150 / 25 * 3", pos : { fileName : "TestAll.hx", lineNumber : 73, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 18, t : "{150 / 25} * 3", pos : { fileName : "TestAll.hx", lineNumber : 74, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 11, max : 105, t : "{{2,d4,3d8},5} * {d4,3d8} / {3,d6}", pos : { fileName : "TestAll.hx", lineNumber : 75, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, max : 60, t : "10d6", pos : { fileName : "TestAll.hx", lineNumber : 77, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, max : 60, t : "10d6 sum", p : "10d6", pos : { fileName : "TestAll.hx", lineNumber : 78, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "10d6 min", pos : { fileName : "TestAll.hx", lineNumber : 79, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "10d6 minimum", p : "10d6 min", pos : { fileName : "TestAll.hx", lineNumber : 80, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "10d6 max", pos : { fileName : "TestAll.hx", lineNumber : 81, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "10d6 maximum", p : "10d6 max", pos : { fileName : "TestAll.hx", lineNumber : 82, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, t : "{1,2,3} min", pos : { fileName : "TestAll.hx", lineNumber : 83, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} max", pos : { fileName : "TestAll.hx", lineNumber : 84, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, t : "{1,2,3} avg", p : "{1,2,3} average", pos : { fileName : "TestAll.hx", lineNumber : 85, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "3d6 average", pos : { fileName : "TestAll.hx", lineNumber : 86, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 4, max : 24, t : "{3d6,5d6} average", pos : { fileName : "TestAll.hx", lineNumber : 87, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, t : "{1,2,3} average", pos : { fileName : "TestAll.hx", lineNumber : 88, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "{1,2,3} drop lowest 1", p : "{1,2,3} drop 1", pos : { fileName : "TestAll.hx", lineNumber : 90, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} drop lowest 2", p : "{1,2,3} drop 2", pos : { fileName : "TestAll.hx", lineNumber : 91, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} drop low 2", p : "{1,2,3} drop 2", pos : { fileName : "TestAll.hx", lineNumber : 92, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "{1,2,3} drop 1", pos : { fileName : "TestAll.hx", lineNumber : 93, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} drop highest 1", pos : { fileName : "TestAll.hx", lineNumber : 94, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, t : "{1,2,3} drop highest 2", pos : { fileName : "TestAll.hx", lineNumber : 95, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, t : "{1,2,3} drop high 2", p : "{1,2,3} drop highest 2", pos : { fileName : "TestAll.hx", lineNumber : 96, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 18, t : "5d6 drop 2", pos : { fileName : "TestAll.hx", lineNumber : 97, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, t : "{1,2,3} keep lowest 1", pos : { fileName : "TestAll.hx", lineNumber : 99, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} keep lowest 2", pos : { fileName : "TestAll.hx", lineNumber : 100, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} keep low 2", p : "{1,2,3} keep lowest 2", pos : { fileName : "TestAll.hx", lineNumber : 101, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} keep 1", pos : { fileName : "TestAll.hx", lineNumber : 102, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} keep highest 1", p : "{1,2,3} keep 1", pos : { fileName : "TestAll.hx", lineNumber : 103, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "{1,2,3} keep highest 2", p : "{1,2,3} keep 2", pos : { fileName : "TestAll.hx", lineNumber : 104, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "{1,2,3} keep high 2", p : "{1,2,3} keep 2", pos : { fileName : "TestAll.hx", lineNumber : 105, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 12, t : "5d6 keep 2", pos : { fileName : "TestAll.hx", lineNumber : 106, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 12, t : "{d2,d3,d4} explode once on 3", pos : { fileName : "TestAll.hx", lineNumber : 108, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 54, t : "3d6 explode twice on 6", pos : { fileName : "TestAll.hx", lineNumber : 109, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 108, t : "3d6 explode 5 times on 6", pos : { fileName : "TestAll.hx", lineNumber : 110, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 9, t : "{d2,d3,d4} reroll once on 1", pos : { fileName : "TestAll.hx", lineNumber : 112, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 18, t : "3d6 reroll twice on 6", pos : { fileName : "TestAll.hx", lineNumber : 113, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 18, t : "3d6 reroll 5 times on 6", pos : { fileName : "TestAll.hx", lineNumber : 114, className : "TestAll", methodName : "testParseAndBoundaries"}}];
+		var tests = [{ min : 1, t : "1", pos : { fileName : "TestAll.hx", lineNumber : 28, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, t : "2", pos : { fileName : "TestAll.hx", lineNumber : 29, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "D", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 30, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 31, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1d", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 32, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1D", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 33, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1d6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 34, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1D6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 35, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d6", pos : { fileName : "TestAll.hx", lineNumber : 36, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "D6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 37, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : " d6 ", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 38, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d6 ", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 39, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : " d6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 40, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 100, t : "d%", pos : { fileName : "TestAll.hx", lineNumber : 41, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 300, t : "3d100", p : "3d%", pos : { fileName : "TestAll.hx", lineNumber : 42, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 8, t : "{d8}", p : "d8", pos : { fileName : "TestAll.hx", lineNumber : 44, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 2, t : "{2}", p : "2", pos : { fileName : "TestAll.hx", lineNumber : 45, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "{2,3}", pos : { fileName : "TestAll.hx", lineNumber : 46, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 6, t : "{2d3}", p : "2d3", pos : { fileName : "TestAll.hx", lineNumber : 47, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 14, t : "{d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 48, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 14, t : "{ d6 , d8 }", p : "{d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 49, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 18, t : "{d4,d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 50, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, max : 20, t : "{2,d4,d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 51, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 6, max : 30, t : "{2,d4,3d8}", pos : { fileName : "TestAll.hx", lineNumber : 52, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, max : 58, t : "{{2,d4,3d8},d4,3d8}", pos : { fileName : "TestAll.hx", lineNumber : 53, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -6, t : "-6", pos : { fileName : "TestAll.hx", lineNumber : 55, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -1, max : -6, t : "-d6", pos : { fileName : "TestAll.hx", lineNumber : 56, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -2, max : -10, t : "-{d6,d4}", pos : { fileName : "TestAll.hx", lineNumber : 57, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "2+3", p : "2 + 3", pos : { fileName : "TestAll.hx", lineNumber : 58, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, t : "2-1", p : "2 - 1", pos : { fileName : "TestAll.hx", lineNumber : 59, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 0, t : "2-1-1", p : "2 - 1 - 1", pos : { fileName : "TestAll.hx", lineNumber : 60, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 6, max : 25, t : "3 + d6 + 2d8", pos : { fileName : "TestAll.hx", lineNumber : 61, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 0, max : 19, t : "-3 + d6 + 2d8", pos : { fileName : "TestAll.hx", lineNumber : 62, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -2, max : 7, t : "-3 + -d6 + 2d8", pos : { fileName : "TestAll.hx", lineNumber : 63, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, max : 24, t : "d6 + 2d8 + 2", pos : { fileName : "TestAll.hx", lineNumber : 64, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 48, t : "d6 * 2d8 / 2", pos : { fileName : "TestAll.hx", lineNumber : 65, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 14, max : 14, t : "2 + 3 * 4", pos : { fileName : "TestAll.hx", lineNumber : 66, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -10, t : "2 + -3 * 4", pos : { fileName : "TestAll.hx", lineNumber : 67, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -10, t : "2 + 3 * -4", pos : { fileName : "TestAll.hx", lineNumber : 68, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, t : "-2 + 3 * 4", pos : { fileName : "TestAll.hx", lineNumber : 69, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 14, t : "2 + {3 * 4}", pos : { fileName : "TestAll.hx", lineNumber : 70, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 4, t : "100 / 25", pos : { fileName : "TestAll.hx", lineNumber : 72, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 75, t : "25 * 3", pos : { fileName : "TestAll.hx", lineNumber : 73, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, t : "150 / 25 * 3", pos : { fileName : "TestAll.hx", lineNumber : 74, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 18, t : "{150 / 25} * 3", pos : { fileName : "TestAll.hx", lineNumber : 75, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 11, max : 105, t : "{{2,d4,3d8},5} * {d4,3d8} / {3,d6}", pos : { fileName : "TestAll.hx", lineNumber : 76, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, max : 60, t : "10d6", pos : { fileName : "TestAll.hx", lineNumber : 78, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, max : 60, t : "10d6 sum", p : "10d6", pos : { fileName : "TestAll.hx", lineNumber : 79, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "10d6 min", pos : { fileName : "TestAll.hx", lineNumber : 80, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "10d6 minimum", p : "10d6 min", pos : { fileName : "TestAll.hx", lineNumber : 81, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "10d6 max", pos : { fileName : "TestAll.hx", lineNumber : 82, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "10d6 maximum", p : "10d6 max", pos : { fileName : "TestAll.hx", lineNumber : 83, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, t : "{1,2,3} min", pos : { fileName : "TestAll.hx", lineNumber : 84, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} max", pos : { fileName : "TestAll.hx", lineNumber : 85, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, t : "{1,2,3} avg", p : "{1,2,3} average", pos : { fileName : "TestAll.hx", lineNumber : 86, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "3d6 average", pos : { fileName : "TestAll.hx", lineNumber : 87, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 4, max : 24, t : "{3d6,5d6} average", pos : { fileName : "TestAll.hx", lineNumber : 88, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, t : "{1,2,3} average", pos : { fileName : "TestAll.hx", lineNumber : 89, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "{1,2,3} drop lowest 1", p : "{1,2,3} drop 1", pos : { fileName : "TestAll.hx", lineNumber : 91, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} drop lowest 2", p : "{1,2,3} drop 2", pos : { fileName : "TestAll.hx", lineNumber : 92, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} drop low 2", p : "{1,2,3} drop 2", pos : { fileName : "TestAll.hx", lineNumber : 93, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "{1,2,3} drop 1", pos : { fileName : "TestAll.hx", lineNumber : 94, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} drop highest 1", pos : { fileName : "TestAll.hx", lineNumber : 95, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, t : "{1,2,3} drop highest 2", pos : { fileName : "TestAll.hx", lineNumber : 96, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, t : "{1,2,3} drop high 2", p : "{1,2,3} drop highest 2", pos : { fileName : "TestAll.hx", lineNumber : 97, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 18, t : "5d6 drop 2", pos : { fileName : "TestAll.hx", lineNumber : 98, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, t : "{1,2,3} keep lowest 1", pos : { fileName : "TestAll.hx", lineNumber : 100, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} keep lowest 2", pos : { fileName : "TestAll.hx", lineNumber : 101, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} keep low 2", p : "{1,2,3} keep lowest 2", pos : { fileName : "TestAll.hx", lineNumber : 102, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} keep 1", pos : { fileName : "TestAll.hx", lineNumber : 103, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} keep highest 1", p : "{1,2,3} keep 1", pos : { fileName : "TestAll.hx", lineNumber : 104, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "{1,2,3} keep highest 2", p : "{1,2,3} keep 2", pos : { fileName : "TestAll.hx", lineNumber : 105, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "{1,2,3} keep high 2", p : "{1,2,3} keep 2", pos : { fileName : "TestAll.hx", lineNumber : 106, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 12, t : "5d6 keep 2", pos : { fileName : "TestAll.hx", lineNumber : 107, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 12, t : "{d2,d3,d4} explode once on 3", pos : { fileName : "TestAll.hx", lineNumber : 109, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 54, t : "3d6 explode twice on 6", pos : { fileName : "TestAll.hx", lineNumber : 110, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 108, t : "3d6 explode 5 times on 6", pos : { fileName : "TestAll.hx", lineNumber : 111, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 9, t : "{d2,d3,d4} reroll once on 1", pos : { fileName : "TestAll.hx", lineNumber : 113, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 18, t : "3d6 reroll twice on 6", pos : { fileName : "TestAll.hx", lineNumber : 114, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 18, t : "3d6 reroll 5 times on 6", pos : { fileName : "TestAll.hx", lineNumber : 115, className : "TestAll", methodName : "testParseAndBoundaries"}}];
 		tests.map($bind(this,this.assertParseAndBoundaries));
 	}
 	,assertParseAndBoundaries: function(t) {
@@ -486,9 +486,9 @@ TestAll.prototype = {
 			var expected = null == t.p ? t.t : t.p;
 			var f = t.t != expected ? " for \"" + t.t + "\"" : "";
 			utest_Assert.equals(expected,serialized,"expected serialization to be \"" + expected + "\" but it is \"" + serialized + "\"" + f,t.pos);
-			var minr = dr_DiceResultExtensions.getResult(this.min().roll(v));
+			var minr = dr_RollResultExtensions.getResult(this.min().roll(v));
 			utest_Assert.equals(t.min,minr,"expected min to be " + t.min + " but it is " + minr,t.pos);
-			var maxr = dr_DiceResultExtensions.getResult(this.max().roll(v));
+			var maxr = dr_RollResultExtensions.getResult(this.max().roll(v));
 			var expectedmax = null == t.max ? t.min : t.max;
 			utest_Assert.equals(expectedmax,maxr,"expected max to be " + expectedmax + " but it is " + maxr,t.pos);
 			break;
@@ -497,15 +497,15 @@ TestAll.prototype = {
 	,testDiscrete: function() {
 		var expr = dr_DiceParser.unsafeParse("1d6");
 		var roller = this.discrete();
-		var discrete = dr_DiceResultExtensions.getResult(roller.roll(expr));
+		var discrete = dr_RollResultExtensions.getResult(roller.roll(expr));
 		var _g = 0;
 		var _g1 = discrete.probabilities();
 		while(_g < _g1.length) {
 			var v = _g1[_g];
 			++_g;
-			utest_Assert.floatEquals(0.16666666,v,null,null,{ fileName : "TestAll.hx", lineNumber : 143, className : "TestAll", methodName : "testDiscrete"});
+			utest_Assert.floatEquals(0.16666666,v,null,null,{ fileName : "TestAll.hx", lineNumber : 144, className : "TestAll", methodName : "testDiscrete"});
 		}
-		utest_Assert.same([1,2,3,4,5,6],discrete.values(),null,null,null,{ fileName : "TestAll.hx", lineNumber : 144, className : "TestAll", methodName : "testDiscrete"});
+		utest_Assert.same([1,2,3,4,5,6],discrete.values(),null,null,null,{ fileName : "TestAll.hx", lineNumber : 145, className : "TestAll", methodName : "testDiscrete"});
 	}
 	,pos: function(pos) {
 		return pos;
@@ -921,30 +921,6 @@ dr_DiceExpressionExtensions.needsBraces = function(expr) {
 		return true;
 	case 6:
 		return false;
-	}
-};
-var dr_DiceResultExtensions = function() { };
-dr_DiceResultExtensions.__name__ = ["dr","DiceResultExtensions"];
-dr_DiceResultExtensions.getResult = function(expr) {
-	switch(expr[1]) {
-	case 0:
-		var die = expr[2];
-		return die.result;
-	case 1:
-		var result = expr[3];
-		return result;
-	case 2:
-		var result1 = expr[4];
-		return result1;
-	case 3:
-		var result2 = expr[4];
-		return result2;
-	case 4:
-		var result3 = expr[5];
-		return result3;
-	case 5:
-		var result4 = expr[4];
-		return result4;
 	}
 };
 var parsihax_Parser = function() { };
@@ -3131,6 +3107,30 @@ dr_RollResult.DiceMapResult = function(dice,extractor,result) { var $x = ["DiceM
 dr_RollResult.DiceReducerResult = function(exprs,aggregator,result) { var $x = ["DiceReducerResult",3,exprs,aggregator,result]; $x.__enum__ = dr_RollResult; return $x; };
 dr_RollResult.BinaryOpResult = function(op,a,b,result) { var $x = ["BinaryOpResult",4,op,a,b,result]; $x.__enum__ = dr_RollResult; return $x; };
 dr_RollResult.UnaryOpResult = function(op,a,result) { var $x = ["UnaryOpResult",5,op,a,result]; $x.__enum__ = dr_RollResult; return $x; };
+var dr_RollResultExtensions = function() { };
+dr_RollResultExtensions.__name__ = ["dr","RollResultExtensions"];
+dr_RollResultExtensions.getResult = function(expr) {
+	switch(expr[1]) {
+	case 0:
+		var die = expr[2];
+		return die.result;
+	case 1:
+		var result = expr[3];
+		return result;
+	case 2:
+		var result1 = expr[4];
+		return result1;
+	case 3:
+		var result2 = expr[4];
+		return result2;
+	case 4:
+		var result3 = expr[5];
+		return result3;
+	case 5:
+		var result4 = expr[4];
+		return result4;
+	}
+};
 var dr_Roller = function(algebra) {
 	this.algebra = algebra;
 };
@@ -3186,19 +3186,19 @@ dr_Roller.prototype = {
 			var rb = this.roll(b);
 			switch(op[1]) {
 			case 0:
-				return dr_RollResult.BinaryOpResult(dr_DiceBinOp.Sum,ra,rb,this.algebra.sum(dr_DiceResultExtensions.getResult(ra),dr_DiceResultExtensions.getResult(rb)));
+				return dr_RollResult.BinaryOpResult(dr_DiceBinOp.Sum,ra,rb,this.algebra.sum(dr_RollResultExtensions.getResult(ra),dr_RollResultExtensions.getResult(rb)));
 			case 1:
-				return dr_RollResult.BinaryOpResult(dr_DiceBinOp.Difference,ra,rb,this.algebra.subtract(dr_DiceResultExtensions.getResult(ra),dr_DiceResultExtensions.getResult(rb)));
+				return dr_RollResult.BinaryOpResult(dr_DiceBinOp.Difference,ra,rb,this.algebra.subtract(dr_RollResultExtensions.getResult(ra),dr_RollResultExtensions.getResult(rb)));
 			case 2:
-				return dr_RollResult.BinaryOpResult(dr_DiceBinOp.Division,ra,rb,this.algebra.divide(dr_DiceResultExtensions.getResult(ra),dr_DiceResultExtensions.getResult(rb)));
+				return dr_RollResult.BinaryOpResult(dr_DiceBinOp.Division,ra,rb,this.algebra.divide(dr_RollResultExtensions.getResult(ra),dr_RollResultExtensions.getResult(rb)));
 			case 3:
-				return dr_RollResult.BinaryOpResult(dr_DiceBinOp.Multiplication,ra,rb,this.algebra.multiply(dr_DiceResultExtensions.getResult(ra),dr_DiceResultExtensions.getResult(rb)));
+				return dr_RollResult.BinaryOpResult(dr_DiceBinOp.Multiplication,ra,rb,this.algebra.multiply(dr_RollResultExtensions.getResult(ra),dr_RollResultExtensions.getResult(rb)));
 			}
 			break;
 		case 6:
 			var a1 = expr[3];
 			var ra1 = this.roll(a1);
-			return dr_RollResult.UnaryOpResult(dr_DiceUnOp.Negate,ra1,this.algebra.negate(dr_DiceResultExtensions.getResult(ra1)));
+			return dr_RollResult.UnaryOpResult(dr_DiceUnOp.Negate,ra1,this.algebra.negate(dr_RollResultExtensions.getResult(ra1)));
 		}
 	}
 	,extractRolls: function(dice,functor) {
@@ -3220,9 +3220,7 @@ dr_Roller.prototype = {
 		},this.algebra.zero);
 	}
 	,sumResults: function(rolls) {
-		return thx_Arrays.reduce(rolls.map(function(_) {
-			return dr_DiceResultExtensions.getResult(_);
-		}),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
+		return thx_Arrays.reduce(rolls.map(dr_RollResultExtensions.getResult),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
 	}
 	,extractResult: function(rolls,functor) {
 		switch(functor[1]) {
@@ -3244,23 +3242,21 @@ dr_Roller.prototype = {
 		exprs = this.flattenExprs(exprs);
 		switch(aggregator[1]) {
 		case 0:
-			return thx_Arrays.reduce(exprs.map(function(_) {
-				return dr_DiceResultExtensions.getResult(_);
-			}),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
+			return thx_Arrays.reduce(exprs.map(dr_RollResultExtensions.getResult),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
 		case 1:
-			return this.algebra.average(exprs.map(dr_DiceResultExtensions.getResult));
+			return this.algebra.average(exprs.map(dr_RollResultExtensions.getResult));
 		case 2:
-			return thx_Arrays.order(exprs.map(dr_DiceResultExtensions.getResult),($_=this.algebra,$bind($_,$_.compare))).shift();
+			return thx_Arrays.order(exprs.map(dr_RollResultExtensions.getResult),($_=this.algebra,$bind($_,$_.compare))).shift();
 		case 3:
-			return thx_Arrays.order(exprs.map(dr_DiceResultExtensions.getResult),($_=this.algebra,$bind($_,$_.compare))).pop();
+			return thx_Arrays.order(exprs.map(dr_RollResultExtensions.getResult),($_=this.algebra,$bind($_,$_.compare))).pop();
 		case 4:
 			var value = aggregator[3];
 			var dir = aggregator[2];
 			switch(dir[1]) {
 			case 0:
-				return thx_Arrays.reduce(thx_Arrays.order(exprs.map(dr_DiceResultExtensions.getResult),($_=this.algebra,$bind($_,$_.compare))).slice(value),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
+				return thx_Arrays.reduce(thx_Arrays.order(exprs.map(dr_RollResultExtensions.getResult),($_=this.algebra,$bind($_,$_.compare))).slice(value),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
 			case 1:
-				return thx_Arrays.reduce(thx_Arrays.order(exprs.map(dr_DiceResultExtensions.getResult),($_=this.algebra,$bind($_,$_.compare))).slice(0,-value),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
+				return thx_Arrays.reduce(thx_Arrays.order(exprs.map(dr_RollResultExtensions.getResult),($_=this.algebra,$bind($_,$_.compare))).slice(0,-value),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
 			}
 			break;
 		case 5:
@@ -3268,9 +3264,9 @@ dr_Roller.prototype = {
 			var dir1 = aggregator[2];
 			switch(dir1[1]) {
 			case 0:
-				return thx_Arrays.reduce(thx_Arrays.order(exprs.map(dr_DiceResultExtensions.getResult),($_=this.algebra,$bind($_,$_.compare))).slice(0,value1),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
+				return thx_Arrays.reduce(thx_Arrays.order(exprs.map(dr_RollResultExtensions.getResult),($_=this.algebra,$bind($_,$_.compare))).slice(0,value1),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
 			case 1:
-				return thx_Arrays.reduce(thx_Arrays.order(exprs.map(dr_DiceResultExtensions.getResult),($_=this.algebra,$bind($_,$_.compare))).slice(-value1),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
+				return thx_Arrays.reduce(thx_Arrays.order(exprs.map(dr_RollResultExtensions.getResult),($_=this.algebra,$bind($_,$_.compare))).slice(-value1),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
 			}
 			break;
 		}

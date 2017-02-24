@@ -1,12 +1,12 @@
 package dr;
 
+import dr.DiceExpression;
 import parsihax.Parser.*;
 import parsihax.ParseObject;
 using parsihax.Parser;
 using thx.Arrays;
 using thx.Functions;
 import thx.Validation;
-import dr.DiceExpression;
 
 class DiceParser {
   public static function parse(s: String): Validation<String, DiceExpression> {

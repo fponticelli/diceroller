@@ -3,6 +3,7 @@ import utest.UTest;
 using dr.DiceExpressionExtensions;
 import dr.DiceParser.*;
 import dr.Roller;
+using dr.RollResultExtensions;
 
 class TestAll {
   public static function main() {

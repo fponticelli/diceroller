@@ -2,11 +2,10 @@ package dr;
 
 using thx.Arrays;
 using thx.Functions;
+import dr.Algebra;
 import dr.DiceExpression;
 import dr.RollResult;
-using dr.DiceExpressionExtensions;
-import dr.DiceExpressionExtensions.DiceResultExtensions.getResult;
-import dr.Algebra;
+import dr.RollResultExtensions.getResult;
 
 class Roller<Result> {
   public static function int(roll: Sides -> Int)
@@ -45,17 +44,17 @@ class Roller<Result> {
             rb = roll(b);
         switch op {
           case Sum:
-            BinaryOpResult(Sum, ra, rb, algebra.sum(ra.getResult(), rb.getResult()));
+            BinaryOpResult(Sum, ra, rb, algebra.sum(getResult(ra), getResult(rb)));
           case Difference:
-            BinaryOpResult(Difference, ra, rb, algebra.subtract(ra.getResult(), rb.getResult()));
+            BinaryOpResult(Difference, ra, rb, algebra.subtract(getResult(ra), getResult(rb)));
           case Division:
-            BinaryOpResult(Division, ra, rb, algebra.divide(ra.getResult(), rb.getResult()));
+            BinaryOpResult(Division, ra, rb, algebra.divide(getResult(ra), getResult(rb)));
           case Multiplication:
-            BinaryOpResult(Multiplication, ra, rb, algebra.multiply(ra.getResult(), rb.getResult()));
+            BinaryOpResult(Multiplication, ra, rb, algebra.multiply(getResult(ra), getResult(rb)));
         }
       case UnaryOp(Negate, a):
         var ra = roll(a);
-        UnaryOpResult(Negate, ra, algebra.negate(ra.getResult()));
+        UnaryOpResult(Negate, ra, algebra.negate(getResult(ra)));
     };
   }
 
@@ -71,7 +70,7 @@ class Roller<Result> {
     return rolls.reduce(function(acc, roll) return algebra.sum(acc, roll.result), algebra.zero);
 
   function sumResults(rolls: Array<RollResult<Result>>)
-    return rolls.map.fn(_.getResult()).reduce(algebra.sum, algebra.zero);
+    return rolls.map(getResult).reduce(algebra.sum, algebra.zero);
 
   function extractResult(rolls: Array<DieResult<Result>>, functor: DiceFunctor)
     return switch functor {
@@ -86,7 +85,7 @@ class Roller<Result> {
       case Average:
         algebra.average(exprs.map(getResult));
       case Sum:
-        exprs.map.fn(_.getResult()).reduce(algebra.sum, algebra.zero);
+        exprs.map(getResult).reduce(algebra.sum, algebra.zero);
       case Min:
         exprs.map(getResult).order(algebra.compare).shift();
       case Max:
