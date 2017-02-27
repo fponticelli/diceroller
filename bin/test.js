@@ -468,8 +468,18 @@ TestAll.prototype = {
 			return 1;
 		});
 	}
+	,testRoller: function() {
+		var tests = [{ test : dr_DiceExpression.Die(6), min : dr_RollResult.OneResult({ result : 1, sides : 6}), max : dr_RollResult.OneResult({ result : 6, sides : 6}), pos : { fileName : "TestAll.hx", lineNumber : 33, className : "TestAll", methodName : "testRoller"}},{ test : dr_DiceExpression.Literal(6), min : dr_RollResult.LiteralResult(6,6), max : dr_RollResult.LiteralResult(6,6), pos : { fileName : "TestAll.hx", lineNumber : 37, className : "TestAll", methodName : "testRoller"}},{ test : dr_DiceExpression.DiceReduce(dr_DiceReduceable.DiceExpressions([dr_DiceExpression.Literal(1),dr_DiceExpression.Literal(2),dr_DiceExpression.Literal(3)]),dr_DiceReducer.Sum), min : dr_RollResult.DiceReduceResult(dr_DiceReduceableResult.DiceExpressionsResult([dr_RollResult.LiteralResult(1,1),dr_RollResult.LiteralResult(2,2),dr_RollResult.LiteralResult(3,3)]),dr_DiceReducer.Sum,6), max : dr_RollResult.DiceReduceResult(dr_DiceReduceableResult.DiceExpressionsResult([dr_RollResult.LiteralResult(1,1),dr_RollResult.LiteralResult(2,2),dr_RollResult.LiteralResult(3,3)]),dr_DiceReducer.Sum,6), pos : { fileName : "TestAll.hx", lineNumber : 41, className : "TestAll", methodName : "testRoller"}},{ test : dr_DiceExpression.DiceReduce(dr_DiceReduceable.DiceExpressions([dr_DiceExpression.Literal(1),dr_DiceExpression.Literal(2),dr_DiceExpression.Literal(3)]),dr_DiceReducer.Average), min : dr_RollResult.DiceReduceResult(dr_DiceReduceableResult.DiceExpressionsResult([dr_RollResult.LiteralResult(1,1),dr_RollResult.LiteralResult(2,2),dr_RollResult.LiteralResult(3,3)]),dr_DiceReducer.Average,2), max : dr_RollResult.DiceReduceResult(dr_DiceReduceableResult.DiceExpressionsResult([dr_RollResult.LiteralResult(1,1),dr_RollResult.LiteralResult(2,2),dr_RollResult.LiteralResult(3,3)]),dr_DiceReducer.Average,2), pos : { fileName : "TestAll.hx", lineNumber : 45, className : "TestAll", methodName : "testRoller"}},{ test : dr_DiceExpression.DiceReduce(dr_DiceReduceable.DiceExpressions([dr_DiceExpression.Literal(1),dr_DiceExpression.Literal(2),dr_DiceExpression.Literal(3)]),dr_DiceReducer.Min), min : dr_RollResult.DiceReduceResult(dr_DiceReduceableResult.DiceExpressionsResult([dr_RollResult.LiteralResult(1,1),dr_RollResult.LiteralResult(2,2),dr_RollResult.LiteralResult(3,3)]),dr_DiceReducer.Min,1), max : dr_RollResult.DiceReduceResult(dr_DiceReduceableResult.DiceExpressionsResult([dr_RollResult.LiteralResult(1,1),dr_RollResult.LiteralResult(2,2),dr_RollResult.LiteralResult(3,3)]),dr_DiceReducer.Min,1), pos : { fileName : "TestAll.hx", lineNumber : 49, className : "TestAll", methodName : "testRoller"}},{ test : dr_DiceExpression.DiceReduce(dr_DiceReduceable.DiceExpressions([dr_DiceExpression.Literal(1),dr_DiceExpression.Literal(2),dr_DiceExpression.Literal(3)]),dr_DiceReducer.Max), min : dr_RollResult.DiceReduceResult(dr_DiceReduceableResult.DiceExpressionsResult([dr_RollResult.LiteralResult(1,1),dr_RollResult.LiteralResult(2,2),dr_RollResult.LiteralResult(3,3)]),dr_DiceReducer.Max,3), max : dr_RollResult.DiceReduceResult(dr_DiceReduceableResult.DiceExpressionsResult([dr_RollResult.LiteralResult(1,1),dr_RollResult.LiteralResult(2,2),dr_RollResult.LiteralResult(3,3)]),dr_DiceReducer.Max,3), pos : { fileName : "TestAll.hx", lineNumber : 53, className : "TestAll", methodName : "testRoller"}},{ test : dr_DiceExpression.DiceReduce(dr_DiceReduceable.DiceListWithFilter(dr_DiceFilterable.DiceExpressions([dr_DiceExpression.Literal(1),dr_DiceExpression.Literal(2),dr_DiceExpression.Literal(3)]),dr_DiceFilter.Drop(dr_LowHigh.Low,1)),dr_DiceReducer.Sum), min : dr_RollResult.DiceReduceResult(dr_DiceReduceableResult.DiceFilterableResult([dr_DieResultFilter.Discard(dr_RollResult.LiteralResult(1,1)),dr_DieResultFilter.Keep(dr_RollResult.LiteralResult(2,2)),dr_DieResultFilter.Keep(dr_RollResult.LiteralResult(3,3))],dr_DiceFilter.Drop(dr_LowHigh.Low,1)),dr_DiceReducer.Sum,5), max : dr_RollResult.DiceReduceResult(dr_DiceReduceableResult.DiceFilterableResult([dr_DieResultFilter.Discard(dr_RollResult.LiteralResult(1,1)),dr_DieResultFilter.Keep(dr_RollResult.LiteralResult(2,2)),dr_DieResultFilter.Keep(dr_RollResult.LiteralResult(3,3))],dr_DiceFilter.Drop(dr_LowHigh.Low,1)),dr_DiceReducer.Sum,5), pos : { fileName : "TestAll.hx", lineNumber : 57, className : "TestAll", methodName : "testRoller"}},{ test : dr_DiceExpression.DiceReduce(dr_DiceReduceable.DiceListWithMap([2,3,4],dr_DiceFunctor.Explode(dr_Times.UpTo(1),dr_Range.ValueOrMore(3))),dr_DiceReducer.Sum), min : dr_RollResult.DiceReduceResult(dr_DiceReduceableResult.DiceMapeableResult([dr_DiceResultMapped.Normal({ result : 1, sides : 2}),dr_DiceResultMapped.Normal({ result : 1, sides : 3}),dr_DiceResultMapped.Normal({ result : 1, sides : 4})],dr_DiceFunctor.Explode(dr_Times.UpTo(1),dr_Range.ValueOrMore(3))),dr_DiceReducer.Sum,3), max : dr_RollResult.DiceReduceResult(dr_DiceReduceableResult.DiceMapeableResult([dr_DiceResultMapped.Normal({ result : 2, sides : 2}),dr_DiceResultMapped.Exploded([{ result : 3, sides : 3},{ result : 3, sides : 3}]),dr_DiceResultMapped.Exploded([{ result : 4, sides : 4},{ result : 4, sides : 4}])],dr_DiceFunctor.Explode(dr_Times.UpTo(1),dr_Range.ValueOrMore(3))),dr_DiceReducer.Sum,16), pos : { fileName : "TestAll.hx", lineNumber : 69, className : "TestAll", methodName : "testRoller"}},{ test : dr_DiceExpression.DiceReduce(dr_DiceReduceable.DiceListWithMap([2,3,4],dr_DiceFunctor.Reroll(dr_Times.UpTo(1),dr_Range.ValueOrMore(3))),dr_DiceReducer.Sum), min : dr_RollResult.DiceReduceResult(dr_DiceReduceableResult.DiceMapeableResult([dr_DiceResultMapped.Normal({ result : 1, sides : 2}),dr_DiceResultMapped.Normal({ result : 1, sides : 3}),dr_DiceResultMapped.Normal({ result : 1, sides : 4})],dr_DiceFunctor.Reroll(dr_Times.UpTo(1),dr_Range.ValueOrMore(3))),dr_DiceReducer.Sum,3), max : dr_RollResult.DiceReduceResult(dr_DiceReduceableResult.DiceMapeableResult([dr_DiceResultMapped.Normal({ result : 2, sides : 2}),dr_DiceResultMapped.Rerolled([{ result : 3, sides : 3},{ result : 3, sides : 3}]),dr_DiceResultMapped.Rerolled([{ result : 4, sides : 4},{ result : 4, sides : 4}])],dr_DiceFunctor.Reroll(dr_Times.UpTo(1),dr_Range.ValueOrMore(3))),dr_DiceReducer.Sum,9), pos : { fileName : "TestAll.hx", lineNumber : 81, className : "TestAll", methodName : "testRoller"}},{ test : dr_DiceExpression.BinaryOp(dr_DiceBinOp.Sum,dr_DiceExpression.Literal(3),dr_DiceExpression.Die(2)), min : dr_RollResult.BinaryOpResult(dr_DiceBinOp.Sum,dr_RollResult.LiteralResult(3,3),dr_RollResult.OneResult({ result : 1, sides : 2}),4), max : dr_RollResult.BinaryOpResult(dr_DiceBinOp.Sum,dr_RollResult.LiteralResult(3,3),dr_RollResult.OneResult({ result : 2, sides : 2}),5), pos : { fileName : "TestAll.hx", lineNumber : 95, className : "TestAll", methodName : "testRoller"}},{ test : dr_DiceExpression.UnaryOp(dr_DiceUnOp.Negate,dr_DiceExpression.Literal(3)), min : dr_RollResult.UnaryOpResult(dr_DiceUnOp.Negate,dr_RollResult.LiteralResult(3,3),-3), max : dr_RollResult.UnaryOpResult(dr_DiceUnOp.Negate,dr_RollResult.LiteralResult(3,3),-3), pos : { fileName : "TestAll.hx", lineNumber : 107, className : "TestAll", methodName : "testRoller"}}];
+		var _g = 0;
+		while(_g < tests.length) {
+			var test = tests[_g];
+			++_g;
+			utest_Assert.same(test.min,this.min().roll(test.test),null,null,null,test.pos);
+			utest_Assert.same(test.max,this.max().roll(test.test),null,null,null,test.pos);
+		}
+	}
 	,testParseAndBoundaries: function() {
-		var tests = [{ min : 1, t : "1", pos : { fileName : "TestAll.hx", lineNumber : 28, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, t : "2", pos : { fileName : "TestAll.hx", lineNumber : 29, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "D", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 30, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 31, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1d", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 32, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1D", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 33, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1d6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 34, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1D6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 35, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d6", pos : { fileName : "TestAll.hx", lineNumber : 36, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "D6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 37, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : " d6 ", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 38, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d6 ", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 39, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : " d6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 40, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 100, t : "d%", pos : { fileName : "TestAll.hx", lineNumber : 41, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 300, t : "3d100", p : "3d%", pos : { fileName : "TestAll.hx", lineNumber : 42, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 8, t : "{d8}", p : "d8", pos : { fileName : "TestAll.hx", lineNumber : 44, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 2, t : "{2}", p : "2", pos : { fileName : "TestAll.hx", lineNumber : 45, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "{2,3}", pos : { fileName : "TestAll.hx", lineNumber : 46, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 6, t : "{2d3}", p : "2d3", pos : { fileName : "TestAll.hx", lineNumber : 47, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 14, t : "{d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 48, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 14, t : "{ d6 , d8 }", p : "{d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 49, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 18, t : "{d4,d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 50, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, max : 20, t : "{2,d4,d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 51, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 6, max : 30, t : "{2,d4,3d8}", pos : { fileName : "TestAll.hx", lineNumber : 52, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, max : 58, t : "{{2,d4,3d8},d4,3d8}", pos : { fileName : "TestAll.hx", lineNumber : 53, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -6, t : "-6", pos : { fileName : "TestAll.hx", lineNumber : 55, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -1, max : -6, t : "-d6", pos : { fileName : "TestAll.hx", lineNumber : 56, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -2, max : -10, t : "-{d6,d4}", pos : { fileName : "TestAll.hx", lineNumber : 57, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "2+3", p : "2 + 3", pos : { fileName : "TestAll.hx", lineNumber : 58, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, t : "2-1", p : "2 - 1", pos : { fileName : "TestAll.hx", lineNumber : 59, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 0, t : "2-1-1", p : "2 - 1 - 1", pos : { fileName : "TestAll.hx", lineNumber : 60, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 6, max : 25, t : "3 + d6 + 2d8", pos : { fileName : "TestAll.hx", lineNumber : 61, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 0, max : 19, t : "-3 + d6 + 2d8", pos : { fileName : "TestAll.hx", lineNumber : 62, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -2, max : 7, t : "-3 + -d6 + 2d8", pos : { fileName : "TestAll.hx", lineNumber : 63, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, max : 24, t : "d6 + 2d8 + 2", pos : { fileName : "TestAll.hx", lineNumber : 64, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 48, t : "d6 * 2d8 / 2", pos : { fileName : "TestAll.hx", lineNumber : 65, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 14, max : 14, t : "2 + 3 * 4", pos : { fileName : "TestAll.hx", lineNumber : 66, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -10, t : "2 + -3 * 4", pos : { fileName : "TestAll.hx", lineNumber : 67, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -10, t : "2 + 3 * -4", pos : { fileName : "TestAll.hx", lineNumber : 68, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, t : "-2 + 3 * 4", pos : { fileName : "TestAll.hx", lineNumber : 69, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 14, t : "2 + {3 * 4}", pos : { fileName : "TestAll.hx", lineNumber : 70, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 4, t : "100 / 25", pos : { fileName : "TestAll.hx", lineNumber : 72, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 75, t : "25 * 3", pos : { fileName : "TestAll.hx", lineNumber : 73, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, t : "150 / 25 * 3", pos : { fileName : "TestAll.hx", lineNumber : 74, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 18, t : "{150 / 25} * 3", pos : { fileName : "TestAll.hx", lineNumber : 75, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 11, max : 105, t : "{{2,d4,3d8},5} * {d4,3d8} / {3,d6}", pos : { fileName : "TestAll.hx", lineNumber : 76, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, max : 60, t : "10d6", pos : { fileName : "TestAll.hx", lineNumber : 78, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, max : 60, t : "10d6 sum", p : "10d6", pos : { fileName : "TestAll.hx", lineNumber : 79, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "10d6 min", pos : { fileName : "TestAll.hx", lineNumber : 80, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "10d6 minimum", p : "10d6 min", pos : { fileName : "TestAll.hx", lineNumber : 81, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "10d6 max", pos : { fileName : "TestAll.hx", lineNumber : 82, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "10d6 maximum", p : "10d6 max", pos : { fileName : "TestAll.hx", lineNumber : 83, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, t : "{1,2,3} min", pos : { fileName : "TestAll.hx", lineNumber : 84, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} max", pos : { fileName : "TestAll.hx", lineNumber : 85, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, t : "{1,2,3} avg", p : "{1,2,3} average", pos : { fileName : "TestAll.hx", lineNumber : 86, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "3d6 average", pos : { fileName : "TestAll.hx", lineNumber : 87, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 4, max : 24, t : "{3d6,5d6} average", pos : { fileName : "TestAll.hx", lineNumber : 88, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, t : "{1,2,3} average", pos : { fileName : "TestAll.hx", lineNumber : 89, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "{1,2,3} drop lowest 1", p : "{1,2,3} drop 1", pos : { fileName : "TestAll.hx", lineNumber : 91, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} drop lowest 2", p : "{1,2,3} drop 2", pos : { fileName : "TestAll.hx", lineNumber : 92, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} drop low 2", p : "{1,2,3} drop 2", pos : { fileName : "TestAll.hx", lineNumber : 93, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "{1,2,3} drop 1", pos : { fileName : "TestAll.hx", lineNumber : 94, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} drop highest 1", pos : { fileName : "TestAll.hx", lineNumber : 95, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, t : "{1,2,3} drop highest 2", pos : { fileName : "TestAll.hx", lineNumber : 96, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, t : "{1,2,3} drop high 2", p : "{1,2,3} drop highest 2", pos : { fileName : "TestAll.hx", lineNumber : 97, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 18, t : "5d6 drop 2", pos : { fileName : "TestAll.hx", lineNumber : 98, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, t : "{1,2,3} keep lowest 1", pos : { fileName : "TestAll.hx", lineNumber : 100, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} keep lowest 2", pos : { fileName : "TestAll.hx", lineNumber : 101, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} keep low 2", p : "{1,2,3} keep lowest 2", pos : { fileName : "TestAll.hx", lineNumber : 102, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} keep 1", pos : { fileName : "TestAll.hx", lineNumber : 103, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} keep highest 1", p : "{1,2,3} keep 1", pos : { fileName : "TestAll.hx", lineNumber : 104, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "{1,2,3} keep highest 2", p : "{1,2,3} keep 2", pos : { fileName : "TestAll.hx", lineNumber : 105, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "{1,2,3} keep high 2", p : "{1,2,3} keep 2", pos : { fileName : "TestAll.hx", lineNumber : 106, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 12, t : "5d6 keep 2", pos : { fileName : "TestAll.hx", lineNumber : 107, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 12, t : "{d2,d3,d4} explode once on 3", pos : { fileName : "TestAll.hx", lineNumber : 109, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 54, t : "3d6 explode twice on 6", pos : { fileName : "TestAll.hx", lineNumber : 110, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 108, t : "3d6 explode 5 times on 6", pos : { fileName : "TestAll.hx", lineNumber : 111, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 9, t : "{d2,d3,d4} reroll once on 1", pos : { fileName : "TestAll.hx", lineNumber : 113, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 18, t : "3d6 reroll twice on 6", pos : { fileName : "TestAll.hx", lineNumber : 114, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 18, t : "3d6 reroll 5 times on 6", pos : { fileName : "TestAll.hx", lineNumber : 115, className : "TestAll", methodName : "testParseAndBoundaries"}}];
+		var tests = [{ min : 1, t : "1", pos : { fileName : "TestAll.hx", lineNumber : 118, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, t : "2", pos : { fileName : "TestAll.hx", lineNumber : 119, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "D", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 120, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 121, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1d", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 122, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1D", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 123, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1d6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 124, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "1D6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 125, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d6", pos : { fileName : "TestAll.hx", lineNumber : 126, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "D6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 127, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : " d6 ", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 128, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "d6 ", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 129, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : " d6", p : "d6", pos : { fileName : "TestAll.hx", lineNumber : 130, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 100, t : "d%", pos : { fileName : "TestAll.hx", lineNumber : 131, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 300, t : "3d100", p : "3d%", pos : { fileName : "TestAll.hx", lineNumber : 132, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 8, t : "{d8}", p : "d8", pos : { fileName : "TestAll.hx", lineNumber : 134, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 2, t : "{2}", p : "2", pos : { fileName : "TestAll.hx", lineNumber : 135, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "{2,3}", pos : { fileName : "TestAll.hx", lineNumber : 136, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 6, t : "{2d3}", p : "2d3", pos : { fileName : "TestAll.hx", lineNumber : 137, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 14, t : "{d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 138, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 14, t : "{ d6 , d8 }", p : "{d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 139, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 18, t : "{d4,d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 140, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, max : 20, t : "{2,d4,d6,d8}", pos : { fileName : "TestAll.hx", lineNumber : 141, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 6, max : 30, t : "{2,d4,3d8}", pos : { fileName : "TestAll.hx", lineNumber : 142, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, max : 58, t : "{{2,d4,3d8},d4,3d8}", pos : { fileName : "TestAll.hx", lineNumber : 143, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -6, t : "-6", pos : { fileName : "TestAll.hx", lineNumber : 145, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -1, max : -6, t : "-d6", pos : { fileName : "TestAll.hx", lineNumber : 146, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -1, max : -6, t : "-d6", pos : { fileName : "TestAll.hx", lineNumber : 147, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -2, max : -10, t : "-{d6,d4}", pos : { fileName : "TestAll.hx", lineNumber : 148, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "2+3", p : "2 + 3", pos : { fileName : "TestAll.hx", lineNumber : 149, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, t : "2-1", p : "2 - 1", pos : { fileName : "TestAll.hx", lineNumber : 150, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 0, t : "2-1-1", p : "2 - 1 - 1", pos : { fileName : "TestAll.hx", lineNumber : 151, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 6, max : 25, t : "3 + d6 + 2d8", pos : { fileName : "TestAll.hx", lineNumber : 152, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 0, max : 19, t : "-3 + d6 + 2d8", pos : { fileName : "TestAll.hx", lineNumber : 153, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -2, max : 7, t : "-3 + -d6 + 2d8", pos : { fileName : "TestAll.hx", lineNumber : 154, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, max : 24, t : "d6 + 2d8 + 2", pos : { fileName : "TestAll.hx", lineNumber : 155, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 48, t : "d6 * 2d8 / 2", pos : { fileName : "TestAll.hx", lineNumber : 156, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 14, max : 14, t : "2 + 3 * 4", pos : { fileName : "TestAll.hx", lineNumber : 157, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -10, t : "2 + -3 * 4", pos : { fileName : "TestAll.hx", lineNumber : 158, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : -10, t : "2 + 3 * -4", pos : { fileName : "TestAll.hx", lineNumber : 159, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, t : "-2 + 3 * 4", pos : { fileName : "TestAll.hx", lineNumber : 160, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 14, t : "2 + {3 * 4}", pos : { fileName : "TestAll.hx", lineNumber : 161, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 4, t : "100 / 25", pos : { fileName : "TestAll.hx", lineNumber : 163, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 75, t : "25 * 3", pos : { fileName : "TestAll.hx", lineNumber : 164, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, t : "150 / 25 * 3", pos : { fileName : "TestAll.hx", lineNumber : 165, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 18, t : "{150 / 25} * 3", pos : { fileName : "TestAll.hx", lineNumber : 166, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 11, max : 140, t : "{{2,d4,3d8},5} * {d4,3d8} / {3,d6}", pos : { fileName : "TestAll.hx", lineNumber : 167, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, max : 60, t : "10d6", pos : { fileName : "TestAll.hx", lineNumber : 169, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 10, max : 60, t : "10d6 sum", p : "10d6", pos : { fileName : "TestAll.hx", lineNumber : 170, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "10d6 min", pos : { fileName : "TestAll.hx", lineNumber : 171, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "10d6 minimum", p : "10d6 min", pos : { fileName : "TestAll.hx", lineNumber : 172, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "10d6 max", pos : { fileName : "TestAll.hx", lineNumber : 173, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "10d6 maximum", p : "10d6 max", pos : { fileName : "TestAll.hx", lineNumber : 174, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, t : "{1,2,3} min", pos : { fileName : "TestAll.hx", lineNumber : 175, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} max", pos : { fileName : "TestAll.hx", lineNumber : 176, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, t : "{1,2,3} avg", p : "{1,2,3} average", pos : { fileName : "TestAll.hx", lineNumber : 177, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, max : 6, t : "3d6 average", pos : { fileName : "TestAll.hx", lineNumber : 178, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 4, max : 24, t : "{3d6,5d6} average", pos : { fileName : "TestAll.hx", lineNumber : 179, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, t : "{1,2,3} average", pos : { fileName : "TestAll.hx", lineNumber : 180, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "{1,2,3} drop lowest 1", p : "{1,2,3} drop 1", pos : { fileName : "TestAll.hx", lineNumber : 182, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} drop lowest 2", p : "{1,2,3} drop 2", pos : { fileName : "TestAll.hx", lineNumber : 183, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} drop low 2", p : "{1,2,3} drop 2", pos : { fileName : "TestAll.hx", lineNumber : 184, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "{1,2,3} drop 1", pos : { fileName : "TestAll.hx", lineNumber : 185, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} drop highest 1", pos : { fileName : "TestAll.hx", lineNumber : 186, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, t : "{1,2,3} drop highest 2", pos : { fileName : "TestAll.hx", lineNumber : 187, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, t : "{1,2,3} drop high 2", p : "{1,2,3} drop highest 2", pos : { fileName : "TestAll.hx", lineNumber : 188, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 18, t : "5d6 drop 2", pos : { fileName : "TestAll.hx", lineNumber : 189, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 1, t : "{1,2,3} keep lowest 1", pos : { fileName : "TestAll.hx", lineNumber : 191, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} keep lowest 2", pos : { fileName : "TestAll.hx", lineNumber : 192, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} keep low 2", p : "{1,2,3} keep lowest 2", pos : { fileName : "TestAll.hx", lineNumber : 193, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} keep 1", pos : { fileName : "TestAll.hx", lineNumber : 194, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, t : "{1,2,3} keep highest 1", p : "{1,2,3} keep 1", pos : { fileName : "TestAll.hx", lineNumber : 195, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "{1,2,3} keep highest 2", p : "{1,2,3} keep 2", pos : { fileName : "TestAll.hx", lineNumber : 196, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 5, t : "{1,2,3} keep high 2", p : "{1,2,3} keep 2", pos : { fileName : "TestAll.hx", lineNumber : 197, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 2, max : 12, t : "5d6 keep 2", pos : { fileName : "TestAll.hx", lineNumber : 198, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 12, t : "{d2,d3,d4} explode once on 3", pos : { fileName : "TestAll.hx", lineNumber : 200, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 54, t : "3d6 explode twice on 6", pos : { fileName : "TestAll.hx", lineNumber : 201, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 108, t : "3d6 explode 5 times on 6", pos : { fileName : "TestAll.hx", lineNumber : 202, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 9, t : "{d2,d3,d4} reroll once on 1", pos : { fileName : "TestAll.hx", lineNumber : 204, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 18, t : "3d6 reroll twice on 6", pos : { fileName : "TestAll.hx", lineNumber : 205, className : "TestAll", methodName : "testParseAndBoundaries"}},{ min : 3, max : 18, t : "3d6 reroll 5 times on 6", pos : { fileName : "TestAll.hx", lineNumber : 206, className : "TestAll", methodName : "testParseAndBoundaries"}}];
 		tests.map($bind(this,this.assertParseAndBoundaries));
 	}
 	,assertParseAndBoundaries: function(t) {
@@ -487,10 +497,10 @@ TestAll.prototype = {
 			var f = t.t != expected ? " for \"" + t.t + "\"" : "";
 			utest_Assert.equals(expected,serialized,"expected serialization to be \"" + expected + "\" but it is \"" + serialized + "\"" + f,t.pos);
 			var minr = dr_RollResultExtensions.getResult(this.min().roll(v));
-			utest_Assert.equals(t.min,minr,"expected min to be " + t.min + " but it is " + minr,t.pos);
+			utest_Assert.equals(t.min,minr,"expected low to be " + t.min + " but it is " + minr + " for " + t.t + " evaluated to " + Std.string(v),t.pos);
 			var maxr = dr_RollResultExtensions.getResult(this.max().roll(v));
 			var expectedmax = null == t.max ? t.min : t.max;
-			utest_Assert.equals(expectedmax,maxr,"expected max to be " + expectedmax + " but it is " + maxr,t.pos);
+			utest_Assert.equals(expectedmax,maxr,"expected high to be " + expectedmax + " but it is " + maxr + " for " + t.t + " evaluated to " + Std.string(v),t.pos);
 			break;
 		}
 	}
@@ -503,9 +513,9 @@ TestAll.prototype = {
 		while(_g < _g1.length) {
 			var v = _g1[_g];
 			++_g;
-			utest_Assert.floatEquals(0.16666666,v,null,null,{ fileName : "TestAll.hx", lineNumber : 144, className : "TestAll", methodName : "testDiscrete"});
+			utest_Assert.floatEquals(0.16666666,v,null,null,{ fileName : "TestAll.hx", lineNumber : 235, className : "TestAll", methodName : "testDiscrete"});
 		}
-		utest_Assert.same([1,2,3,4,5,6],discrete.values(),null,null,null,{ fileName : "TestAll.hx", lineNumber : 145, className : "TestAll", methodName : "testDiscrete"});
+		utest_Assert.same([1,2,3,4,5,6],discrete.values(),null,null,null,{ fileName : "TestAll.hx", lineNumber : 236, className : "TestAll", methodName : "testDiscrete"});
 	}
 	,pos: function(pos) {
 		return pos;
@@ -676,7 +686,7 @@ dr_IntAlgebra.prototype = {
 		return a * b;
 	}
 	,divide: function(a,b) {
-		return a / b | 0;
+		return Math.ceil(a / b);
 	}
 	,compare: function(a,b) {
 		return thx_Ints.compare(a,b);
@@ -685,32 +695,38 @@ dr_IntAlgebra.prototype = {
 		return thx_Ints.compare(a,b);
 	}
 	,average: function(arr) {
-		return thx_ArrayInts.average(arr) | 0;
+		return Math.ceil(thx_ArrayInts.average(arr));
 	}
 	,ofLiteral: function(v) {
 		return v;
 	}
 	,__class__: dr_IntAlgebra
 };
-var dr_DiceExpression = { __ename__ : ["dr","DiceExpression"], __constructs__ : ["Die","Dice","Literal","DiceMap","DiceReducer","BinaryOp","UnaryOp"] };
+var dr_DiceExpression = { __ename__ : ["dr","DiceExpression"], __constructs__ : ["Die","Literal","DiceReduce","BinaryOp","UnaryOp"] };
 dr_DiceExpression.Die = function(sides) { var $x = ["Die",0,sides]; $x.__enum__ = dr_DiceExpression; return $x; };
-dr_DiceExpression.Dice = function(times,sides) { var $x = ["Dice",1,times,sides]; $x.__enum__ = dr_DiceExpression; return $x; };
-dr_DiceExpression.Literal = function(value) { var $x = ["Literal",2,value]; $x.__enum__ = dr_DiceExpression; return $x; };
-dr_DiceExpression.DiceMap = function(dice,extractor) { var $x = ["DiceMap",3,dice,extractor]; $x.__enum__ = dr_DiceExpression; return $x; };
-dr_DiceExpression.DiceReducer = function(exprs,extractor) { var $x = ["DiceReducer",4,exprs,extractor]; $x.__enum__ = dr_DiceExpression; return $x; };
-dr_DiceExpression.BinaryOp = function(op,a,b) { var $x = ["BinaryOp",5,op,a,b]; $x.__enum__ = dr_DiceExpression; return $x; };
-dr_DiceExpression.UnaryOp = function(op,a) { var $x = ["UnaryOp",6,op,a]; $x.__enum__ = dr_DiceExpression; return $x; };
-var dr_DiceReduce = { __ename__ : ["dr","DiceReduce"], __constructs__ : ["Sum","Average","Min","Max","Drop","Keep"] };
-dr_DiceReduce.Sum = ["Sum",0];
-dr_DiceReduce.Sum.__enum__ = dr_DiceReduce;
-dr_DiceReduce.Average = ["Average",1];
-dr_DiceReduce.Average.__enum__ = dr_DiceReduce;
-dr_DiceReduce.Min = ["Min",2];
-dr_DiceReduce.Min.__enum__ = dr_DiceReduce;
-dr_DiceReduce.Max = ["Max",3];
-dr_DiceReduce.Max.__enum__ = dr_DiceReduce;
-dr_DiceReduce.Drop = function(dir,value) { var $x = ["Drop",4,dir,value]; $x.__enum__ = dr_DiceReduce; return $x; };
-dr_DiceReduce.Keep = function(dir,value) { var $x = ["Keep",5,dir,value]; $x.__enum__ = dr_DiceReduce; return $x; };
+dr_DiceExpression.Literal = function(value) { var $x = ["Literal",1,value]; $x.__enum__ = dr_DiceExpression; return $x; };
+dr_DiceExpression.DiceReduce = function(reduceable,reducer) { var $x = ["DiceReduce",2,reduceable,reducer]; $x.__enum__ = dr_DiceExpression; return $x; };
+dr_DiceExpression.BinaryOp = function(op,a,b) { var $x = ["BinaryOp",3,op,a,b]; $x.__enum__ = dr_DiceExpression; return $x; };
+dr_DiceExpression.UnaryOp = function(op,a) { var $x = ["UnaryOp",4,op,a]; $x.__enum__ = dr_DiceExpression; return $x; };
+var dr_DiceReducer = { __ename__ : ["dr","DiceReducer"], __constructs__ : ["Sum","Average","Min","Max"] };
+dr_DiceReducer.Sum = ["Sum",0];
+dr_DiceReducer.Sum.__enum__ = dr_DiceReducer;
+dr_DiceReducer.Average = ["Average",1];
+dr_DiceReducer.Average.__enum__ = dr_DiceReducer;
+dr_DiceReducer.Min = ["Min",2];
+dr_DiceReducer.Min.__enum__ = dr_DiceReducer;
+dr_DiceReducer.Max = ["Max",3];
+dr_DiceReducer.Max.__enum__ = dr_DiceReducer;
+var dr_DiceReduceable = { __ename__ : ["dr","DiceReduceable"], __constructs__ : ["DiceExpressions","DiceListWithFilter","DiceListWithMap"] };
+dr_DiceReduceable.DiceExpressions = function(exprs) { var $x = ["DiceExpressions",0,exprs]; $x.__enum__ = dr_DiceReduceable; return $x; };
+dr_DiceReduceable.DiceListWithFilter = function(list,filter) { var $x = ["DiceListWithFilter",1,list,filter]; $x.__enum__ = dr_DiceReduceable; return $x; };
+dr_DiceReduceable.DiceListWithMap = function(dice,functor) { var $x = ["DiceListWithMap",2,dice,functor]; $x.__enum__ = dr_DiceReduceable; return $x; };
+var dr_DiceFilterable = { __ename__ : ["dr","DiceFilterable"], __constructs__ : ["DiceArray","DiceExpressions"] };
+dr_DiceFilterable.DiceArray = function(dice) { var $x = ["DiceArray",0,dice]; $x.__enum__ = dr_DiceFilterable; return $x; };
+dr_DiceFilterable.DiceExpressions = function(exprs) { var $x = ["DiceExpressions",1,exprs]; $x.__enum__ = dr_DiceFilterable; return $x; };
+var dr_DiceFilter = { __ename__ : ["dr","DiceFilter"], __constructs__ : ["Drop","Keep"] };
+dr_DiceFilter.Drop = function(dir,value) { var $x = ["Drop",0,dir,value]; $x.__enum__ = dr_DiceFilter; return $x; };
+dr_DiceFilter.Keep = function(dir,value) { var $x = ["Keep",1,dir,value]; $x.__enum__ = dr_DiceFilter; return $x; };
 var dr_DiceFunctor = { __ename__ : ["dr","DiceFunctor"], __constructs__ : ["Explode","Reroll"] };
 dr_DiceFunctor.Explode = function(times,range) { var $x = ["Explode",0,times,range]; $x.__enum__ = dr_DiceFunctor; return $x; };
 dr_DiceFunctor.Reroll = function(times,range) { var $x = ["Reroll",1,times,range]; $x.__enum__ = dr_DiceFunctor; return $x; };
@@ -749,21 +765,36 @@ dr_DiceExpressionExtensions.toString = function(expr) {
 		var sides = expr[2];
 		return dr_DiceExpressionExtensions.diceToString(1,sides);
 	case 1:
-		var sides1 = expr[3];
-		var times = expr[2];
-		return dr_DiceExpressionExtensions.diceToString(times,sides1);
-	case 2:
 		var value = expr[2];
 		return "" + value;
+	case 2:
+		switch(expr[2][1]) {
+		case 0:
+			var reducer = expr[3];
+			var exprs = expr[2][2];
+			return dr_DiceExpressionExtensions.expressionsToString(exprs) + dr_DiceExpressionExtensions.expressionExtractorToString(reducer);
+		case 1:
+			switch(expr[2][2][1]) {
+			case 0:
+				var reducer1 = expr[3];
+				var filter = expr[2][3];
+				var dice = expr[2][2][2];
+				return dr_DiceExpressionExtensions.sidesToString(dice) + dr_DiceExpressionExtensions.diceFilterToString(filter) + dr_DiceExpressionExtensions.expressionExtractorToString(reducer1);
+			case 1:
+				var reducer2 = expr[3];
+				var filter1 = expr[2][3];
+				var exprs1 = expr[2][2][2];
+				return dr_DiceExpressionExtensions.expressionsToString(exprs1) + dr_DiceExpressionExtensions.diceFilterToString(filter1) + dr_DiceExpressionExtensions.expressionExtractorToString(reducer2);
+			}
+			break;
+		case 2:
+			var reducer3 = expr[3];
+			var functor = expr[2][3];
+			var dice1 = expr[2][2];
+			return dr_DiceExpressionExtensions.diceBagToString(dice1,functor) + dr_DiceExpressionExtensions.expressionExtractorToString(reducer3);
+		}
+		break;
 	case 3:
-		var functor = expr[3];
-		var dice = expr[2];
-		return dr_DiceExpressionExtensions.diceBagToString(dice,functor);
-	case 4:
-		var aggregator = expr[3];
-		var exprs = expr[2];
-		return dr_DiceExpressionExtensions.expressionsToString(exprs,aggregator);
-	case 5:
 		var b = expr[4];
 		var a = expr[3];
 		var op = expr[2];
@@ -784,7 +815,7 @@ dr_DiceExpressionExtensions.toString = function(expr) {
 			break;
 		}
 		return tmp + tmp1 + " " + dr_DiceExpressionExtensions.toString(b);
-	case 6:
+	case 4:
 		var a1 = expr[3];
 		return "-" + dr_DiceExpressionExtensions.toString(a1);
 	}
@@ -866,11 +897,32 @@ dr_DiceExpressionExtensions.rangeToString = function(range) {
 		return "(" + arr.map(dr_DiceExpressionExtensions.rangeToString).join(",") + ")";
 	}
 };
-dr_DiceExpressionExtensions.expressionsToString = function(exprs,aggregator) {
-	return (exprs.length == 1 && !dr_DiceExpressionExtensions.needsBraces(exprs[0]) ? exprs.map(dr_DiceExpressionExtensions.toString).join(",") : "{" + exprs.map(dr_DiceExpressionExtensions.toString).join(",") + "}") + dr_DiceExpressionExtensions.expressionExtractorToString(aggregator);
+dr_DiceExpressionExtensions.expressionsToString = function(exprs) {
+	if(dr_DiceExpressionExtensions.allOneDieSameSides(exprs)) {
+		return (exprs.length > 1 ? "" + exprs.length : "") + dr_DiceExpressionExtensions.toString(exprs[0]);
+	} else if(exprs.length == 1 && !dr_DiceExpressionExtensions.needsBraces(exprs[0])) {
+		return exprs.map(dr_DiceExpressionExtensions.toString).join(",");
+	} else {
+		return "{" + exprs.map(dr_DiceExpressionExtensions.toString).join(",") + "}";
+	}
 };
-dr_DiceExpressionExtensions.expressionExtractorToString = function(aggregator) {
-	switch(aggregator[1]) {
+dr_DiceExpressionExtensions.allOneDieSameSides = function(exprs) {
+	var sides = [];
+	var _g = 0;
+	while(_g < exprs.length) {
+		var expr = exprs[_g];
+		++_g;
+		if(expr[1] == 0) {
+			var s = expr[2];
+			sides.push(s);
+		} else {
+			return false;
+		}
+	}
+	return thx_Arrays.distinct(sides).length == 1;
+};
+dr_DiceExpressionExtensions.expressionExtractorToString = function(functor) {
+	switch(functor[1]) {
 	case 0:
 		return "";
 	case 1:
@@ -879,23 +931,27 @@ dr_DiceExpressionExtensions.expressionExtractorToString = function(aggregator) {
 		return " min";
 	case 3:
 		return " max";
-	case 4:
-		switch(aggregator[2][1]) {
+	}
+};
+dr_DiceExpressionExtensions.diceFilterToString = function(filter) {
+	switch(filter[1]) {
+	case 0:
+		switch(filter[2][1]) {
 		case 0:
-			var drop = aggregator[3];
+			var drop = filter[3];
 			return " drop " + drop;
 		case 1:
-			var drop1 = aggregator[3];
+			var drop1 = filter[3];
 			return " drop highest " + drop1;
 		}
 		break;
-	case 5:
-		switch(aggregator[2][1]) {
+	case 1:
+		switch(filter[2][1]) {
 		case 0:
-			var drop2 = aggregator[3];
+			var drop2 = filter[3];
 			return " keep lowest " + drop2;
 		case 1:
-			var drop3 = aggregator[3];
+			var drop3 = filter[3];
 			return " keep " + drop3;
 		}
 		break;
@@ -904,22 +960,14 @@ dr_DiceExpressionExtensions.expressionExtractorToString = function(aggregator) {
 dr_DiceExpressionExtensions.needsBraces = function(expr) {
 	switch(expr[1]) {
 	case 0:
-		var sides = expr[2];
 		return false;
 	case 1:
-		var sides1 = expr[3];
-		var times = expr[2];
 		return false;
 	case 2:
-		var value = expr[2];
 		return false;
 	case 3:
-		return false;
-	case 4:
-		return false;
-	case 5:
 		return true;
-	case 6:
+	case 4:
 		return false;
 	}
 };
@@ -1649,21 +1697,11 @@ js_Boot.__isNativeObj = function(o) {
 js_Boot.__resolveNativeClass = function(name) {
 	return $global[name];
 };
-var dr_ExplodeReroll = { __ename__ : ["dr","ExplodeReroll"], __constructs__ : ["Explode","Reroll"] };
-dr_ExplodeReroll.Explode = ["Explode",0];
-dr_ExplodeReroll.Explode.__enum__ = dr_ExplodeReroll;
-dr_ExplodeReroll.Reroll = ["Reroll",1];
-dr_ExplodeReroll.Reroll.__enum__ = dr_ExplodeReroll;
 var dr_MoreLess = { __ename__ : ["dr","MoreLess"], __constructs__ : ["More","Less"] };
 dr_MoreLess.More = ["More",0];
 dr_MoreLess.More.__enum__ = dr_MoreLess;
 dr_MoreLess.Less = ["Less",1];
 dr_MoreLess.Less.__enum__ = dr_MoreLess;
-var dr_DropKeep = { __ename__ : ["dr","DropKeep"], __constructs__ : ["Drop","Keep"] };
-dr_DropKeep.Drop = ["Drop",0];
-dr_DropKeep.Drop.__enum__ = dr_DropKeep;
-dr_DropKeep.Keep = ["Keep",1];
-dr_DropKeep.Keep.__enum__ = dr_DropKeep;
 var thx_Arrays = function() { };
 thx_Arrays.__name__ = ["thx","Arrays"];
 thx_Arrays.append = function(array,element) {
@@ -2854,11 +2892,36 @@ dr_DiceParser.unsafeParse = function(s) {
 		return v;
 	}
 };
-dr_DiceParser.SKIP_WS = function(parser) {
-	return parsihax_Parser.skip(parser,dr_DiceParser.WS);
+dr_DiceParser.dirValue = function(prefix,alt) {
+	return parsihax_Parser.then(parsihax_Parser.then(prefix,dr_DiceParser.OWS),parsihax_Parser.alt([parsihax_Parser.flatMap(dr_DiceParser.lowOrHigh,function(lh) {
+		return parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.map(dr_DiceParser.positive,function(value) {
+			return { dir : lh, value : value};
+		}));
+	}),parsihax_Parser.map(dr_DiceParser.positive,function(value1) {
+		return { dir : alt, value : value1};
+	})]));
 };
-dr_DiceParser.SKIP_OWS = function(parser) {
-	return parsihax_Parser.skip(parser,dr_DiceParser.OWS);
+dr_DiceParser.diceFunctorConst = function(p,f) {
+	return parsihax_Parser.alt([parsihax_Parser.then(parsihax_Parser.then(parsihax_Parser.string(p),dr_DiceParser.OWS),parsihax_Parser.flatMap(dr_DiceParser.functorTimes,function(times) {
+		return parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.map(dr_DiceParser.range,function(range) {
+			return f(times,range);
+		}));
+	}))]);
+};
+dr_DiceParser.diceReduce = function(reduceable) {
+	var _e = reduceable;
+	return parsihax_Parser.or(parsihax_Parser.flatMap(reduceable,function(red) {
+		return parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.map(parsihax_Parser.alt([parsihax_Parser.result(dr_DiceParser.SUM,dr_DiceReducer.Sum),parsihax_Parser.result(dr_DiceParser.AVERAGE,dr_DiceReducer.Average),parsihax_Parser.result(dr_DiceParser.MIN,dr_DiceReducer.Min),parsihax_Parser.result(dr_DiceParser.MAX,dr_DiceReducer.Max)]),function(reducer) {
+			return dr_DiceExpression.DiceReduce(red,reducer);
+		}));
+	}),(function(fun) {
+		return parsihax_Parser.map(_e,fun);
+	})(function(_) {
+		return dr_DiceExpression.DiceReduce(_,dr_DiceReducer.Sum);
+	}));
+};
+dr_DiceParser.commaSeparated = function(element) {
+	return parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OPEN_SET_BRACKET,dr_DiceParser.OWS),parsihax_Parser.skip(parsihax_Parser.or(parsihax_Parser.sepBy1(element,parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OWS,dr_DiceParser.COMMA),dr_DiceParser.OWS)),parsihax_Parser.succeed([])),parsihax_Parser.then(dr_DiceParser.OWS,dr_DiceParser.CLOSE_SET_BRACKET)));
 };
 var dr_Discrete = function(weights,values) {
 	this.weightedValues = [];
@@ -3083,7 +3146,7 @@ dr_DiscreteAlgebra.prototype = {
 	}
 	,divide: function(a,b) {
 		return a.binary(b,function(a1,b1) {
-			return a1 / b1 | 0;
+			return Math.ceil(a1 / b1);
 		});
 	}
 	,compare: function(a,b) {
@@ -3100,13 +3163,23 @@ dr_DiscreteAlgebra.prototype = {
 	}
 	,__class__: dr_DiscreteAlgebra
 };
-var dr_RollResult = { __ename__ : ["dr","RollResult"], __constructs__ : ["OneResult","LiteralResult","DiceMapResult","DiceReducerResult","BinaryOpResult","UnaryOpResult"] };
+var dr_RollResult = { __ename__ : ["dr","RollResult"], __constructs__ : ["OneResult","LiteralResult","DiceReduceResult","BinaryOpResult","UnaryOpResult"] };
 dr_RollResult.OneResult = function(die) { var $x = ["OneResult",0,die]; $x.__enum__ = dr_RollResult; return $x; };
 dr_RollResult.LiteralResult = function(value,result) { var $x = ["LiteralResult",1,value,result]; $x.__enum__ = dr_RollResult; return $x; };
-dr_RollResult.DiceMapResult = function(dice,extractor,result) { var $x = ["DiceMapResult",2,dice,extractor,result]; $x.__enum__ = dr_RollResult; return $x; };
-dr_RollResult.DiceReducerResult = function(exprs,aggregator,result) { var $x = ["DiceReducerResult",3,exprs,aggregator,result]; $x.__enum__ = dr_RollResult; return $x; };
-dr_RollResult.BinaryOpResult = function(op,a,b,result) { var $x = ["BinaryOpResult",4,op,a,b,result]; $x.__enum__ = dr_RollResult; return $x; };
-dr_RollResult.UnaryOpResult = function(op,a,result) { var $x = ["UnaryOpResult",5,op,a,result]; $x.__enum__ = dr_RollResult; return $x; };
+dr_RollResult.DiceReduceResult = function(reduceables,reducer,result) { var $x = ["DiceReduceResult",2,reduceables,reducer,result]; $x.__enum__ = dr_RollResult; return $x; };
+dr_RollResult.BinaryOpResult = function(op,a,b,result) { var $x = ["BinaryOpResult",3,op,a,b,result]; $x.__enum__ = dr_RollResult; return $x; };
+dr_RollResult.UnaryOpResult = function(op,a,result) { var $x = ["UnaryOpResult",4,op,a,result]; $x.__enum__ = dr_RollResult; return $x; };
+var dr_DiceReduceableResult = { __ename__ : ["dr","DiceReduceableResult"], __constructs__ : ["DiceExpressionsResult","DiceFilterableResult","DiceMapeableResult"] };
+dr_DiceReduceableResult.DiceExpressionsResult = function(rolls) { var $x = ["DiceExpressionsResult",0,rolls]; $x.__enum__ = dr_DiceReduceableResult; return $x; };
+dr_DiceReduceableResult.DiceFilterableResult = function(rolls,filter) { var $x = ["DiceFilterableResult",1,rolls,filter]; $x.__enum__ = dr_DiceReduceableResult; return $x; };
+dr_DiceReduceableResult.DiceMapeableResult = function(rolls,functor) { var $x = ["DiceMapeableResult",2,rolls,functor]; $x.__enum__ = dr_DiceReduceableResult; return $x; };
+var dr_DiceResultMapped = { __ename__ : ["dr","DiceResultMapped"], __constructs__ : ["Rerolled","Exploded","Normal"] };
+dr_DiceResultMapped.Rerolled = function(rerolls) { var $x = ["Rerolled",0,rerolls]; $x.__enum__ = dr_DiceResultMapped; return $x; };
+dr_DiceResultMapped.Exploded = function(explosions) { var $x = ["Exploded",1,explosions]; $x.__enum__ = dr_DiceResultMapped; return $x; };
+dr_DiceResultMapped.Normal = function(roll) { var $x = ["Normal",2,roll]; $x.__enum__ = dr_DiceResultMapped; return $x; };
+var dr_DieResultFilter = { __ename__ : ["dr","DieResultFilter"], __constructs__ : ["Keep","Discard"] };
+dr_DieResultFilter.Keep = function(roll) { var $x = ["Keep",0,roll]; $x.__enum__ = dr_DieResultFilter; return $x; };
+dr_DieResultFilter.Discard = function(roll) { var $x = ["Discard",1,roll]; $x.__enum__ = dr_DieResultFilter; return $x; };
 var dr_RollResultExtensions = function() { };
 dr_RollResultExtensions.__name__ = ["dr","RollResultExtensions"];
 dr_RollResultExtensions.getResult = function(expr) {
@@ -3121,14 +3194,11 @@ dr_RollResultExtensions.getResult = function(expr) {
 		var result1 = expr[4];
 		return result1;
 	case 3:
-		var result2 = expr[4];
+		var result2 = expr[5];
 		return result2;
 	case 4:
-		var result3 = expr[5];
+		var result3 = expr[4];
 		return result3;
-	case 5:
-		var result4 = expr[4];
-		return result4;
 	}
 };
 var dr_Roller = function(algebra) {
@@ -3144,41 +3214,60 @@ dr_Roller.discrete = function() {
 dr_Roller.prototype = {
 	algebra: null
 	,roll: function(expr) {
+		var _gthis = this;
 		switch(expr[1]) {
 		case 0:
 			var sides = expr[2];
 			return dr_RollResult.OneResult({ result : this.algebra.die(sides), sides : sides});
 		case 1:
-			var sides1 = expr[3];
-			var times = expr[2];
-			var _g = [];
-			var _g2 = 0;
-			var _g1 = times;
-			while(_g2 < _g1) {
-				var i = _g2++;
-				_g.push({ result : this.algebra.die(sides1), sides : sides1});
-			}
-			var rolls = _g;
-			var result = this.sumDice(rolls);
-			return dr_RollResult.DiceReducerResult(rolls.map(dr_RollResult.OneResult),dr_DiceReduce.Sum,result);
-		case 2:
 			var value = expr[2];
 			return dr_RollResult.LiteralResult(value,this.algebra.ofLiteral(value));
+		case 2:
+			switch(expr[2][1]) {
+			case 0:
+				var reducer = expr[3];
+				var exprs = expr[2][2];
+				var rolls = exprs.map($bind(this,this.roll));
+				var result = this.reduceRolls(rolls,reducer);
+				return dr_RollResult.DiceReduceResult(dr_DiceReduceableResult.DiceExpressionsResult(rolls),reducer,result);
+			case 1:
+				switch(expr[2][2][1]) {
+				case 0:
+					var reducer1 = expr[3];
+					var filter = expr[2][3];
+					var dice = expr[2][2][2];
+					var rolls1 = dice.map(function(_) {
+						return _gthis.roll(dr_DiceExpression.Die(_));
+					});
+					var filteredRolls = this.filterRolls(rolls1,filter);
+					var keepFilteredRolls = this.keepFilteredRolls(filteredRolls);
+					var result1 = this.reduceRolls(keepFilteredRolls,reducer1);
+					return dr_RollResult.DiceReduceResult(dr_DiceReduceableResult.DiceFilterableResult(filteredRolls,filter),reducer1,result1);
+				case 1:
+					var reducer2 = expr[3];
+					var filter1 = expr[2][3];
+					var exprs1 = expr[2][2][2];
+					var rolls2 = exprs1.map($bind(this,this.roll));
+					var filteredRolls1 = this.filterRolls(rolls2,filter1);
+					var keepFilteredRolls1 = this.keepFilteredRolls(filteredRolls1);
+					var result2 = this.reduceRolls(keepFilteredRolls1,reducer2);
+					return dr_RollResult.DiceReduceResult(dr_DiceReduceableResult.DiceFilterableResult(filteredRolls1,filter1),reducer2,result2);
+				}
+				break;
+			case 2:
+				var reducer3 = expr[3];
+				var functor = expr[2][3];
+				var dice1 = expr[2][2];
+				var rolls3 = dice1.map(function(_1) {
+					return { result : _gthis.algebra.die(_1), sides : _1};
+				});
+				var mapped = this.mapRolls(rolls3,functor);
+				var keepMappedRolls = this.keepMappedRolls(mapped);
+				var result3 = this.reduceRolls(keepMappedRolls.map(dr_RollResult.OneResult),reducer3);
+				return dr_RollResult.DiceReduceResult(dr_DiceReduceableResult.DiceMapeableResult(mapped,functor),reducer3,result3);
+			}
+			break;
 		case 3:
-			var functor = expr[3];
-			var dice = expr[2];
-			var rolls1 = this.extractRolls(dice,functor);
-			var result1 = this.extractResult(rolls1,functor);
-			return dr_RollResult.DiceMapResult(rolls1.map(function(_) {
-				return dr_RollResult.OneResult(_);
-			}),functor,result1);
-		case 4:
-			var aggregator = expr[3];
-			var exprs = expr[2];
-			var exaluatedExpressions = exprs.map($bind(this,this.roll));
-			var result2 = this.extractExpressionResults(exaluatedExpressions,aggregator);
-			return dr_RollResult.DiceReducerResult(exaluatedExpressions,aggregator,result2);
-		case 5:
 			var b = expr[4];
 			var a = expr[3];
 			var op = expr[2];
@@ -3195,177 +3284,209 @@ dr_Roller.prototype = {
 				return dr_RollResult.BinaryOpResult(dr_DiceBinOp.Multiplication,ra,rb,this.algebra.multiply(dr_RollResultExtensions.getResult(ra),dr_RollResultExtensions.getResult(rb)));
 			}
 			break;
-		case 6:
+		case 4:
 			var a1 = expr[3];
 			var ra1 = this.roll(a1);
 			return dr_RollResult.UnaryOpResult(dr_DiceUnOp.Negate,ra1,this.algebra.negate(dr_RollResultExtensions.getResult(ra1)));
 		}
 	}
-	,extractRolls: function(dice,functor) {
+	,mapRolls: function(rolls,functor) {
 		switch(functor[1]) {
 		case 0:
-			var range = functor[3];
-			var times = functor[2];
-			return this.explodeRolls(dice,times,range);
-		case 1:
-			var range1 = functor[3];
-			var times1 = functor[2];
-			return this.rerollRolls(dice,times1,range1);
-		}
-	}
-	,sumDice: function(rolls) {
-		var _gthis = this;
-		return thx_Arrays.reduce(rolls,function(acc,roll) {
-			return _gthis.algebra.sum(acc,roll.result);
-		},this.algebra.zero);
-	}
-	,sumResults: function(rolls) {
-		return thx_Arrays.reduce(rolls.map(dr_RollResultExtensions.getResult),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
-	}
-	,extractResult: function(rolls,functor) {
-		switch(functor[1]) {
-		case 0:
-			var range = functor[3];
-			var times = functor[2];
-			return thx_Arrays.reduce(rolls.map(function(_) {
-				return _.result;
-			}),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
-		case 1:
-			var range1 = functor[3];
-			var times1 = functor[2];
-			return thx_Arrays.reduce(rolls.map(function(_1) {
-				return _1.result;
-			}),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
-		}
-	}
-	,extractExpressionResults: function(exprs,aggregator) {
-		exprs = this.flattenExprs(exprs);
-		switch(aggregator[1]) {
-		case 0:
-			return thx_Arrays.reduce(exprs.map(dr_RollResultExtensions.getResult),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
-		case 1:
-			return this.algebra.average(exprs.map(dr_RollResultExtensions.getResult));
-		case 2:
-			return thx_Arrays.order(exprs.map(dr_RollResultExtensions.getResult),($_=this.algebra,$bind($_,$_.compare))).shift();
-		case 3:
-			return thx_Arrays.order(exprs.map(dr_RollResultExtensions.getResult),($_=this.algebra,$bind($_,$_.compare))).pop();
-		case 4:
-			var value = aggregator[3];
-			var dir = aggregator[2];
-			switch(dir[1]) {
+			switch(functor[2][1]) {
 			case 0:
-				return thx_Arrays.reduce(thx_Arrays.order(exprs.map(dr_RollResultExtensions.getResult),($_=this.algebra,$bind($_,$_.compare))).slice(value),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
+				var range = functor[3];
+				var f = $bind(this,this.explodeRoll);
+				var a3 = range;
+				return rolls.map(function(a1) {
+					return f(a1,-1,a3);
+				});
 			case 1:
-				return thx_Arrays.reduce(thx_Arrays.order(exprs.map(dr_RollResultExtensions.getResult),($_=this.algebra,$bind($_,$_.compare))).slice(0,-value),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
+				var range1 = functor[3];
+				var times = functor[2][2];
+				var f1 = $bind(this,this.explodeRoll);
+				var a2 = times;
+				var a31 = range1;
+				return rolls.map(function(a11) {
+					return f1(a11,a2,a31);
+				});
 			}
 			break;
-		case 5:
-			var value1 = aggregator[3];
-			var dir1 = aggregator[2];
-			switch(dir1[1]) {
+		case 1:
+			switch(functor[2][1]) {
 			case 0:
-				return thx_Arrays.reduce(thx_Arrays.order(exprs.map(dr_RollResultExtensions.getResult),($_=this.algebra,$bind($_,$_.compare))).slice(0,value1),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
+				var range2 = functor[3];
+				var f2 = $bind(this,this.rerollRoll);
+				var a32 = range2;
+				return rolls.map(function(a12) {
+					return f2(a12,-1,a32);
+				});
 			case 1:
-				return thx_Arrays.reduce(thx_Arrays.order(exprs.map(dr_RollResultExtensions.getResult),($_=this.algebra,$bind($_,$_.compare))).slice(-value1),($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
+				var range3 = functor[3];
+				var times1 = functor[2][2];
+				var f3 = $bind(this,this.rerollRoll);
+				var a21 = times1;
+				var a33 = range3;
+				return rolls.map(function(a13) {
+					return f3(a13,a21,a33);
+				});
 			}
 			break;
 		}
 	}
-	,flattenExprs: function(exprs) {
-		if(exprs.length == 1) {
-			var _g = exprs[0];
-			if(_g[1] == 3) {
-				var exprs1 = _g[2];
-				return exprs1;
-			} else {
-				return exprs;
-			}
+	,explodeRoll: function(roll,times,range) {
+		var acc = this.rollRange(roll,times,range);
+		if(acc.length == 1) {
+			return dr_DiceResultMapped.Normal(acc[0]);
 		} else {
-			return exprs;
+			return dr_DiceResultMapped.Exploded(acc);
 		}
 	}
-	,explodeRolls: function(dice,times,range) {
-		switch(times[1]) {
-		case 0:
-			return this.explodeRollsTimes(dice,1000,range);
-		case 1:
-			var value = times[2];
-			return this.explodeRollsTimes(dice,value,range);
+	,rerollRoll: function(roll,times,range) {
+		var acc = this.rollRange(roll,times,range);
+		if(acc.length == 1) {
+			return dr_DiceResultMapped.Normal(acc[0]);
+		} else {
+			return dr_DiceResultMapped.Rerolled(acc);
 		}
 	}
-	,explodeRollsTimes: function(dice,times,range) {
-		var _gthis = this;
-		var rolls = dice.map(function(_) {
-			return { result : _gthis.algebra.die(_), sides : _};
-		});
-		if(times == 0 || rolls.length == 0) {
-			return rolls;
+	,rollRange: function(roll,times,range) {
+		var acc = [roll];
+		var curr = roll;
+		while(times != 0 && this.matchRange(curr.result,range)) {
+			curr = { result : this.algebra.die(curr.sides), sides : curr.sides};
+			acc.push(curr);
+			--times;
 		}
-		var explosives = rolls.filter(function(_1) {
-			return _gthis.compareToRange(_1.result,range);
-		});
-		return rolls.concat(this.explodeRollsTimes(explosives.map(function(_2) {
-			return _2.sides;
-		}),times - 1,range));
+		return acc;
 	}
-	,compareToRange: function(v,range) {
+	,matchRange: function(r,range) {
 		var _gthis = this;
 		switch(range[1]) {
 		case 0:
 			var value = range[2];
-			return this.algebra.compareToSides(v,value) == 0;
+			return this.algebra.compareToSides(r,value) == 0;
 		case 1:
 			var maxInclusive = range[3];
 			var minInclusive = range[2];
-			if(this.algebra.compareToSides(v,minInclusive) >= 0) {
-				return this.algebra.compareToSides(v,maxInclusive) <= 0;
+			if(this.algebra.compareToSides(r,minInclusive) >= 0) {
+				return this.algebra.compareToSides(r,maxInclusive) <= 0;
 			} else {
 				return false;
 			}
 			break;
 		case 2:
 			var value1 = range[2];
-			return this.algebra.compareToSides(v,value1) >= 0;
+			return this.algebra.compareToSides(r,value1) >= 0;
 		case 3:
 			var value2 = range[2];
-			return this.algebra.compareToSides(v,value2) <= 0;
+			return this.algebra.compareToSides(r,value2) <= 0;
 		case 4:
 			var ranges = range[2];
-			return thx_Arrays.reduce(ranges,function(acc,range1) {
+			return thx_Arrays.reduce(ranges,function(acc,currRange) {
 				if(!acc) {
-					return _gthis.compareToRange(v,range1);
+					return _gthis.matchRange(r,currRange);
 				} else {
 					return true;
 				}
 			},false);
 		}
 	}
-	,rerollRolls: function(dice,times,range) {
-		switch(times[1]) {
+	,keepMappedRolls: function(rolls) {
+		var _gthis = this;
+		var array = rolls.map(function(r) {
+			switch(r[1]) {
+			case 0:
+				var rerolls = r[2];
+				return [rerolls[rerolls.length - 1]];
+			case 1:
+				var explosions = r[2];
+				return explosions;
+			case 2:
+				var roll = r[2];
+				return [roll];
+			}
+		});
+		return Array.prototype.concat.apply([],array);
+	}
+	,filterRolls: function(rolls,filter) {
+		var _gthis = this;
+		var ranked = thx_Arrays.rank(rolls,function(a,b) {
+			return _gthis.algebra.compare(dr_RollResultExtensions.getResult(a),dr_RollResultExtensions.getResult(b));
+		},true);
+		var f;
+		switch(filter[1]) {
 		case 0:
-			return this.rerollRollsTimes(dice,1000,range);
+			switch(filter[2][1]) {
+			case 0:
+				var value = filter[3];
+				f = function(i,l) {
+					return i >= value;
+				};
+				break;
+			case 1:
+				var value1 = filter[3];
+				f = function(i1,l1) {
+					return i1 < l1 - value1;
+				};
+				break;
+			}
+			break;
 		case 1:
-			var value = times[2];
-			return this.rerollRollsTimes(dice,value,range);
+			switch(filter[2][1]) {
+			case 0:
+				var value2 = filter[3];
+				f = function(i2,l2) {
+					return i2 < value2;
+				};
+				break;
+			case 1:
+				var value3 = filter[3];
+				f = function(i3,l3) {
+					return i3 >= l3 - value3;
+				};
+				break;
+			}
+			break;
+		}
+		var r = [];
+		var _g1 = 0;
+		var _g = rolls.length;
+		while(_g1 < _g) {
+			var i4 = _g1++;
+			var roll = rolls[i4];
+			r.push(f(ranked[i4],ranked.length) ? dr_DieResultFilter.Keep(roll) : dr_DieResultFilter.Discard(roll));
+		}
+		return r;
+	}
+	,keepFilteredRolls: function(rolls) {
+		return thx_Arrays.filterMap(rolls,function(roll) {
+			switch(roll[1]) {
+			case 0:
+				var r = roll[2];
+				return haxe_ds_Option.Some(r);
+			case 1:
+				return haxe_ds_Option.None;
+			}
+		});
+	}
+	,reduceRolls: function(rolls,reducer) {
+		return this.reduceResults(this.getRollResults(rolls),reducer);
+	}
+	,reduceResults: function(results,reducer) {
+		switch(reducer[1]) {
+		case 0:
+			return thx_Arrays.reduce(results,($_=this.algebra,$bind($_,$_.sum)),this.algebra.zero);
+		case 1:
+			return this.algebra.average(results);
+		case 2:
+			return thx_Arrays.order(results,($_=this.algebra,$bind($_,$_.compare))).shift();
+		case 3:
+			return thx_Arrays.order(results,($_=this.algebra,$bind($_,$_.compare))).pop();
 		}
 	}
-	,rerollRollsTimes: function(dice,times,range) {
-		var _gthis = this;
-		var rolls = dice.map(function(_) {
-			return { result : _gthis.algebra.die(_), sides : _};
-		});
-		if(times == 0 || rolls.length == 0) {
-			return rolls;
-		}
-		var rerolls = rolls.filter(function(_1) {
-			return _gthis.compareToRange(_1.result,range);
-		});
-		var keeprolls = rolls.filter(function(_2) {
-			return !_gthis.compareToRange(_2.result,range);
-		});
-		return keeprolls.concat(this.rerollRollsTimes(rerolls.map(function(_3) {
-			return _3.sides;
-		}),times - 1,range));
+	,getRollResults: function(rolls) {
+		return rolls.map(dr_RollResultExtensions.getResult);
 	}
 	,__class__: dr_Roller
 };
@@ -14029,29 +14150,24 @@ thx_culture_Culture.cultures = new haxe_ds_StringMap();
 thx_culture_Culture.list = [];
 DateTools.DAYS_OF_MONTH = [31,28,31,30,31,30,31,31,30,31,30,31];
 js_Boot.__toStr = ({ }).toString;
-dr_DiceParser.PLUS = parsihax_Parser["as"](parsihax_Parser.string("+"),"plus");
-dr_DiceParser.MINUS = parsihax_Parser["as"](parsihax_Parser.string("-"),"minus");
-dr_DiceParser.positive = parsihax_Parser["as"](parsihax_Parser.map(parsihax_Parser.regexp(new EReg("[+]?([1-9][0-9]*)",""),1),Std.parseInt),"positive number");
-dr_DiceParser.negative = parsihax_Parser["as"](parsihax_Parser.map(parsihax_Parser.regexp(new EReg("[-]([0-9]*[1-9])","")),Std.parseInt),"negative number");
-dr_DiceParser.whole = parsihax_Parser.or(dr_DiceParser.positive,parsihax_Parser["as"](dr_DiceParser.negative,"whole number"));
-dr_DiceParser.D = parsihax_Parser.or(parsihax_Parser.string("d"),parsihax_Parser["as"](parsihax_Parser.string("D"),"die symbol"));
-dr_DiceParser.OPEN_SET_BRACKET = parsihax_Parser["as"](parsihax_Parser.string("{"),"open set");
-dr_DiceParser.OPEN_PAREN = parsihax_Parser["as"](parsihax_Parser.string("("),"open parenthesis");
-dr_DiceParser.CLOSE_SET_BRACKET = parsihax_Parser["as"](parsihax_Parser.string("}"),"close set");
-dr_DiceParser.CLOSE_PAREN = parsihax_Parser["as"](parsihax_Parser.string(")"),"close parenthesis");
-dr_DiceParser.COMMA = parsihax_Parser["as"](parsihax_Parser.string(","),"comma");
-dr_DiceParser.PERCENT = parsihax_Parser["as"](parsihax_Parser.string("%"),"percent");
-dr_DiceParser.WS = parsihax_Parser["as"](parsihax_Parser.regexp(new EReg("\\s+","m")),"white space");
-dr_DiceParser.OWS = parsihax_Parser.or(dr_DiceParser.WS,parsihax_Parser["as"](parsihax_Parser.string(""),"optional white space"));
-dr_DiceParser.MULTIPLICATION = parsihax_Parser["as"](parsihax_Parser.regexp(new EReg("[*⋅×x]","")),"multiplication symbol");
-dr_DiceParser.DIVISION = parsihax_Parser.or(parsihax_Parser.or(parsihax_Parser.string("/"),parsihax_Parser.string("÷")),parsihax_Parser["as"](parsihax_Parser.string(":"),"division symbol"));
-dr_DiceParser.keepOrDrop = parsihax_Parser.or(parsihax_Parser.result(parsihax_Parser.string("keep"),dr_DropKeep.Keep),parsihax_Parser.result(parsihax_Parser.string("drop"),dr_DropKeep.Drop));
+dr_DiceParser.PLUS = parsihax_Parser.string("+");
+dr_DiceParser.MINUS = parsihax_Parser.string("-");
+dr_DiceParser.positive = parsihax_Parser.map(parsihax_Parser.regexp(new EReg("[+]?([1-9][0-9]*)",""),1),Std.parseInt);
+dr_DiceParser.negative = parsihax_Parser.map(parsihax_Parser.regexp(new EReg("[-]([0-9]*[1-9])","")),Std.parseInt);
+dr_DiceParser.whole = parsihax_Parser.or(dr_DiceParser.positive,dr_DiceParser.negative);
+dr_DiceParser.D = parsihax_Parser.or(parsihax_Parser.string("d"),parsihax_Parser.string("D"));
+dr_DiceParser.OPEN_SET_BRACKET = parsihax_Parser.string("{");
+dr_DiceParser.CLOSE_SET_BRACKET = parsihax_Parser.string("}");
+dr_DiceParser.COMMA = parsihax_Parser.string(",");
+dr_DiceParser.PERCENT = parsihax_Parser.string("%");
+dr_DiceParser.WS = parsihax_Parser.regexp(new EReg("\\s+","m"));
+dr_DiceParser.OWS = parsihax_Parser.or(dr_DiceParser.WS,parsihax_Parser.string(""));
+dr_DiceParser.MULTIPLICATION = parsihax_Parser["as"](parsihax_Parser.regexp(new EReg("[*⋅×x]","")),"×");
+dr_DiceParser.DIVISION = parsihax_Parser.or(parsihax_Parser.or(parsihax_Parser.string("/"),parsihax_Parser.string("÷")),parsihax_Parser.string(":"));
 dr_DiceParser.lowOrHigh = parsihax_Parser.or(parsihax_Parser.result(parsihax_Parser.or(parsihax_Parser.string("lowest"),parsihax_Parser.string("low")),dr_LowHigh.Low),parsihax_Parser.result(parsihax_Parser.or(parsihax_Parser.string("highest"),parsihax_Parser.string("high")),dr_LowHigh.High));
-dr_DiceParser.explodeOrReroll = parsihax_Parser.or(parsihax_Parser.result(parsihax_Parser.string("explode"),dr_ExplodeReroll.Explode),parsihax_Parser.result(parsihax_Parser.string("reroll"),dr_ExplodeReroll.Reroll));
 dr_DiceParser.moreLess = parsihax_Parser.or(parsihax_Parser.result(parsihax_Parser.string("more"),dr_MoreLess.More),parsihax_Parser.result(parsihax_Parser.string("less"),dr_MoreLess.Less));
-dr_DiceParser.orMoreLess = parsihax_Parser.then(dr_DiceParser.SKIP_WS(parsihax_Parser.string("or")),parsihax_Parser["as"](dr_DiceParser.moreLess,"or (more|less)"));
+dr_DiceParser.orMoreLess = parsihax_Parser.then(parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.string("or")),dr_DiceParser.OWS),parsihax_Parser["as"](dr_DiceParser.moreLess,"or (more|less)"));
 dr_DiceParser.on = parsihax_Parser.then(parsihax_Parser.then(parsihax_Parser.string("on"),dr_DiceParser.WS),dr_DiceParser.positive);
-dr_DiceParser.to = parsihax_Parser.then(parsihax_Parser.then(parsihax_Parser.string("to"),dr_DiceParser.WS),dr_DiceParser.positive);
 dr_DiceParser.range = parsihax_Parser.alt([parsihax_Parser.flatMap(dr_DiceParser.on,function(min) {
 	return parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.map(dr_DiceParser.positive,function(max) {
 		return dr_Range.Between(min,max);
@@ -14066,190 +14182,31 @@ dr_DiceParser.range = parsihax_Parser.alt([parsihax_Parser.flatMap(dr_DiceParser
 		}
 	}));
 }),parsihax_Parser.map(dr_DiceParser.on,dr_Range.Exact)]);
-dr_DiceParser.SUM = parsihax_Parser["as"](parsihax_Parser.string("sum"),"sum");
-dr_DiceParser.AVERAGE = parsihax_Parser["as"](parsihax_Parser.or(parsihax_Parser.string("average"),parsihax_Parser.string("avg")),"average");
-dr_DiceParser.MIN = parsihax_Parser["as"](parsihax_Parser.or(parsihax_Parser.string("minimum"),parsihax_Parser.string("min")),"minimum");
-dr_DiceParser.MAX = parsihax_Parser["as"](parsihax_Parser.or(parsihax_Parser.string("maximum"),parsihax_Parser.string("max")),"maximum");
-dr_DiceParser.times = parsihax_Parser["as"](parsihax_Parser.alt([parsihax_Parser.result(parsihax_Parser.string("once"),1),parsihax_Parser.result(parsihax_Parser.string("twice"),2),parsihax_Parser.result(parsihax_Parser.string("thrice"),3),parsihax_Parser.skip(dr_DiceParser.SKIP_OWS(dr_DiceParser.positive),parsihax_Parser.string("times"))]),"times");
-dr_DiceParser.literal = (function($this) {
-	var $r;
-	var _e = dr_DiceParser.positive;
-	$r = parsihax_Parser["as"]((function(fun) {
-		return parsihax_Parser.map(_e,fun);
-	})(function(_) {
-		return dr_DiceExpression.Literal(_);
-	}),"literal");
-	return $r;
-}(this));
+dr_DiceParser.diceFunctor = parsihax_Parser.lazy(function() {
+	return parsihax_Parser.alt([dr_DiceParser.diceFunctorConst("explode",dr_DiceFunctor.Explode),dr_DiceParser.diceFunctorConst("reroll",dr_DiceFunctor.Reroll)]);
+});
+dr_DiceParser.SUM = parsihax_Parser.string("sum");
+dr_DiceParser.AVERAGE = parsihax_Parser.or(parsihax_Parser.string("average"),parsihax_Parser.string("avg"));
+dr_DiceParser.MIN = parsihax_Parser.or(parsihax_Parser.string("minimum"),parsihax_Parser.string("min"));
+dr_DiceParser.MAX = parsihax_Parser.or(parsihax_Parser.string("maximum"),parsihax_Parser.string("max"));
+dr_DiceParser.times = parsihax_Parser.alt([parsihax_Parser.result(parsihax_Parser.string("once"),1),parsihax_Parser.result(parsihax_Parser.string("twice"),2),parsihax_Parser.result(parsihax_Parser.string("thrice"),3),parsihax_Parser.skip(dr_DiceParser.positive,parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.string("times")))]);
+dr_DiceParser.functorTimes = parsihax_Parser["as"](parsihax_Parser.alt([parsihax_Parser.map(dr_DiceParser.times,dr_Times.UpTo),parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.result(parsihax_Parser.string("always"),dr_Times.Always))]),"times");
 dr_DiceParser.DEFAULT_DIE_SIDES = 6;
 dr_DiceParser.die = parsihax_Parser["as"](parsihax_Parser.alt([parsihax_Parser.result(parsihax_Parser.then(dr_DiceParser.D,dr_DiceParser.PERCENT),100),parsihax_Parser.then(dr_DiceParser.D,dr_DiceParser.positive),parsihax_Parser.result(dr_DiceParser.D,dr_DiceParser.DEFAULT_DIE_SIDES)]),"one die");
-dr_DiceParser.basicDice = (function($this) {
-	var $r;
-	var l = parsihax_Parser.flatMap(dr_DiceParser.positive,function(rolls) {
-		return parsihax_Parser.map(dr_DiceParser.die,function(die) {
-			if(rolls == 1) {
-				return dr_DiceExpression.Die(die);
-			} else {
-				return dr_DiceExpression.Dice(rolls,die);
-			}
-		});
-	});
-	var _e = dr_DiceParser.die;
-	$r = parsihax_Parser["as"](parsihax_Parser.alt([l,(function(fun) {
-		return parsihax_Parser.map(_e,fun);
-	})(function(_) {
-		return dr_DiceExpression.Die(_);
-	})]),"basic dice");
-	return $r;
-}(this));
-dr_DiceParser.basicDiceSetElement = parsihax_Parser["as"](parsihax_Parser.alt([dr_DiceParser.basicDice,dr_DiceParser.literal]),"dice set element");
-dr_DiceParser.basicDiceArray = parsihax_Parser["as"](parsihax_Parser.lazy(function() {
-	return parsihax_Parser.alt([parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OPEN_SET_BRACKET,dr_DiceParser.OWS),parsihax_Parser.skip(parsihax_Parser.or(parsihax_Parser.sepBy1(parsihax_Parser.alt([dr_DiceParser.basicDiceSetElement,dr_DiceParser.diceSet]),parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OWS,dr_DiceParser.COMMA),dr_DiceParser.OWS)),parsihax_Parser.succeed([])),parsihax_Parser.then(dr_DiceParser.OWS,dr_DiceParser.CLOSE_SET_BRACKET))),parsihax_Parser.map(dr_DiceParser.basicDice,function(v) {
-		return [v];
-	})]);
-}),"dice set");
-dr_DiceParser.diceSet = parsihax_Parser["as"](parsihax_Parser.map(dr_DiceParser.basicDiceArray,function(a1) {
-	return dr_DiceExpression.DiceReducer(a1,dr_DiceReduce.Sum);
-}),"dice set");
-dr_DiceParser.diceMap = parsihax_Parser.alt([parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OPEN_SET_BRACKET,dr_DiceParser.OWS),parsihax_Parser.skip(parsihax_Parser.or(parsihax_Parser.sepBy1(dr_DiceParser.die,parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OWS,dr_DiceParser.COMMA),dr_DiceParser.OWS)),parsihax_Parser.succeed([])),parsihax_Parser.then(dr_DiceParser.OWS,dr_DiceParser.CLOSE_SET_BRACKET))),parsihax_Parser.flatMap(dr_DiceParser.positive,function(rolls) {
-	return parsihax_Parser.map(dr_DiceParser.die,function(sides) {
-		var _g = [];
-		var _g2 = 0;
-		var _g1 = rolls;
-		while(_g2 < _g1) {
-			var i = _g2++;
-			_g.push(sides);
-		}
-		return _g;
-	});
-})]);
-dr_DiceParser.explodeOrRerollBag = parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.flatMap(dr_DiceParser.diceMap,function(db) {
-	return parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.flatMap(dr_DiceParser.explodeOrReroll,function(er) {
-		return parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.alt([parsihax_Parser.flatMap(dr_DiceParser.times,function(t) {
-			var upTo = dr_Times.UpTo(t);
-			return parsihax_Parser.then(dr_DiceParser.WS,parsihax_Parser.map(dr_DiceParser.range,function(on) {
-				var r;
-				switch(er[1]) {
-				case 0:
-					r = dr_DiceFunctor.Explode(upTo,on);
-					break;
-				case 1:
-					r = dr_DiceFunctor.Reroll(upTo,on);
-					break;
-				}
-				return dr_DiceExpression.DiceMap(db,r);
-			}));
-		}),parsihax_Parser.map(dr_DiceParser.range,function(ml) {
-			var r1;
-			switch(er[1]) {
-			case 0:
-				r1 = dr_DiceFunctor.Explode(dr_Times.Always,dr_Range.Exact(1));
-				break;
-			case 1:
-				r1 = dr_DiceFunctor.Reroll(dr_Times.Always,dr_Range.Exact(1));
-				break;
-			}
-			return dr_DiceExpression.DiceMap(db,r1);
-		})]));
-	}));
-}));
-dr_DiceParser.diceMapOp = parsihax_Parser.alt([dr_DiceParser.explodeOrRerollBag]);
-dr_DiceParser.basicExpressionSet = parsihax_Parser["as"](parsihax_Parser.lazy(function() {
-	return parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OPEN_SET_BRACKET,dr_DiceParser.OWS),parsihax_Parser.skip(parsihax_Parser.or(parsihax_Parser.sepBy1(dr_DiceParser.expression,parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.string(",")),dr_DiceParser.OWS)),parsihax_Parser.succeed([])),parsihax_Parser.then(dr_DiceParser.OWS,dr_DiceParser.CLOSE_SET_BRACKET)));
-}),"expression set");
-dr_DiceParser.diceOrSet = parsihax_Parser.alt([parsihax_Parser.map(dr_DiceParser.diceSet,function(v) {
-	if(v[1] == 4) {
-		var list = v[2];
-		return list;
-	} else {
-		return [v];
-	}
-}),dr_DiceParser.basicExpressionSet]);
-dr_DiceParser.expressionSetImplicit = (function($this) {
-	var $r;
-	var _e = dr_DiceParser.diceOrSet;
-	$r = parsihax_Parser["as"]((function(fun) {
-		return parsihax_Parser.map(_e,fun);
-	})(function(_) {
-		return dr_DiceExpression.DiceReducer(_,dr_DiceReduce.Sum);
-	}),"implicit sum");
-	return $r;
-}(this));
-dr_DiceParser.expressionSetSum = (function($this) {
-	var $r;
-	var _e = parsihax_Parser.skip(dr_DiceParser.diceOrSet,parsihax_Parser.then(dr_DiceParser.OWS,dr_DiceParser.SUM));
-	$r = parsihax_Parser["as"]((function(fun) {
-		return parsihax_Parser.map(_e,fun);
-	})(function(_) {
-		return dr_DiceExpression.DiceReducer(_,dr_DiceReduce.Sum);
-	}),"sum");
-	return $r;
-}(this));
-dr_DiceParser.expressionSetAverage = (function($this) {
-	var $r;
-	var _e = parsihax_Parser.skip(dr_DiceParser.diceOrSet,parsihax_Parser.then(dr_DiceParser.OWS,dr_DiceParser.AVERAGE));
-	$r = parsihax_Parser["as"]((function(fun) {
-		return parsihax_Parser.map(_e,fun);
-	})(function(_) {
-		return dr_DiceExpression.DiceReducer(_,dr_DiceReduce.Average);
-	}),"average");
-	return $r;
-}(this));
-dr_DiceParser.expressionSetMin = (function($this) {
-	var $r;
-	var _e = parsihax_Parser.skip(dr_DiceParser.diceOrSet,parsihax_Parser.then(dr_DiceParser.OWS,dr_DiceParser.MIN));
-	$r = parsihax_Parser["as"]((function(fun) {
-		return parsihax_Parser.map(_e,fun);
-	})(function(_) {
-		return dr_DiceExpression.DiceReducer(_,dr_DiceReduce.Min);
-	}),"minimum");
-	return $r;
-}(this));
-dr_DiceParser.expressionSetMax = (function($this) {
-	var $r;
-	var _e = parsihax_Parser.skip(dr_DiceParser.diceOrSet,parsihax_Parser.then(dr_DiceParser.OWS,dr_DiceParser.MAX));
-	$r = parsihax_Parser["as"]((function(fun) {
-		return parsihax_Parser.map(_e,fun);
-	})(function(_) {
-		return dr_DiceExpression.DiceReducer(_,dr_DiceReduce.Max);
-	}),"maximum");
-	return $r;
-}(this));
-dr_DiceParser.expressionSetDropOrKeep = parsihax_Parser["as"](parsihax_Parser.flatMap(parsihax_Parser.skip(dr_DiceParser.diceOrSet,dr_DiceParser.WS),function(expr) {
-	return parsihax_Parser.flatMap(dr_DiceParser.keepOrDrop,function(kd) {
-		return parsihax_Parser.then(dr_DiceParser.WS,parsihax_Parser.or(parsihax_Parser.flatMap(dr_DiceParser.lowOrHigh,function(lh) {
-			return parsihax_Parser.then(dr_DiceParser.WS,parsihax_Parser.map(dr_DiceParser.positive,function(value) {
-				switch(kd[1]) {
-				case 0:
-					return dr_DiceExpression.DiceReducer(expr,dr_DiceReduce.Drop(lh,value));
-				case 1:
-					return dr_DiceExpression.DiceReducer(expr,dr_DiceReduce.Keep(lh,value));
-				}
-			}));
-		}),parsihax_Parser.map(dr_DiceParser.positive,function(value1) {
-			switch(kd[1]) {
-			case 0:
-				return dr_DiceExpression.DiceReducer(expr,dr_DiceReduce.Drop(dr_LowHigh.Low,value1));
-			case 1:
-				return dr_DiceExpression.DiceReducer(expr,dr_DiceReduce.Keep(dr_LowHigh.High,value1));
-			}
-		})));
-	});
-}),"keep or drop");
-dr_DiceParser.expressionSetOp = parsihax_Parser.alt([dr_DiceParser.expressionSetDropOrKeep,dr_DiceParser.expressionSetAverage,dr_DiceParser.expressionSetMin,dr_DiceParser.expressionSetMax,dr_DiceParser.expressionSetSum,dr_DiceParser.expressionSetImplicit]);
 dr_DiceParser.negate = parsihax_Parser["as"](parsihax_Parser.lazy(function() {
-	return parsihax_Parser.then(dr_DiceParser.MINUS,parsihax_Parser.map(dr_DiceParser.inlineExpression,function(expr) {
+	return parsihax_Parser.then(dr_DiceParser.MINUS,parsihax_Parser.map(dr_DiceParser.termExpression,function(expr) {
 		return dr_DiceExpression.UnaryOp(dr_DiceUnOp.Negate,expr);
 	}));
 }),"negate");
+dr_DiceParser.unary = parsihax_Parser.alt([dr_DiceParser.negate]);
 dr_DiceParser.binOpSymbol = parsihax_Parser.alt([parsihax_Parser.result(dr_DiceParser.PLUS,dr_DiceBinOp.Sum),parsihax_Parser.result(dr_DiceParser.MINUS,dr_DiceBinOp.Difference),parsihax_Parser.result(dr_DiceParser.MULTIPLICATION,dr_DiceBinOp.Multiplication),parsihax_Parser.result(dr_DiceParser.DIVISION,dr_DiceBinOp.Division)]);
 dr_DiceParser.opRight = parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.flatMap(dr_DiceParser.binOpSymbol,function(o) {
-	return parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.map(dr_DiceParser.inlineExpression,function(b) {
+	return parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.map(dr_DiceParser.termExpression,function(b) {
 		return { op : o, right : b};
 	}));
 }));
 dr_DiceParser.binop = parsihax_Parser.lazy(function() {
-	return parsihax_Parser.flatMap(dr_DiceParser.inlineExpression,function(left) {
+	return parsihax_Parser.flatMap(dr_DiceParser.termExpression,function(left) {
 		return parsihax_Parser.map(parsihax_Parser.times(dr_DiceParser.opRight,1,1000),function(a) {
 			return thx_Arrays.reduce(a,function(left1,item) {
 				var _g = item.op;
@@ -14257,7 +14214,7 @@ dr_DiceParser.binop = parsihax_Parser.lazy(function() {
 				case 0:case 1:
 					return dr_DiceExpression.BinaryOp(item.op,left1,item.right);
 				case 2:case 3:
-					if(left1[1] == 5) {
+					if(left1[1] == 3) {
 						var r = left1[4];
 						var l = left1[3];
 						var o = left1[2];
@@ -14272,12 +14229,77 @@ dr_DiceParser.binop = parsihax_Parser.lazy(function() {
 		});
 	});
 });
-dr_DiceParser.expressionOperations = parsihax_Parser.alt([dr_DiceParser.binop]);
-dr_DiceParser.inlineExpression = parsihax_Parser["as"](parsihax_Parser.lazy(function() {
-	return parsihax_Parser.alt([dr_DiceParser.diceMapOp,dr_DiceParser.expressionSetOp,dr_DiceParser.diceSet,dr_DiceParser.literal,dr_DiceParser.negate]);
-}),"inline expression");
+dr_DiceParser.dieExpression = parsihax_Parser.or(parsihax_Parser.then(parsihax_Parser.string("1"),parsihax_Parser.map(dr_DiceParser.die,dr_DiceExpression.Die)),parsihax_Parser["as"](parsihax_Parser.map(dr_DiceParser.die,dr_DiceExpression.Die),"die"));
+dr_DiceParser.literalExpression = parsihax_Parser["as"](parsihax_Parser.map(dr_DiceParser.whole,dr_DiceExpression.Literal),"literal");
+dr_DiceParser.diceExpressions = parsihax_Parser.lazy(function() {
+	return parsihax_Parser.alt([parsihax_Parser.flatMap(dr_DiceParser.positive,function(rolls) {
+		return parsihax_Parser.map(dr_DiceParser.die,function(sides) {
+			var _g = [];
+			var _g2 = 0;
+			var _g1 = rolls;
+			while(_g2 < _g1) {
+				var i = _g2++;
+				_g.push(dr_DiceExpression.Die(sides));
+			}
+			return dr_DiceReduceable.DiceExpressions(_g);
+		});
+	}),parsihax_Parser.map(dr_DiceParser.commaSeparated(dr_DiceParser.expression),dr_DiceReduceable.DiceExpressions)]);
+});
+dr_DiceParser.diceFilterable = parsihax_Parser.lazy(function() {
+	return parsihax_Parser.flatMap(parsihax_Parser.alt([parsihax_Parser.flatMap(dr_DiceParser.positive,function(rolls) {
+		return parsihax_Parser.map(dr_DiceParser.die,function(sides) {
+			var _g = [];
+			var _g2 = 0;
+			var _g1 = rolls;
+			while(_g2 < _g1) {
+				var i = _g2++;
+				_g.push(sides);
+			}
+			return dr_DiceFilterable.DiceArray(_g);
+		});
+	}),parsihax_Parser.map(dr_DiceParser.commaSeparated(dr_DiceParser.die),function(dice) {
+		return dr_DiceFilterable.DiceArray(dice);
+	}),parsihax_Parser.map(dr_DiceParser.commaSeparated(dr_DiceParser.expression),dr_DiceFilterable.DiceExpressions)]),function(filterable) {
+		var l = dr_DiceParser.OWS;
+		var _e = dr_DiceParser.dirValue(parsihax_Parser.string("drop"),dr_LowHigh.Low);
+		var r = (function(fun) {
+			return parsihax_Parser.map(_e,fun);
+		})(function(_) {
+			return dr_DiceFilter.Drop(_.dir,_.value);
+		});
+		var _e1 = dr_DiceParser.dirValue(parsihax_Parser.string("keep"),dr_LowHigh.High);
+		return parsihax_Parser.then(l,parsihax_Parser.map(parsihax_Parser.alt([r,(function(fun1) {
+			return parsihax_Parser.map(_e1,fun1);
+		})(function(_1) {
+			return dr_DiceFilter.Keep(_1.dir,_1.value);
+		})]),function(dk) {
+			return dr_DiceReduceable.DiceListWithFilter(filterable,dk);
+		}));
+	});
+});
+dr_DiceParser.diceMapeable = parsihax_Parser.lazy(function() {
+	return parsihax_Parser.flatMap(parsihax_Parser.alt([parsihax_Parser.flatMap(dr_DiceParser.positive,function(rolls) {
+		return parsihax_Parser.map(dr_DiceParser.die,function(sides) {
+			var _g = [];
+			var _g2 = 0;
+			var _g1 = rolls;
+			while(_g2 < _g1) {
+				var i = _g2++;
+				_g.push(sides);
+			}
+			return _g;
+		});
+	}),dr_DiceParser.commaSeparated(dr_DiceParser.die)]),function(arr) {
+		return parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.map(dr_DiceParser.diceFunctor,function(functor) {
+			return dr_DiceReduceable.DiceListWithMap(arr,functor);
+		}));
+	});
+});
+dr_DiceParser.termExpression = parsihax_Parser.lazy(function() {
+	return parsihax_Parser.alt([dr_DiceParser.diceReduce(dr_DiceParser.diceMapeable),dr_DiceParser.diceReduce(dr_DiceParser.diceFilterable),dr_DiceParser.diceReduce(dr_DiceParser.diceExpressions),dr_DiceParser.dieExpression,dr_DiceParser.literalExpression,dr_DiceParser.unary]);
+});
 dr_DiceParser.expression = parsihax_Parser["as"](parsihax_Parser.lazy(function() {
-	return parsihax_Parser.alt([dr_DiceParser.expressionOperations,dr_DiceParser.inlineExpression]);
+	return parsihax_Parser.alt([dr_DiceParser.binop,dr_DiceParser.termExpression]);
 }),"expression");
 dr_DiceParser.grammar = parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.skip(parsihax_Parser.skip(dr_DiceParser.expression,dr_DiceParser.OWS),parsihax_Parser.eof()));
 dr_Discrete.zero = dr_Discrete.literal(0);

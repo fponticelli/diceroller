@@ -1,5 +1,7 @@
 import utest.Assert;
 import utest.UTest;
+using dr.DiceExpression;
+using dr.RollResult;
 using dr.DiceExpressionExtensions;
 import dr.DiceParser.*;
 import dr.Roller;
@@ -22,6 +24,94 @@ class TestAll {
 
   public function min()
     return Roller.int(function(_: Int) return 1);
+
+  public function testRoller() {
+    var tests = [
+      {
+        test: Die(6),
+        min: OneResult({ result: 1, sides: 6 }),
+        max: OneResult({ result: 6, sides: 6 }), pos: pos()
+      }, {
+        test: Literal(6),
+        min: LiteralResult(6, 6),
+        max: LiteralResult(6, 6), pos: pos()
+      }, {
+        test: DiceReduce(DiceExpressions([Literal(1), Literal(2), Literal(3)]), Sum),
+        min: DiceReduceResult(DiceExpressionsResult([LiteralResult(1,1), LiteralResult(2,2), LiteralResult(3,3)]), Sum, 6),
+        max: DiceReduceResult(DiceExpressionsResult([LiteralResult(1,1), LiteralResult(2,2), LiteralResult(3,3)]), Sum, 6), pos: pos()
+      }, {
+        test: DiceReduce(DiceExpressions([Literal(1), Literal(2), Literal(3)]), Average),
+        min: DiceReduceResult(DiceExpressionsResult([LiteralResult(1,1), LiteralResult(2,2), LiteralResult(3,3)]), Average, 2),
+        max: DiceReduceResult(DiceExpressionsResult([LiteralResult(1,1), LiteralResult(2,2), LiteralResult(3,3)]), Average, 2), pos: pos()
+      }, {
+        test: DiceReduce(DiceExpressions([Literal(1), Literal(2), Literal(3)]), Min),
+        min: DiceReduceResult(DiceExpressionsResult([LiteralResult(1,1), LiteralResult(2,2), LiteralResult(3,3)]), Min, 1),
+        max: DiceReduceResult(DiceExpressionsResult([LiteralResult(1,1), LiteralResult(2,2), LiteralResult(3,3)]), Min, 1), pos: pos()
+      }, {
+        test: DiceReduce(DiceExpressions([Literal(1), Literal(2), Literal(3)]), Max),
+        min: DiceReduceResult(DiceExpressionsResult([LiteralResult(1,1), LiteralResult(2,2), LiteralResult(3,3)]), Max, 3),
+        max: DiceReduceResult(DiceExpressionsResult([LiteralResult(1,1), LiteralResult(2,2), LiteralResult(3,3)]), Max, 3), pos: pos()
+      }, {
+        test: DiceReduce(DiceListWithFilter(DiceExpressions([Literal(1), Literal(2), Literal(3)]), Drop(Low, 1)), Sum),
+        min: DiceReduceResult(DiceFilterableResult([Discard(LiteralResult(1, 1)), Keep(LiteralResult(2, 2)), Keep(LiteralResult(3, 3))], Drop(Low, 1)), Sum, 5),
+        max: DiceReduceResult(DiceFilterableResult([Discard(LiteralResult(1, 1)), Keep(LiteralResult(2, 2)), Keep(LiteralResult(3, 3))], Drop(Low, 1)), Sum, 5), pos: pos()
+      }, {
+        test: DiceReduce(DiceListWithMap([2,3,4], Explode(UpTo(1), ValueOrMore(3))), Sum),
+        min: DiceReduceResult(DiceMapeableResult([
+          Normal({result:1, sides:2}),
+          Normal({result:1, sides:3}),
+          Normal({result:1, sides:4})
+        ], Explode(UpTo(1), ValueOrMore(3))), Sum, 3),
+        max: DiceReduceResult(DiceMapeableResult([
+          Normal({result:2, sides:2}),
+          Exploded([{result:3, sides:3}, {result:3, sides:3}]),
+          Exploded([{result:4, sides:4}, {result:4, sides:4}])
+        ], Explode(UpTo(1), ValueOrMore(3))), Sum, 16), pos: pos()
+      }, {
+        test: DiceReduce(DiceListWithMap([2,3,4], Reroll(UpTo(1), ValueOrMore(3))), Sum),
+        min: DiceReduceResult(DiceMapeableResult([
+          Normal({result:1, sides:2}),
+          Normal({result:1, sides:3}),
+          Normal({result:1, sides:4})
+        ], Reroll(UpTo(1), ValueOrMore(3))), Sum, 3),
+        max: DiceReduceResult(DiceMapeableResult([
+          Normal({result:2, sides:2}),
+          Rerolled([{result:3, sides:3}, {result:3, sides:3}]),
+          Rerolled([{result:4, sides:4}, {result:4, sides:4}])
+        ], Reroll(UpTo(1), ValueOrMore(3))), Sum, 9), pos: pos()
+      }, {
+        test: BinaryOp(Sum, Literal(3), Die(2)),
+        min: BinaryOpResult(
+          Sum,
+          LiteralResult(3, 3),
+          OneResult({ result: 1, sides: 2 }),
+          4
+        ),
+        max: BinaryOpResult(
+          Sum,
+          LiteralResult(3, 3),
+          OneResult({ result: 2, sides: 2 }),
+          5
+        ), pos: pos()
+      }, {
+        test: UnaryOp(Negate, Literal(3)),
+        min: UnaryOpResult(
+          Negate,
+          LiteralResult(3, 3),
+          -3
+        ),
+        max: UnaryOpResult(
+          Negate,
+          LiteralResult(3, 3),
+          -3
+        ), pos: pos()
+      }
+    ];
+    for(test in tests) {
+      Assert.same(test.min, min().roll(test.test), test.pos);
+      Assert.same(test.max, max().roll(test.test), test.pos);
+    }
+  }
 
   public function testParseAndBoundaries() {
     var tests: Array<TestObject> = [
@@ -53,6 +143,7 @@ class TestAll {
       { min: 10, max: 58, t: "{{2,d4,3d8},d4,3d8}", pos: pos() },
 
       { min: -6,  t: "-6", pos: pos() },
+      { min: -1, max: -6, t: "-d6", pos: pos() },
       { min: -1,  max: -6,  t: "-d6", pos: pos() },
       { min: -2,  max: -10, t: "-{d6,d4}", pos: pos() },
       { min: 5,   t: "2+3", p: "2 + 3", pos: pos() },
@@ -73,7 +164,7 @@ class TestAll {
       { min: 75, t: "25 * 3", pos: pos() },
       { min: 2,  t: "150 / 25 * 3", pos: pos() },
       { min: 18, t: "{150 / 25} * 3", pos: pos() },
-      { min: 11, max: 105, t: "{{2,d4,3d8},5} * {d4,3d8} / {3,d6}", pos: pos() },
+      { min: 11, max: 140, t: "{{2,d4,3d8},5} * {d4,3d8} / {3,d6}", pos: pos() },
 
       { min: 10, max: 60, t: "10d6", pos: pos() },
       { min: 10, max: 60, t: "10d6 sum", p: "10d6", pos: pos() },
@@ -129,10 +220,10 @@ class TestAll {
         var f = t.t != expected ? ' for "${t.t}"' : "";
         Assert.equals(expected, serialized, 'expected serialization to be "${expected}" but it is "${serialized}"$f', t.pos);
         var minr = min().roll(v).getResult();
-        Assert.equals(t.min, minr, 'expected min to be ${t.min} but it is $minr', t.pos);
+        Assert.equals(t.min, minr, 'expected low to be ${t.min} but it is $minr for ${t.t} evaluated to ${v}', t.pos);
         var maxr = max().roll(v).getResult();
         var expectedmax = null == t.max ? t.min : t.max;
-        Assert.equals(expectedmax, maxr, 'expected max to be $expectedmax but it is $maxr', t.pos);
+        Assert.equals(expectedmax, maxr, 'expected high to be $expectedmax but it is $maxr for ${t.t} evaluated to ${v}', t.pos);
     }
   }
 

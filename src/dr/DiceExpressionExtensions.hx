@@ -10,12 +10,14 @@ class DiceExpressionExtensions {
       '$value';
     case Die(sides):
       diceToString(1, sides);
-    case Dice(times, sides):
-      diceToString(times, sides);
-    case DiceMap(dice, functor):
-      diceBagToString(dice, functor);
-    case DiceReducer(exprs, aggregator):
-      expressionsToString(exprs, aggregator);
+    case DiceReduce(DiceExpressions(exprs), reducer):
+      expressionsToString(exprs) + expressionExtractorToString(reducer);
+    case DiceReduce(DiceListWithFilter(DiceArray(dice), filter), reducer):
+      sidesToString(dice) + diceFilterToString(filter) + expressionExtractorToString(reducer);
+    case DiceReduce(DiceListWithFilter(DiceExpressions(exprs), filter), reducer):
+      expressionsToString(exprs) + diceFilterToString(filter) + expressionExtractorToString(reducer);
+    case DiceReduce(DiceListWithMap(dice, functor), reducer):
+    diceBagToString(dice, functor) + expressionExtractorToString(reducer);
     case BinaryOp(op, a, b):
       toString(a) + " " + (switch op {
         case Sum: "+";
@@ -74,18 +76,38 @@ class DiceExpressionExtensions {
     };
   }
 
-  public static function expressionsToString<T>(exprs: Array<DiceExpression>, aggregator: DiceReduce)
-    return
-      (exprs.length == 1 && !needsBraces(exprs[0]) ?
-        exprs.map(toString).join(",") :
-        '{' + exprs.map(toString).join(",") + '}') +
-        expressionExtractorToString(aggregator);
+  public static function expressionsToString<T>(exprs: Array<DiceExpression>) {
+    if(allOneDieSameSides(exprs)) {
+      return (exprs.length > 1 ? '${exprs.length}' : "") + toString(exprs[0]);
+    } else {
+      return
+        (exprs.length == 1 && !needsBraces(exprs[0]) ?
+          exprs.map(toString).join(",") :
+          '{' + exprs.map(toString).join(",") + '}');
+    }
+  }
 
-  public static function expressionExtractorToString(aggregator) return switch aggregator {
+  public static function allOneDieSameSides(exprs: Array<DiceExpression>) {
+    var sides = [];
+    for(expr in exprs) {
+      switch expr {
+        case Die(s):
+          sides.push(s);
+        case _:
+          return false;
+      }
+    }
+    return sides.distinct().length == 1;
+  }
+
+  public static function expressionExtractorToString(functor) return switch functor {
     case Sum: "";
     case Average: " average";
     case Min: " min";
     case Max: " max";
+  };
+
+  public static function diceFilterToString(filter) return switch filter {
     case Drop(Low, drop):  ' drop $drop';
     case Drop(High, drop): ' drop highest $drop';
     case Keep(High, drop): ' keep $drop';
@@ -94,11 +116,9 @@ class DiceExpressionExtensions {
 
   public static function needsBraces(expr) return switch expr {
     case BinaryOp(_, _, _): true;
-    case Literal(value): false;
-    case Die(sides): false;
-    case Dice(times, sides): false;
-    case DiceMap(_): false;
-    case DiceReducer(_): false;
+    case Literal(_): false;
+    case Die(_): false;
+    case DiceReduce(_): false;
     case UnaryOp(_): false;
   }
 }

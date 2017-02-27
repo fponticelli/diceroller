@@ -5,8 +5,7 @@ class RollResultExtensions {
     return switch expr {
       case OneResult(die):
         die.result;
-      case DiceMapResult(_, _, result) |
-           DiceReducerResult(_, _, result) |
+      case DiceReduceResult(_, _, result) |
            BinaryOpResult(_, _, _, result) |
            UnaryOpResult(_, _, result) |
            LiteralResult(_, result):

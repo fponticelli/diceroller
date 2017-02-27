@@ -1,20 +1,32 @@
 package dr;
 
 enum DiceExpression {
-  Die(sides: Int);
-  Dice(times: Int, sides: Int);
+  Die(sides: Sides);
   Literal(value: Int);
-  DiceMap(dice: Array<Sides>, extractor: DiceFunctor);
-  DiceReducer(exprs: Array<DiceExpression>, extractor: DiceReduce);
+  DiceReduce(reduceable: DiceReduceable, reducer: DiceReducer);
   BinaryOp(op: DiceBinOp, a: DiceExpression, b: DiceExpression);
   UnaryOp(op: DiceUnOp, a: DiceExpression);
 }
 
-enum DiceReduce {
+enum DiceReducer {
   Sum;
   Average;
   Min;
   Max;
+}
+
+enum DiceReduceable {
+  DiceExpressions(exprs: Array<DiceExpression>);
+  DiceListWithFilter(list: DiceFilterable, filter: DiceFilter);
+  DiceListWithMap(dice: Array<Sides>, functor: DiceFunctor);
+}
+
+enum DiceFilterable {
+  DiceArray(dice: Array<Sides>);
+  DiceExpressions(exprs: Array<DiceExpression>);
+}
+
+enum DiceFilter {
   Drop(dir: LowHigh, value: Int);
   Keep(dir: LowHigh, value: Int);
 }

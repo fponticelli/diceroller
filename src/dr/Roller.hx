@@ -22,23 +22,30 @@ class Roller<Result> {
     return switch expr {
       case Die(sides):
         OneResult({ result: algebra.die(sides), sides: sides });
-      case Dice(times, sides):
-        var rolls = [for(i in 0...times) { result: algebra.die(sides), sides: sides }];
-        var result = sumDice(rolls);
-        DiceReducerResult(
-          rolls.map(OneResult),
-          Sum,
-          result);
       case Literal(value):
         LiteralResult(value, algebra.ofLiteral(value));
-      case DiceMap(dice, functor):
-        var rolls = extractRolls(dice, functor);
-        var result = extractResult(rolls, functor);
-        DiceMapResult(rolls.map.fn(OneResult(_)), functor, result);
-      case DiceReducer(exprs, aggregator):
-        var exaluatedExpressions = exprs.map(roll),
-            result = extractExpressionResults(exaluatedExpressions, aggregator);
-        DiceReducerResult(exaluatedExpressions, aggregator, result);
+      case DiceReduce(DiceExpressions(exprs), reducer):
+        var rolls = exprs.map(roll),
+            result = reduceRolls(rolls, reducer);
+        DiceReduceResult(DiceExpressionsResult(rolls), reducer, result);
+      case DiceReduce(DiceListWithFilter(DiceArray(dice), filter), reducer):
+        var rolls = dice.map.fn(roll(Die(_))),
+            filteredRolls = filterRolls(rolls, filter),
+            keepFilteredRolls = keepFilteredRolls(filteredRolls),
+            result = reduceRolls(keepFilteredRolls, reducer);
+        DiceReduceResult(DiceFilterableResult(filteredRolls, filter), reducer, result);
+      case DiceReduce(DiceListWithFilter(DiceExpressions(exprs), filter), reducer):
+        var rolls = exprs.map(roll),
+            filteredRolls = filterRolls(rolls, filter),
+            keepFilteredRolls = keepFilteredRolls(filteredRolls),
+            result = reduceRolls(keepFilteredRolls, reducer);
+        DiceReduceResult(DiceFilterableResult(filteredRolls, filter), reducer, result);
+      case DiceReduce(DiceListWithMap(dice, functor), reducer):
+        var rolls = dice.map.fn({ result: algebra.die(_), sides: _ }),
+            mapped = mapRolls(rolls, functor),
+            keepMappedRolls = keepMappedRolls(mapped),
+            result = reduceRolls(keepMappedRolls.map(OneResult), reducer);
+        DiceReduceResult(DiceMapeableResult(mapped, functor), reducer, result);
       case BinaryOp(op, a, b):
         var ra = roll(a),
             rb = roll(b);
@@ -58,120 +65,101 @@ class Roller<Result> {
     };
   }
 
-  function extractRolls(dice, functor): Array<DieResult<Result>>
-    return (switch functor {
-      case Explode(times, range):
-        explodeRolls(dice, times, range);
-      case Reroll(times, range):
-        rerollRolls(dice, times, range);
-    });
-
-  function sumDice(rolls: Array<DieResult<Result>>)
-    return rolls.reduce(function(acc, roll) return algebra.sum(acc, roll.result), algebra.zero);
-
-  function sumResults(rolls: Array<RollResult<Result>>)
-    return rolls.map(getResult).reduce(algebra.sum, algebra.zero);
-
-  function extractResult(rolls: Array<DieResult<Result>>, functor: DiceFunctor)
+  function mapRolls(rolls: Array<DieResult<Result>>, functor: DiceFunctor): Array<DiceResultMapped<Result>> {
     return switch functor {
-      case Explode(times, range) | Reroll(times, range):
-        // TODO needs work?
-        rolls.map.fn(_.result).reduce(algebra.sum, algebra.zero);
-    };
-
-  function extractExpressionResults(exprs: Array<RollResult<Result>>, aggregator: DiceReduce) {
-    exprs = flattenExprs(exprs);
-    return switch aggregator {
-      case Average:
-        algebra.average(exprs.map(getResult));
-      case Sum:
-        exprs.map(getResult).reduce(algebra.sum, algebra.zero);
-      case Min:
-        exprs.map(getResult).order(algebra.compare).shift();
-      case Max:
-        exprs.map(getResult).order(algebra.compare).pop();
-      case Drop(dir, value):
-        switch dir {
-          case Low:
-            exprs.map(getResult).order(algebra.compare).slice(value).reduce(algebra.sum, algebra.zero);
-          case High:
-            exprs.map(getResult).order(algebra.compare).slice(0, -value).reduce(algebra.sum, algebra.zero);
-        };
-      case Keep(dir, value):
-        switch dir {
-          case Low:
-            exprs.map(getResult).order(algebra.compare).slice(0,value).reduce(algebra.sum, algebra.zero);
-          case High:
-            exprs.map(getResult).order(algebra.compare).slice(-value).reduce(algebra.sum, algebra.zero);
-        };
+      case Explode(Always, range): rolls.map(explodeRoll.bind(_, -1, range));
+      case Explode(UpTo(times), range): rolls.map(explodeRoll.bind(_, times, range));
+      case Reroll(Always, range): rolls.map(rerollRoll.bind(_, -1, range));
+      case Reroll(UpTo(times), range): rolls.map(rerollRoll.bind(_, times, range));
     };
   }
 
-  function flattenExprs(exprs: Array<RollResult<Result>>): Array<RollResult<Result>> {
-    return if(exprs.length == 1) {
-      switch exprs[0] {
-        case DiceReducerResult(exprs, _):
-          exprs;
-        case _:
-          exprs;
-      }
-    } else {
-      exprs;
+  function explodeRoll(roll: DieResult<Result>, times: Int, range: Range): DiceResultMapped<Result> {
+    var acc = rollRange(roll, times, range);
+    return acc.length == 1 ? Normal(acc[0]) : Exploded(acc);
+  }
+
+  function rerollRoll(roll: DieResult<Result>, times: Int, range: Range): DiceResultMapped<Result> {
+    var acc = rollRange(roll, times, range);
+    return acc.length == 1 ? Normal(acc[0]) : Rerolled(acc);
+  }
+
+  function rollRange(roll: DieResult<Result>, times: Int, range: Range) {
+    var acc = [roll],
+        curr = roll;
+    while(times != 0 && matchRange(curr.result, range)) {
+      curr = { result: algebra.die(curr.sides), sides: curr.sides };
+      acc.push(curr);
+      times--;
     }
+    return acc;
   }
 
-  function explodeRolls(dice: Array<Sides>, times: Times, range: Range): Array<DieResult<Result>> {
-    return switch times {
-      case Always:
-        explodeRollsTimes(dice, 1000, range); // TODO 1000 could be calculated a little better
-      case UpTo(value):
-        explodeRollsTimes(dice, value, range);
-    };
-  }
-
-  function explodeRollsTimes(dice: Array<Sides>, times: Int, range: Range): Array<DieResult<Result>> {
-    var rolls: Array<DieResult<Result>> = dice.map.fn({ result: algebra.die(_), sides: _ });
-    if(times == 0 || rolls.length == 0)
-      return rolls;
-
-    var explosives = rolls
-          .filter.fn(compareToRange(_.result, range));
-    return rolls.concat(explodeRollsTimes(explosives.map.fn(_.sides), times-1, range));
-  }
-
-  function compareToRange(v: Result, range: Range): Bool {
+  function matchRange(r: Result, range: Range): Bool {
     return switch range {
       case Exact(value):
-        algebra.compareToSides(v, value) == 0;
+        algebra.compareToSides(r, value) == 0;
       case Between(minInclusive, maxInclusive):
-        algebra.compareToSides(v, minInclusive) >= 0 && algebra.compareToSides(v, maxInclusive) <= 0;
+        algebra.compareToSides(r, minInclusive) >= 0 && algebra.compareToSides(r, maxInclusive) <= 0;
       case ValueOrMore(value):
-        algebra.compareToSides(v, value) >= 0;
+        algebra.compareToSides(r, value) >= 0;
       case ValueOrLess(value):
-        algebra.compareToSides(v, value) <= 0;
+        algebra.compareToSides(r, value) <= 0;
       case Composite(ranges):
-        ranges.reduce(function(acc, range) {
-          return acc ||  compareToRange(v, range);
+        ranges.reduce(function(acc, currRange) {
+          return acc || matchRange(r, currRange);
         }, false);
     };
   }
 
-  function rerollRolls(dice: Array<Sides>, times: Times, range: Range): Array<DieResult<Result>> {
-    return switch times {
-      case Always:
-        rerollRollsTimes(dice, 1000, range); // TODO 1000 could be calculated a little better
-      case UpTo(value):
-        rerollRollsTimes(dice, value, range);
+  function keepMappedRolls(rolls: Array<DiceResultMapped<Result>>): Array<DieResult<Result>> {
+    return rolls.flatMap(function(r) return switch r {
+      case Rerolled(rerolls): [rerolls.last()];
+      case Exploded(explosions): explosions;
+      case Normal(roll): [roll];
+    });
+  }
+
+  function filterRolls(rolls: Array<RollResult<Result>>, filter: DiceFilter): Array<DieResultFilter<Result>> {
+      var ranked = rolls.rank(function(a, b) {
+        return algebra.compare(getResult(a), getResult(b));
+      }, true);
+      var f = switch filter {
+        case Drop(Low, value):  function(i, l) return i >= value;
+        case Drop(High, value): function(i, l) return i <  l - value;
+        case Keep(Low, value):  function(i, l) return i < value;
+        case Keep(High, value): function(i, l) return i >= l - value;
+      };
+      return rolls.mapi(function(roll, i) {
+        return if(f(ranked[i], ranked.length))
+          Keep(roll);
+        else
+          Discard(roll);
+      });
+  }
+
+  function keepFilteredRolls(rolls: Array<DieResultFilter<Result>>) {
+    return rolls.filterMap(function(roll) return switch roll {
+      case Keep(r): Some(r);
+      case Discard(_): None;
+    });
+  }
+
+  function reduceRolls(rolls: Array<RollResult<Result>>, reducer: DiceReducer)
+    return reduceResults(getRollResults(rolls), reducer);
+
+  function reduceResults(results: Array<Result>, reducer: DiceReducer)
+    return switch reducer {
+      case Average:
+          algebra.average(results);
+        case Sum:
+          results.reduce(algebra.sum, algebra.zero);
+        case Min:
+          results.order(algebra.compare).shift();
+        case Max:
+          results.order(algebra.compare).pop();
     };
-  }
 
-  function rerollRollsTimes(dice: Array<Sides>, times: Int, range: Range): Array<DieResult<Result>> {
-    var rolls: Array<DieResult<Result>> = dice.map.fn({ result: algebra.die(_), sides: _ });
-    if(times == 0 || rolls.length == 0)
-      return rolls;
-
-    var rerolls = rolls.filter.fn(compareToRange(_.result, range));
-    var keeprolls = rolls.filter.fn(!compareToRange(_.result, range));
-    return keeprolls.concat(rerollRollsTimes(rerolls.map.fn(_.sides), times-1, range));
-  }
+  function getRollResults(rolls: Array<RollResult<Result>>)
+    return rolls.map(getResult);
 }
