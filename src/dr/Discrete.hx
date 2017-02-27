@@ -1,9 +1,7 @@
 package dr;
 
 import thx.Tuple;
-using thx.Arrays;
-using thx.Strings;
-using thx.format.NumberFormat;
+import dr.BoxLattice;
 
 // We model discrete distributions as pairs of (integer) weights and values
 class Discrete {
@@ -80,19 +78,8 @@ class Discrete {
   public function unary(f: Float -> Float): Discrete
     return new Discrete(weights(), values().map(f));
 
-  public function binary(other: Discrete, f: Float -> Float -> Float): Discrete {
-    var m = this.length() * other.length();
-    var weights: Array<Int> = [for (i in 0...m) 0];
-    var values: Array<Float> = [for (i in 0...m) 0.0];
-    var k = 0;
-    for(i in 0...this.length())
-      for(j in 0...other.length()) {
-        weights[k] = this.weightedValues[i]._0 * other.weightedValues[j]._0;
-        values[k] = f(this.weightedValues[i]._1, other.weightedValues[j]._1);
-        k++;
-      }
-    return new Discrete(weights, values);
-  }
+  public function binary(other: Discrete, f: Float -> Float -> Float): Discrete
+    return apply([this, other], function (a: Array<Float>):Float { return f(a[0], a[1]);} );
 
   public function alwaysResample(x: Array<Float>) {
   // We set the weights of values in x to zero and let
@@ -104,6 +91,23 @@ class Discrete {
           weights[i] = 0;
     return new Discrete(weights, this.values());
   }
+
+  public static function apply(operands: Array<Discrete>, operator: Array<Float> -> Float): Discrete {
+    var weighted_values = operands.map(function (discrete: Discrete) { return discrete.weighted_values; });
+    var bl = new BoxLattice(weighted_values, Left(0));
+    var f = function(headers: Array<Tuple2<Int, Float>>): Tuple2<Int, Float> {
+      var headervalues: Array<Float> = [];
+      var product = 1;
+      for (d in 0...headers.length) {
+        product *= headers[d]._0;
+        headervalues[d] = headers[d]._1;
+      }
+      return new Tuple2(product, operator(headervalues));
+    }
+    var x = bl.mapheaderstocells(f);
+    var weights = x.flatten().map(function (pair: Tuple2<Int, Float>) { return pair._0; } );
+    var values = x.flatten().map(function (pair: Tuple2<Int, Float>) { return pair._1; } );
+    return new Discrete(weights, values);
 
   public function toString() {
     var format = NumberFormat.integer.bind(_, null);
