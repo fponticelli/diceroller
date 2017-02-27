@@ -14,7 +14,7 @@ class DiscreteAlgebra implements Algebra<Discrete> {
   public function multiply(a: Discrete, b: Discrete)
     return a.binary(b, function(a,b) return a * b);
   public function divide(a: Discrete, b: Discrete)
-    return a.binary(b, function(a,b) return Std.int(a / b));
+    return a.binary(b, function(a,b) return Math.ceil(a / b));
   public function compare(a: Discrete, b: Discrete)
     return 0; // TODO
   public function compareToSides(a: Discrete, b: Sides): Int

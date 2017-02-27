@@ -1,36 +1,57 @@
 package dr;
 
-enum DiceExpression<T> {
-  Roll(basic: BasicRoll<T>);
-  RollBag(dice: DiceBag<T>, extractor: BagExtractor, meta: T);
-  RollExpressions(exprs: Array<DiceExpression<T>>, extractor: ExpressionExtractor, meta: T);
-  BinaryOp(op: DiceBinOp, a: DiceExpression<T>, b: DiceExpression<T>, meta: T);
-  UnaryOp(op: DiceUnOp, a: DiceExpression<T>, meta: T);
+enum DiceExpression {
+  Die(sides: Sides);
+  Literal(value: Int);
+  DiceReduce(reduceable: DiceReduceable, reducer: DiceReducer);
+  BinaryOp(op: DiceBinOp, a: DiceExpression, b: DiceExpression);
+  UnaryOp(op: DiceUnOp, a: DiceExpression);
 }
 
-enum BagExtractor {
-  ExplodeOn(explodeOn: Int);
-}
-
-enum BasicRoll<T> {
-  One(die: Die<T>);
-  Bag(list: Array<BasicRoll<T>>, meta: T);
-  Repeat(times: Int, die: Die<T>, meta: T);
-  Literal(value: Int, meta: T);
-}
-
-enum DiceBag<T> {
-  DiceSet(dice: Array<Die<T>>);
-  RepeatDie(times: Int, die: Die<T>);
-}
-
-enum ExpressionExtractor {
+enum DiceReducer {
   Sum;
   Average;
   Min;
   Max;
-  DropLow(drop: Int);
-  KeepHigh(keep: Int);
+}
+
+enum DiceReduceable {
+  DiceExpressions(exprs: Array<DiceExpression>);
+  DiceListWithFilter(list: DiceFilterable, filter: DiceFilter);
+  DiceListWithMap(dice: Array<Sides>, functor: DiceFunctor);
+}
+
+enum DiceFilterable {
+  DiceArray(dice: Array<Sides>);
+  DiceExpressions(exprs: Array<DiceExpression>);
+}
+
+enum DiceFilter {
+  Drop(dir: LowHigh, value: Int);
+  Keep(dir: LowHigh, value: Int);
+}
+
+enum DiceFunctor {
+  Explode(times: Times, range: Range);
+  Reroll(times: Times, range: Range);
+}
+
+enum Times {
+  Always;
+  UpTo(value: Int);
+}
+
+enum Range {
+  Exact(value: Int);
+  Between(minInclusive: Int, maxInclusive: Int);
+  ValueOrMore(value: Int);
+  ValueOrLess(value: Int);
+  Composite(ranges: Array<Range>);
+}
+
+enum LowHigh {
+  Low;
+  High;
 }
 
 enum DiceBinOp {

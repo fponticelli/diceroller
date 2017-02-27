@@ -1,162 +1,127 @@
 package dr;
 
+import dr.DiceExpression;
 import parsihax.Parser.*;
 import parsihax.ParseObject;
 using parsihax.Parser;
 using thx.Arrays;
 using thx.Functions;
-import thx.Unit;
 import thx.Validation;
-import dr.DiceExpression;
 
 class DiceParser {
-  public static function parse(s: String): Validation<String, DiceExpression<Unit>> {
-    return switch grammar.apply(s) {
-      case { status: true, value: value }:
-        Validation.success(value);
-      case v:
-        var msg = parsihax.ParseUtil.formatError(v, s);
-        Validation.failure(msg);
-    };
+  public static function parse(s: String): Validation<String, DiceExpression> {
+    return switch grammar
+      .apply(s) {
+        case { status: true, value: value }:
+          Validation.success(value);
+        case v:
+          var msg = parsihax.ParseUtil.formatError(v, s);
+          Validation.failure(msg);
+      };
   }
 
-  static var PLUS = "+".string() / "plus";
-  static var MINUS = "-".string() / "minus";
-  static var positive = ~/[+]?([1-9][0-9]*)/.regexp(1).map(Std.parseInt) / "positive number";
-  static var negative = ~/[-]([0-9]*[1-9])/.regexp().map(Std.parseInt) / "negative number";
-  static var whole = positive | negative / "whole number";
-  static var D = "d".string() | "D".string() / "die symbol";
+  public static function unsafeParse(s: String) return switch parse(s) {
+    case Left(e): throw e;
+    case Right(v): v;
+  }
 
-  static var OPEN_SET_BRACKET = "{".string() / "open set";
-  static var OPEN_PAREN = "(".string() / "open parenthesis";
-  static var CLOSE_SET_BRACKET = "}".string() / "close set";
-  static var CLOSE_PAREN = ")".string() / "close parenthesis";
-  static var COMMA = ",".string() / "comma";
-  static var PERCENT = "%".string() / "percent";
-  static var WS = ~/\s+/m.regexp() / "white space";
-  static var OWS = WS | "".string() / "optional white space";
-  static function SKIP_WS(parser)
-    return skip(parser, WS);
-  static function SKIP_OWS(parser)
-    return skip(parser, OWS);
+  static var PLUS = "+".string();
+  static var MINUS = "-".string();
+  static var positive = ~/[+]?([1-9][0-9]*)/.regexp(1).map(Std.parseInt);
+  static var negative = ~/[-]([0-9]*[1-9])/.regexp().map(Std.parseInt);
+  static var whole = positive | negative;
+  static var D = "d".string() | "D".string();
 
-  static var MULTIPLICATION = ~/[*⋅×x]/.regexp() / "multiplication symbol";
-  static var DIVISION = "/".string() | "÷".string() | ":".string() / "division symbol";
+  static var OPEN_SET_BRACKET = "{".string();
+  static var CLOSE_SET_BRACKET = "}".string();
+  static var COMMA = ",".string();
+  static var PERCENT = "%".string();
+  static var WS = ~/\s+/m.regexp();
+  static var OWS = WS | "".string();
 
-  static var KEEP_OR_DROP = "keep".string() | "drop".string();
-  static var LOW_HIGH = "lowest".string() | "low".string() | "highest".string() | "high".string();
-  static var MORE_LESS = "more".string() | "less".string();
-  static var OR_MORE_LESS = SKIP_WS("or".string()) + MORE_LESS / "or (more|less)";
+  static var MULTIPLICATION = ~/[*⋅×x]/.regexp() / "×";
+  static var DIVISION = "/".string() | "÷".string() | ":".string();
 
-  static var SUM = "sum".string() / "sum";
-  static var AVERAGE = "average".string().or("avg".string()) / "average";
-  static var MIN = "minimum".string().or("min".string()) / "minimum";
-  static var MAX = "maximum".string().or("max".string()) / "maximum";
+  static var lowOrHigh = ("lowest".string() | "low".string()).result(Low) | ("highest".string() | "high".string()).result(High);
+  static function dirValue(prefix: ParseObject<String>, alt: LowHigh): ParseObject<{ dir: LowHigh, value: Int}> {
+    return prefix + OWS + [
+        lowOrHigh.flatMap(function(lh: LowHigh) {
+          return OWS + positive.map(function(value) {
+            return { dir: lh, value: value };
+          });
+        }),
+        positive.map(function(value) {
+          return { dir: alt, value: value };
+        })
+      ].alt();
+  }
+
+  static var moreLess = "more".string().result(MoreLess.More) | "less".string().result(MoreLess.Less);
+  static var orMoreLess = OWS + "or".string() + OWS + moreLess / "or (more|less)";
+  static var on = "on".string() + WS + positive;
+  static var range = [
+    on.flatMap(function(min) {
+      return OWS + positive.map(function(max) {
+        return Between(min, max);
+      });
+    }),
+    on.flatMap(function(value) {
+      return OWS + orMoreLess.map(function(ml) return switch ml {
+        case More: ValueOrMore(value);
+        case Less: ValueOrLess(value);
+      });
+    }),
+    on.map(Exact)
+  ].alt();
+
+  static function diceFunctorConst(p: String, f): ParseObject<DiceFunctor> {
+    return [
+      p.string() + OWS + functorTimes.flatMap(function(times) {
+        return OWS + range.map(function(range) {
+          return f(times, range);
+        });
+      })
+    ].alt();
+  }
+
+  static var diceFunctor: ParseObject<DiceFunctor> = function() {
+    return [
+      diceFunctorConst("explode", Explode),
+      diceFunctorConst("reroll", Reroll)
+    ].alt();
+  }.lazy();
+
+  static var SUM = "sum".string();
+  static var AVERAGE = "average".string().or("avg".string());
+  static var MIN = "minimum".string().or("min".string());
+  static var MAX = "maximum".string().or("max".string());
 
   static var times = [
     "once".string().result(1),
     "twice".string().result(2),
     "thrice".string().result(3),
-    SKIP_OWS(positive).skip("times".string())
+    positive.skip(OWS + "times".string())
+  ].alt();
+
+  static var functorTimes = [
+    times.map(UpTo),
+    OWS + "always".string().result(Always)
   ].alt() / "times";
 
-// POSITIVE_SEQUENCE = OPEN_PAREN, { WS }, POSITIVE, { WS }, {COMMA, { WS }, POSITIVE, { WS } }, CLOSE_PAREN;
-// MATCH =
-//   POSITIVE, [ OR_MORE_LESS ] |
-//   (POSITIVE, { WS }, "...", { WS }, POSITIVE) |
-//   POSITIVE_SEQUENCE;
-// MAP_KEY_VALUE_PAIR = MATCH,  { WS }, ":", { WS }, NUMBER;
-// MAP_SEQUENCE = OPEN_PAREN, { WS }, MAP_KEY_VALUE_PAIR, { WS }, {COMMA, { WS }, MAP_KEY_VALUE_PAIR, { WS } }, CLOSE_PAREN;
-
-
-  static var basicLiteral = positive.map.fn(Literal(_, unit)) / "basic literal";
-  static var literal = basicLiteral.map(Roll) / "literal";
-  static function toDie(sides: Int) return new Die(sides, unit);
-  
   static var DEFAULT_DIE_SIDES = 6;
   static var die = [
-      (D + PERCENT).result(toDie(100)),
-      (D + positive).map(toDie),
-      D.result(toDie(DEFAULT_DIE_SIDES))
+      (D + PERCENT).result(100),
+      (D + positive),
+      D.result(DEFAULT_DIE_SIDES)
     ].alt() / "one die";
 
-  static var basicDice = [
-    positive.flatMap(function(rolls) {
-      return die.map(function(die) {
-        return if(rolls == 1) {
-          One(die);
-        } else {
-          Repeat(rolls, die, unit);
-        }
-      });
-    }),
-    die.map.fn(One(_))
-  ].alt() / "basic dice";
-  // static var dice = basicDice.map(Roll) / "dice";
-
-  static var basicDiceSetElement = [
-    basicDice,
-    basicLiteral
-  ].alt() / "dice set element";
-
-  static var basicDiceSet: ParseObject<BasicRoll<Unit>> = function() {
-    return [
-      OPEN_SET_BRACKET + OWS + [
-        basicDiceSetElement,
-        basicDiceSet
-      ].alt().sepBy(OWS + ",".string() + OWS).skip(OWS + CLOSE_SET_BRACKET).map(function(arr) {
-        return Bag(arr, unit);
-      }),
-      basicDice
-    ].alt();
-  }.lazy() / "dice set";
-
-  static var diceSet = basicDiceSet.map(Roll) / "dice set";
-
-  static var basicExpressionSet: ParseObject<Array<DiceExpression<Unit>>> = function() {
-    return OPEN_SET_BRACKET + OWS +
-      expression
-        .sepBy(OWS + ",".string() + OWS)
-        .skip(OWS + CLOSE_SET_BRACKET);
-  }.lazy() / "expression set";
-
-  static var diceOrSet = [
-    diceSet.map(function(v) {
-      return switch v {
-        case Roll(Bag(list, _)):
-          list.map(Roll);
-        case _:
-          [v];
-      };
-    }),
-    basicExpressionSet
-  ].alt();
-
-
-  static var expressionSetImplicit: ParseObject<DiceExpression<Unit>> = 
-    diceOrSet.map.fn(RollExpressions(_, Sum, unit)) / "implicit sum";
-  static var expressionSetSum: ParseObject<DiceExpression<Unit>> = 
-    diceOrSet.skip(OWS + SUM).map.fn(RollExpressions(_, Sum, unit)) / "sum";
-  static var expressionSetAverage: ParseObject<DiceExpression<Unit>> = 
-    diceOrSet.skip(OWS + AVERAGE).map.fn(RollExpressions(_, Average, unit)) / "average";
-  static var expressionSetMin: ParseObject<DiceExpression<Unit>> = 
-    diceOrSet.skip(OWS + MIN).map.fn(RollExpressions(_, Min, unit)) / "minimum";
-  static var expressionSetMax: ParseObject<DiceExpression<Unit>> = 
-    diceOrSet.skip(OWS + MAX).map.fn(RollExpressions(_, Max, unit)) / "maximum";
-
-  static var expressionSetOp = [
-    expressionSetAverage,
-    expressionSetMin,
-    expressionSetMax,
-    expressionSetSum,
-    expressionSetImplicit
-  ].alt();
-
-  static var negate: ParseObject<DiceExpression<Unit>> = function() {
-    return MINUS + inlineExpression.map(function(expr) {
-      return UnaryOp(Negate, expr, unit);
+  static var negate: ParseObject<DiceExpression> = function() {
+    return MINUS + termExpression.map(function(expr) {
+      return UnaryOp(Negate, expr);
     });
   }.lazy() / "negate";
+
+  static var unary = [negate].alt();
 
   static var binOpSymbol = [
       PLUS.result(DiceBinOp.Sum),
@@ -167,26 +132,26 @@ class DiceParser {
 
   static var opRight = OWS + binOpSymbol.flatMap(function(o: DiceBinOp) {
       return OWS +
-        inlineExpression.map(function(b: DiceExpression<Unit>) {
+        termExpression.map(function(b: DiceExpression) {
           return { op: o, right: b };
         });
     });
 
-  static var binop: ParseObject<DiceExpression<Unit>> =
+  static var binop: ParseObject<DiceExpression> =
     function() {
-      return inlineExpression.flatMap(
-        function(left: DiceExpression<Unit>) {
+      return termExpression.flatMap(
+        function(left: DiceExpression) {
           return opRight.times(1, 1000).map(function(a) {
             return a.reduce(function(left, item) {
               return switch item.op {
                 case Sum | Difference:
-                  return BinaryOp(item.op, left, item.right, unit);
+                  return BinaryOp(item.op, left, item.right);
                 case Multiplication | Division: // this seems too complicated but it works for now
                   return switch left {
-                    case BinaryOp(o, l, r, _):
-                      BinaryOp(o, l, BinaryOp(item.op, r, item.right, unit), unit);
+                    case BinaryOp(o, l, r):
+                      BinaryOp(o, l, BinaryOp(item.op, r, item.right));
                     case other:
-                      BinaryOp(item.op, left, item.right, unit);
+                      BinaryOp(item.op, left, item.right);
                   };
               };
             }, left);
@@ -195,26 +160,100 @@ class DiceParser {
       );
     }.lazy();
 
-  static var expressionOperations = [
-    binop
-  ].alt();
+  static var dieExpression = "1".string() + die.map(Die) | die.map(Die) / "die";
+  static var literalExpression = whole.map(Literal) / "literal";
 
-  static var inlineExpression: ParseObject<DiceExpression<Unit>> = function() {
+  static function diceReduce(reduceable: ParseObject<DiceReduceable>) {
+    return reduceable
+      .flatMap(function(red) {
+        return OWS + [
+          SUM.result(Sum),
+          AVERAGE.result(Average),
+          MIN.result(Min),
+          MAX.result(Max)
+        ].alt().map(function(reducer) {
+          return DiceReduce(red, reducer);
+        });
+      }) |
+      reduceable.map.fn(DiceReduce(_, Sum));
+  }
+
+  static function commaSeparated<T>(element: ParseObject<T>): ParseObject<Array<T>> {
+    return OPEN_SET_BRACKET + OWS +
+      element.sepBy(OWS + COMMA + OWS)
+        .skip(OWS + CLOSE_SET_BRACKET);
+  }
+
+  static var diceExpressions = function(): ParseObject<DiceReduceable> {
     return [
-      expressionSetOp,
-      diceSet,
-      literal,
-      negate
+      positive.flatMap(function(rolls) {
+        return die.map(function(sides) {
+          return DiceExpressions([for(i in 0...rolls) Die(sides)]);
+        });
+      }),
+      commaSeparated(expression).map(DiceExpressions)
     ].alt();
-  }.lazy() / "inline expression";
+  }.lazy();
 
-  static var expression: ParseObject<DiceExpression<Unit>> = function() {
+  static var diceFilterable = function(): ParseObject<DiceReduceable> {
     return [
-      expressionOperations,
-      inlineExpression
+      positive.flatMap(function(rolls) {
+        return die.map(function(sides) {
+          return DiceArray([for (i in 0...rolls) sides]);
+        });
+      }),
+      commaSeparated(die).map(function(dice) {
+        return DiceArray(dice);
+      }),
+      commaSeparated(expression).map(DiceFilterable.DiceExpressions)
+    ].alt().flatMap(function(filterable) {
+      return OWS + [
+        dirValue("drop".string(), LowHigh.Low).map.fn(Drop(_.dir, _.value)),
+        dirValue("keep".string(), LowHigh.High).map.fn(Keep(_.dir, _.value))
+      ].alt().map(function(dk) {
+        return DiceListWithFilter(filterable, dk);
+      });
+    });
+  }.lazy();
+
+  static var diceMapeable = function(): ParseObject<DiceReduceable> {
+    return [
+      positive.flatMap(function(rolls) {
+        return die.map(function(sides) {
+          return [for(i in 0...rolls) sides];
+        });
+      }),
+      commaSeparated(die)
+    ].alt().flatMap(function(arr) {
+      return OWS + diceFunctor.map(function(functor) {
+        return DiceListWithMap(arr, functor);
+      });
+    });
+  }.lazy();
+
+  static var termExpression: ParseObject<DiceExpression> = function() {
+    return [
+      diceReduce(diceMapeable),
+      diceReduce(diceFilterable),
+      diceReduce(diceExpressions),
+      dieExpression,
+      literalExpression,
+      unary
+    ].alt();
+  }.lazy();
+
+  static var expression: ParseObject<DiceExpression> = function() {
+    return [
+      binop,
+      termExpression
     ].alt();
   }.lazy() / "expression";
 
-  static var grammar = 
+  static var grammar =
     OWS + expression.skip(OWS).skip(eof());
+}
+
+enum MoreLess {
+  More;
+  Less;
 }

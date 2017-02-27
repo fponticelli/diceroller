@@ -5,18 +5,17 @@ import dr.BoxLattice;
 
 // We model discrete distributions as pairs of (integer) weights and values
 class Discrete {
-  public var weighted_values(default, null): Array<Tuple2<Int, Float>> = [];
+  public var weightedValues(default, null): Array<Tuple2<Int, Float>> = [];
 
   // Standard constructor
   function new(weights: Array<Int>, values: Array<Float>) {
     for(i in 0...weights.length)
-      weighted_values[i] = new Tuple2(weights[i], values[i]);
+      weightedValues[i] = new Tuple2(weights[i], values[i]);
     compact();
   }
 
   public static var zero(default, null): Discrete = literal(0);
-
-  public static function literal(n: Int) // TODO ?
+  public static function literal(n: Int)
     return new Discrete([1], [n]);
 
   // Create a new Discrete representing a die with specified number of faces
@@ -26,26 +25,26 @@ class Discrete {
 
   // Public getter methods
   public inline function length(): Int
-    return weighted_values.length;
+    return weightedValues.length;
 
   public function weights(): Array<Int>
-    return [for (i in 0...length()) weighted_values[i]._0];
+    return [for (i in 0...length()) weightedValues[i]._0];
 
   public function values(): Array<Float>
-    return [for (i in 0...length()) weighted_values[i]._1];
+    return [for (i in 0...length()) weightedValues[i]._1];
 
   public function probabilities(): Array<Float> {
     var sum: Int = 0;
     for(i in 0...length())
-      sum += weighted_values[i]._0;
-    return [for (i in 0...length()) weighted_values[i]._0 / sum];
+      sum += weightedValues[i]._0;
+    return [for (i in 0...length()) weightedValues[i]._0 / sum];
   }
 
   // Internal utility function. Call this before any returns of Discrete
-  // After calling, weighted_values will have no repeated tuples, no zero
+  // After calling, weightedValues will have no repeated tuples, no zero
   // or negative weights and will be sorted by value
   function compact() {
-    weighted_values.sort(compare);
+    weightedValues.sort(compare);
     var maybezero_weights = weights();
     var maybezero_values = values();
     var old_weights = [];
@@ -63,15 +62,15 @@ class Discrete {
 
     // Consolidate weights with the same values
     var k: Int = 0;
-    weighted_values = [];
-    weighted_values[0] = new Tuple2(old_weights[0], old_values[0]);
+    weightedValues = [];
+    weightedValues[0] = new Tuple2(old_weights[0], old_values[0]);
 
     for(i in 1...old_weights.length)
-      if(weighted_values[k]._1 == old_values[i])
-        weighted_values[k] = new Tuple2(weighted_values[k]._0 + old_weights[i], weighted_values[k]._1);
+      if(weightedValues[k]._1 == old_values[i])
+        weightedValues[k] = new Tuple2(weightedValues[k]._0 + old_weights[i], weightedValues[k]._1);
       else {
         k++;
-        weighted_values[k] = new Tuple2(old_weights[i], old_values[i]);
+        weightedValues[k] = new Tuple2(old_weights[i], old_values[i]);
       }
   }
 
@@ -82,14 +81,13 @@ class Discrete {
   public function binary(other: Discrete, f: Float -> Float -> Float): Discrete
     return apply([this, other], function (a: Array<Float>):Float { return f(a[0], a[1]);} );
 
-
-  public function always_resample(x: Array<Float>) {
+  public function alwaysResample(x: Array<Float>) {
   // We set the weights of values in x to zero and let
   // compact (inside the constructor) remove them
     var weights: Array<Int> = this.weights();
     for(i in 0...this.length())
       for(j in 0...x.length)
-        if(weighted_values[i]._1 == x[j])
+        if(weightedValues[i]._1 == x[j])
           weights[i] = 0;
     return new Discrete(weights, this.values());
   }
@@ -110,6 +108,16 @@ class Discrete {
     var weights = x.flatten().map(function (pair: Tuple2<Int, Float>) { return pair._0; } );
     var values = x.flatten().map(function (pair: Tuple2<Int, Float>) { return pair._1; } );
     return new Discrete(weights, values);
+
+  public function toString() {
+    var format = NumberFormat.integer.bind(_, null);
+    var pad = values().reduce(function(max, curr) {
+      var v = format(curr).length;
+      return thx.Ints.max(v, max);
+    }, 0);
+    return 'probabilities:\n' + values().zip(probabilities()).map(function(vp) {
+      return format(vp._0).lpad(" ", pad) + ": " + NumberFormat.percent(vp._1, 2);
+    }).join("\n");
   }
 
   // Comparison function for sorting. Used in compact
