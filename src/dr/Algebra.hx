@@ -30,13 +30,13 @@ class IntAlgebra implements Algebra<Int> {
   public function multiply(a: Int, b: Int)
     return a * b;
   public function divide(a: Int, b: Int)
-    return Std.int(a / b);
+    return Math.ceil(a / b);
   public function compare(a: Int, b: Int)
     return thx.Ints.compare(a, b);
   public function compareToSides(a: Int, b: Sides)
     return thx.Ints.compare(a, b);
   public function average(arr: Array<Int>): Int
-    return Std.int(thx.Arrays.ArrayInts.average(arr));
+    return Math.ceil(thx.Arrays.ArrayInts.average(arr));
   public function ofLiteral(v: Int)
     return v;
 }
