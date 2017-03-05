@@ -25,8 +25,6 @@ class BoxLattice<H, C> {
     var newcells: Array<D> = [];
     var headerindices: Array<Int> = [for (i in 0...this.headers.length) 0];
     var headervalues: Array<H> = [];
-    var j: Int;
-    var k: Int;
     for(i in 0...size) {
       for(j in 0...dims())
         headervalues[j] = headers[j][headerindices[j]];

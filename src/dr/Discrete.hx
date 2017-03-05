@@ -1,7 +1,11 @@
 package dr;
 
-import thx.Tuple;
 import dr.BoxLattice;
+import thx.format.NumberFormat;
+using thx.Strings;
+import thx.Tuple;
+using thx.Arrays;
+using thx.Floats;
 
 // We model discrete distributions as pairs of (integer) weights and values
 class Discrete {
@@ -77,9 +81,32 @@ class Discrete {
   // Algebriac functions
   public function unary(f: Float -> Float): Discrete
     return new Discrete(weights(), values().map(f));
+  public function negate(): Discrete
+    return unary(function(v) return -v);
 
   public function binary(other: Discrete, f: Float -> Float -> Float): Discrete
     return apply([this, other], function (a: Array<Float>):Float { return f(a[0], a[1]);} );
+
+  public function add(b: Discrete)
+    return binary(b, function(a,b) return a + b);
+  public function subtract(b: Discrete)
+    return binary(b, function(a,b) return a - b);
+  public function multiply(b: Discrete)
+    return binary(b, function(a,b) return a * b);
+  public function divide(b: Discrete)
+    return binary(b, function(a,b) return Math.round(a / b));
+  public static function average(arr: Array<Discrete>): Discrete
+    return Discrete.apply(arr, function(d) {
+      return Math.round(d.average());
+    });
+  public static function min(arr: Array<Discrete>): Discrete
+    return Discrete.apply(arr, function(d) {
+      return Math.round(d.order(Floats.compare).shift());
+    });
+  public static function max(arr: Array<Discrete>): Discrete
+    return Discrete.apply(arr, function(d) {
+      return Math.round(d.order(Floats.compare).pop());
+    });
 
   public function alwaysResample(x: Array<Float>) {
   // We set the weights of values in x to zero and let
@@ -93,8 +120,8 @@ class Discrete {
   }
 
   public static function apply(operands: Array<Discrete>, operator: Array<Float> -> Float): Discrete {
-    var weighted_values = operands.map(function (discrete: Discrete) { return discrete.weighted_values; });
-    var bl = new BoxLattice(weighted_values, Left(0));
+    var weightedValues = operands.map(function (discrete: Discrete) { return discrete.weightedValues; });
+    var bl = new BoxLattice(weightedValues, Left(0));
     var f = function(headers: Array<Tuple2<Int, Float>>): Tuple2<Int, Float> {
       var headervalues: Array<Float> = [];
       var product = 1;
@@ -108,6 +135,7 @@ class Discrete {
     var weights = x.flatten().map(function (pair: Tuple2<Int, Float>) { return pair._0; } );
     var values = x.flatten().map(function (pair: Tuple2<Int, Float>) { return pair._1; } );
     return new Discrete(weights, values);
+  }
 
   public function toString() {
     var format = NumberFormat.integer.bind(_, null);

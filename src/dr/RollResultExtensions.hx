@@ -1,7 +1,7 @@
 package dr;
 
 class RollResultExtensions {
-  public static function getResult<T>(expr: RollResult<T>): T {
+  public static function getResult(expr: RollResult): Int {
     return switch expr {
       case OneResult(die):
         die.result;

@@ -5,6 +5,7 @@ using dr.RollResult;
 using dr.DiceExpressionExtensions;
 import dr.DiceParser.*;
 import dr.Roller;
+import dr.Probabilities;
 using dr.RollResultExtensions;
 
 class TestAll {
@@ -17,13 +18,13 @@ class TestAll {
   public function new() {}
 
   public function max()
-    return Roller.int(function(max: Int) return max);
+    return new Roller(function(max: Int) return max);
 
   public function discrete()
-    return Roller.discrete();
+    return new Probabilities();
 
   public function min()
-    return Roller.int(function(_: Int) return 1);
+    return new Roller(function(_: Int) return 1);
 
   public function testRoller() {
     var tests = [
@@ -164,7 +165,7 @@ class TestAll {
       { min: 75, t: "25 * 3", pos: pos() },
       { min: 2,  t: "150 / 25 * 3", pos: pos() },
       { min: 18, t: "{150 / 25} * 3", pos: pos() },
-      { min: 11, max: 140, t: "{{2,d4,3d8},5} * {d4,3d8} / {3,d6}", pos: pos() },
+      { min: 11, max: 105, t: "{{2,d4,3d8},5} * {d4,3d8} / {3,d6}", pos: pos() },
 
       { min: 10, max: 60, t: "10d6", pos: pos() },
       { min: 10, max: 60, t: "10d6 sum", p: "10d6", pos: pos() },
@@ -230,11 +231,16 @@ class TestAll {
   public function testDiscrete() {
     var expr = unsafeParse("1d6"),
         roller = discrete(),
-        discrete = roller.roll(expr).getResult();
+        discrete = roller.roll(expr);
+
     for(v in discrete.probabilities())
       Assert.floatEquals(0.16666666, v);
     Assert.same([1, 2, 3, 4, 5, 6], discrete.values());
-    // trace(roller.roll(unsafeParse("5d6 drop 2")).getResult().toString());
+
+    discrete = roller.roll(unsafeParse("1d6 + 2"));
+    for(v in discrete.probabilities())
+      Assert.floatEquals(0.16666666, v);
+    Assert.same([3, 4, 5, 6, 7, 8], discrete.values());
   }
 
   inline public function pos(?pos: haxe.PosInfos) return pos;

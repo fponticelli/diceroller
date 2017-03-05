@@ -2,32 +2,32 @@ package dr;
 
 import dr.DiceExpression;
 
-enum RollResult<T> {
-  OneResult(die: DieResult<T>);
-  LiteralResult(value: Int, result: T);
-  DiceReduceResult(reduceables: DiceReduceableResult<T>, reducer: DiceReducer, result: T);
-  BinaryOpResult(op: DiceBinOp, a: RollResult<T>, b: RollResult<T>, result: T);
-  UnaryOpResult(op: DiceUnOp, a: RollResult<T>, result: T);
+enum RollResult {
+  OneResult(die: DieResult);
+  LiteralResult(value: Int, result: Int);
+  DiceReduceResult(reduceables: DiceReduceableResult, reducer: DiceReducer, result: Int);
+  BinaryOpResult(op: DiceBinOp, a: RollResult, b: RollResult, result: Int);
+  UnaryOpResult(op: DiceUnOp, a: RollResult, result: Int);
 }
 
-enum DiceReduceableResult<T> {
-  DiceExpressionsResult(rolls: Array<RollResult<T>>);
-  DiceFilterableResult(rolls: Array<DieResultFilter<T>>, filter: DiceFilter);
-  DiceMapeableResult(rolls: Array<DiceResultMapped<T>>, functor: DiceFunctor);
+enum DiceReduceableResult {
+  DiceExpressionsResult(rolls: Array<RollResult>);
+  DiceFilterableResult(rolls: Array<DieResultFilter>, filter: DiceFilter);
+  DiceMapeableResult(rolls: Array<DiceResultMapped>, functor: DiceFunctor);
 }
 
-enum DiceResultMapped<T> {
-  Rerolled(rerolls: Array<DieResult<T>>);
-  Exploded(explosions: Array<DieResult<T>>);
-  Normal(roll: DieResult<T>);
+enum DiceResultMapped {
+  Rerolled(rerolls: Array<DieResult>);
+  Exploded(explosions: Array<DieResult>);
+  Normal(roll: DieResult);
 }
 
-typedef DieResult<T> = {
-  result: T,
+typedef DieResult = {
+  result: Int,
   sides: Sides
 }
 
-enum DieResultFilter<T> {
-  Keep(roll: RollResult<T>);
-  Discard(roll: RollResult<T>);
+enum DieResultFilter {
+  Keep(roll: RollResult);
+  Discard(roll: RollResult);
 }

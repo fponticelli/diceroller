@@ -233,10 +233,10 @@ class DiceParser {
 
   static var termExpression: ParseObject<DiceExpression> = function() {
     return [
+      dieExpression,
       diceReduce(diceMapeable),
       diceReduce(diceFilterable),
       diceReduce(diceExpressions),
-      dieExpression,
       literalExpression,
       unary
     ].alt();
