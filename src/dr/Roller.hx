@@ -117,18 +117,18 @@ class Roller {
 
   public static function filterf(filter: DiceFilter)
     return switch filter {
-      case Drop(Low, value):  function(res: Float, length: Int) return res >= value;
-      case Drop(High, value): function(res: Float, length: Int) return res <  length - value;
-      case Keep(Low, value):  function(res: Float, length: Int) return res < value;
-      case Keep(High, value): function(res: Float, length: Int) return res >= length - value;
+      case Drop(Low, value):  function(res: Int, length: Int) return res >= value;
+      case Drop(High, value): function(res: Int, length: Int) return res <  length - value;
+      case Keep(Low, value):  function(res: Int, length: Int) return res < value;
+      case Keep(High, value): function(res: Int, length: Int) return res >= length - value;
     };
 
   public static function reducef(reducer: DiceReducer)
     return switch reducer {
-      case Sum: function(arr: Array<Float>) return arr.sum();
-      case Average: function(arr: Array<Float>) return Math.round(arr.average());
-      case Min: function(arr: Array<Float>) return arr.min();
-      case Max: function(arr: Array<Float>) return arr.max();
+      case Sum: function(arr: Array<Int>) return arr.sum();
+      case Average: function(arr: Array<Int>) return Math.round(arr.average());
+      case Min: function(arr: Array<Int>) return arr.min();
+      case Max: function(arr: Array<Int>) return arr.max();
     };
 
   function filterRolls(rolls: Array<RollResult>, filter: DiceFilter): Array<DieResultFilter> {

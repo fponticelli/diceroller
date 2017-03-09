@@ -23,15 +23,15 @@ class Probabilities {
       case DiceReduce(DiceExpressions(exprs), Max):
         Discrete.max(exprs.map(roll));
       case DiceReduce(DiceListWithFilter(DiceArray(dice), filter), reducer):
-        var f = Roller.filterf(filter);
-        var agg = Roller.reducef(reducer);
+        var f = filterf(filter);
+        var agg = reducef(reducer);
         return Discrete.apply(dice.map.fn(Die(_)).map(roll), function(values) {
           trace(values.filter(f.bind(_, values.length)));
           return agg(values.filter(f.bind(_, values.length))); // TODO
         });
       case DiceReduce(DiceListWithFilter(DiceExpressions(dice), filter), reducer):
-        var f = Roller.filterf(filter);
-        var agg = Roller.reducef(reducer);
+        var f = filterf(filter);
+        var agg = reducef(reducer);
         return Discrete.apply(dice.map(roll), function(values) {
           return agg(values.filter(f.bind(_, values.length)));
         });
@@ -65,6 +65,22 @@ class Probabilities {
         roll(a).negate();
     };
   }
+
+    public static function filterf(filter: DiceFilter)
+      return switch filter {
+        case Drop(Low, value):  function(res: Float, length: Int) return res >= value;
+        case Drop(High, value): function(res: Float, length: Int) return res <  length - value;
+        case Keep(Low, value):  function(res: Float, length: Int) return res < value;
+        case Keep(High, value): function(res: Float, length: Int) return res >= length - value;
+      };
+
+    public static function reducef(reducer: DiceReducer)
+      return switch reducer {
+        case Sum: function(arr: Array<Float>) return arr.sum();
+        case Average: function(arr: Array<Float>) return Math.round(arr.average());
+        case Min: function(arr: Array<Float>) return arr.min();
+        case Max: function(arr: Array<Float>) return arr.max();
+      };
 
   // function mapRolls(rolls: Array<DieResult<Discrete>>, functor: DiceFunctor): Array<DiceResultMapped<Discrete>> {
   //   return switch functor {

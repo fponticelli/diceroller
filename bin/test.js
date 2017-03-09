@@ -460,9 +460,6 @@ TestAll.prototype = {
 			return max;
 		});
 	}
-	,discrete: function() {
-		return new dr_Probabilities();
-	}
 	,min: function() {
 		return new dr_Roller(function(_) {
 			return 1;
@@ -504,37 +501,23 @@ TestAll.prototype = {
 			break;
 		}
 	}
-	,testDiscrete: function() {
-		var expr = dr_DiceParser.unsafeParse("1d6");
-		var roller = this.discrete();
-		var discrete = roller.roll(expr);
-		var _g = 0;
-		var _g1 = discrete.probabilities();
-		while(_g < _g1.length) {
-			var v = _g1[_g];
-			++_g;
-			utest_Assert.floatEquals(0.16666666,v,null,null,{ fileName : "TestAll.hx", lineNumber : 238, className : "TestAll", methodName : "testDiscrete"});
-		}
-		utest_Assert.same([1,2,3,4,5,6],discrete.values(),null,null,null,{ fileName : "TestAll.hx", lineNumber : 239, className : "TestAll", methodName : "testDiscrete"});
-		discrete = roller.roll(dr_DiceParser.unsafeParse("1d6 + 2"));
-		var _g2 = 0;
-		var _g11 = discrete.probabilities();
-		while(_g2 < _g11.length) {
-			var v1 = _g11[_g2];
-			++_g2;
-			utest_Assert.floatEquals(0.16666666,v1,null,null,{ fileName : "TestAll.hx", lineNumber : 243, className : "TestAll", methodName : "testDiscrete"});
-		}
-		utest_Assert.same([3,4,5,6,7,8],discrete.values(),null,null,null,{ fileName : "TestAll.hx", lineNumber : 244, className : "TestAll", methodName : "testDiscrete"});
-	}
 	,testSample: function() {
 		var literal = dr_Sample.literal(3);
 		var die = dr_Sample.die(3);
-		utest_Assert.same([3],literal.get_values(),null,null,null,{ fileName : "TestAll.hx", lineNumber : 251, className : "TestAll", methodName : "testSample"});
-		utest_Assert.same([1,2,3],die.get_values(),null,null,null,{ fileName : "TestAll.hx", lineNumber : 252, className : "TestAll", methodName : "testSample"});
-		utest_Assert.same([4,5,6],die.add(literal).get_values(),null,null,null,{ fileName : "TestAll.hx", lineNumber : 253, className : "TestAll", methodName : "testSample"});
-		utest_Assert.same([2,3,3,4,4,4,5,5,6],die.add(die).get_values(),null,null,null,{ fileName : "TestAll.hx", lineNumber : 254, className : "TestAll", methodName : "testSample"});
-		haxe_Log.trace(die.multiply(literal),{ fileName : "TestAll.hx", lineNumber : 256, className : "TestAll", methodName : "testSample"});
-		haxe_Log.trace(die.multiply(die),{ fileName : "TestAll.hx", lineNumber : 257, className : "TestAll", methodName : "testSample"});
+		var die2 = dr_Sample.die(2);
+		utest_Assert.same([3],literal.get_values(),null,null,null,{ fileName : "TestAll.hx", lineNumber : 252, className : "TestAll", methodName : "testSample"});
+		utest_Assert.same([1,2,3],die.get_values(),null,null,null,{ fileName : "TestAll.hx", lineNumber : 253, className : "TestAll", methodName : "testSample"});
+		utest_Assert.same([1,2,3],die.add(dr_Sample.zero).get_values(),null,null,null,{ fileName : "TestAll.hx", lineNumber : 254, className : "TestAll", methodName : "testSample"});
+		utest_Assert.same([4,5,6],die.add(literal).get_values(),null,null,null,{ fileName : "TestAll.hx", lineNumber : 255, className : "TestAll", methodName : "testSample"});
+		utest_Assert.same([2,3,3,4,4,4,5,5,6],die.add(die).get_values(),null,null,null,{ fileName : "TestAll.hx", lineNumber : 256, className : "TestAll", methodName : "testSample"});
+		utest_Assert.same([-3,-2,-1],die.negate().get_values(),null,null,null,{ fileName : "TestAll.hx", lineNumber : 257, className : "TestAll", methodName : "testSample"});
+	}
+	,testDiceProbabilities: function() {
+		utest_Assert.same([1,2,3],this.prob("d3"),null,null,null,{ fileName : "TestAll.hx", lineNumber : 261, className : "TestAll", methodName : "testDiceProbabilities"});
+		utest_Assert.same([3,4,4,5,5,6],this.prob("1 + d2 + d3"),null,null,null,{ fileName : "TestAll.hx", lineNumber : 262, className : "TestAll", methodName : "testDiceProbabilities"});
+	}
+	,prob: function(e) {
+		return new dr_DiceProbabilities().roll(dr_DiceParser.unsafeParse(e)).get_values();
 	}
 	,pos: function(pos) {
 		return pos;
@@ -2984,6 +2967,56 @@ dr_Sample.die = function(v) {
 	}
 	return new dr_Sample(_g);
 };
+dr_Sample.sum = function(samples) {
+	return dr_Sample.fold(samples,function(a,b) {
+		return a.add(b);
+	});
+};
+dr_Sample.average = function(samples) {
+	return dr_Sample.sum(samples).divide(dr_Sample.literal(samples.length));
+};
+dr_Sample.apply = function(a,b,f) {
+	return a.flatMap(function($as) {
+		return b.map(function(bs) {
+			return f($as,bs);
+		});
+	});
+};
+dr_Sample.fold = function(samples,f) {
+	if(samples.length == 0) {
+		return dr_Sample.empty;
+	}
+	var curr = samples[0];
+	var _g1 = 1;
+	var _g = samples.length;
+	while(_g1 < _g) {
+		var i = _g1++;
+		curr = f(curr,samples[i]);
+	}
+	return curr;
+};
+dr_Sample.filterRolls = function(arr,f) {
+	var a = arr.map(function(_) {
+		return _.get_values();
+	});
+	var c = thx_Arrays.crossMulti(a).map(function(a1) {
+		return thx_Arrays.order(a1,thx_Ints.compare);
+	});
+	var m = c.map(f);
+	return thx_Arrays.rotate(m).map(function(values) {
+		return new dr_Sample(values);
+	});
+};
+dr_Sample.minSeries = function(samples) {
+	return dr_Sample.fold(samples,function(a,b) {
+		return a.min(b);
+	});
+};
+dr_Sample.maxSeries = function(samples) {
+	return dr_Sample.fold(samples,function(a,b) {
+		return a.max(b);
+	});
+};
 dr_Sample.prototype = {
 	_values: null
 	,aggregate: function() {
@@ -3032,31 +3065,34 @@ dr_Sample.prototype = {
 		return new dr_Sample(Array.prototype.concat.apply([],array));
 	}
 	,add: function(other) {
-		return this.flatMap(function(a) {
-			return other.map(function(b) {
-				return a + b;
-			});
+		return dr_Sample.apply(this,other,function(a,b) {
+			return a + b;
 		});
 	}
 	,subtract: function(other) {
-		return this.flatMap(function(a) {
-			return other.map(function(b) {
-				return a - b;
-			});
+		return dr_Sample.apply(this,other,function(a,b) {
+			return a - b;
 		});
 	}
 	,multiply: function(other) {
-		return this.flatMap(function(a) {
-			return other.map(function(b) {
-				return a * b;
-			});
+		return dr_Sample.apply(this,other,function(a,b) {
+			return a * b;
 		});
 	}
 	,divide: function(other) {
-		return this.flatMap(function(a) {
-			return other.map(function(b) {
-				return Math.round(a / b);
-			});
+		return dr_Sample.apply(this,other,function(a,b) {
+			return Math.round(a / b);
+		});
+	}
+	,max: function(other) {
+		return dr_Sample.apply(this,other,thx_Ints.max);
+	}
+	,min: function(other) {
+		return dr_Sample.apply(this,other,thx_Ints.min);
+	}
+	,negate: function() {
+		return this.map(function(v) {
+			return -v;
 		});
 	}
 	,get_values: function() {
@@ -3068,7 +3104,91 @@ var dr_DiceProbabilities = function() {
 };
 dr_DiceProbabilities.__name__ = ["dr","DiceProbabilities"];
 dr_DiceProbabilities.prototype = {
-	__class__: dr_DiceProbabilities
+	roll: function(expr) {
+		haxe_Log.trace(expr,{ fileName : "DiceProbabilities.hx", lineNumber : 123, className : "dr.DiceProbabilities", methodName : "roll"});
+		switch(expr[1]) {
+		case 0:
+			var sides = expr[2];
+			return dr_Sample.die(sides);
+		case 1:
+			var value = expr[2];
+			return dr_Sample.literal(value);
+		case 2:
+			switch(expr[2][1]) {
+			case 0:
+				switch(expr[3][1]) {
+				case 0:
+					var exprs = expr[2][2];
+					return dr_Sample.sum(exprs.map($bind(this,this.roll)));
+				case 1:
+					var exprs1 = expr[2][2];
+					return dr_Sample.average(exprs1.map($bind(this,this.roll)));
+				case 2:
+					var exprs2 = expr[2][2];
+					return dr_Sample.minSeries(exprs2.map($bind(this,this.roll)));
+				case 3:
+					var exprs3 = expr[2][2];
+					return dr_Sample.maxSeries(exprs3.map($bind(this,this.roll)));
+				}
+				break;
+			case 1:
+				if(expr[2][2][1] == 0) {
+					if(expr[2][3][1] == 0) {
+						if(expr[2][3][2][1] == 0) {
+							if(expr[3][1] == 0) {
+								var value1 = expr[2][3][3];
+								var dice = expr[2][2][2];
+								haxe_Log.trace("HERE",{ fileName : "DiceProbabilities.hx", lineNumber : 138, className : "dr.DiceProbabilities", methodName : "roll"});
+								var s = dice.map(function(_) {
+									return dr_DiceExpression.Die(_);
+								}).map($bind(this,this.roll));
+								var f = dr_Sample.filterRolls(s,function(a) {
+									return a.slice(value1,a.length);
+								});
+								return dr_Sample.sum(f);
+							} else {
+								return dr_Sample.empty;
+							}
+						} else {
+							return dr_Sample.empty;
+						}
+					} else {
+						return dr_Sample.empty;
+					}
+				} else {
+					return dr_Sample.empty;
+				}
+				break;
+			default:
+				return dr_Sample.empty;
+			}
+			break;
+		case 3:
+			switch(expr[2][1]) {
+			case 0:
+				var b = expr[4];
+				var a1 = expr[3];
+				return this.roll(a1).add(this.roll(b));
+			case 1:
+				var b1 = expr[4];
+				var a2 = expr[3];
+				return this.roll(a2).subtract(this.roll(b1));
+			case 2:
+				var b2 = expr[4];
+				var a3 = expr[3];
+				return this.roll(a3).divide(this.roll(b2));
+			case 3:
+				var b3 = expr[4];
+				var a4 = expr[3];
+				return this.roll(a4).multiply(this.roll(b3));
+			}
+			break;
+		case 4:
+			var a5 = expr[3];
+			return this.roll(a5).negate();
+		}
+	}
+	,__class__: dr_DiceProbabilities
 };
 var dr_Discrete = function(weights,values) {
 	this.weightedValues = [];
@@ -3302,6 +3422,58 @@ dr_Discrete.prototype = {
 var dr_Probabilities = function() {
 };
 dr_Probabilities.__name__ = ["dr","Probabilities"];
+dr_Probabilities.filterf = function(filter) {
+	switch(filter[1]) {
+	case 0:
+		switch(filter[2][1]) {
+		case 0:
+			var value = filter[3];
+			return function(res,length) {
+				return res >= value;
+			};
+		case 1:
+			var value1 = filter[3];
+			return function(res1,length1) {
+				return res1 < length1 - value1;
+			};
+		}
+		break;
+	case 1:
+		switch(filter[2][1]) {
+		case 0:
+			var value2 = filter[3];
+			return function(res2,length2) {
+				return res2 < value2;
+			};
+		case 1:
+			var value3 = filter[3];
+			return function(res3,length3) {
+				return res3 >= length3 - value3;
+			};
+		}
+		break;
+	}
+};
+dr_Probabilities.reducef = function(reducer) {
+	switch(reducer[1]) {
+	case 0:
+		return function(arr) {
+			return thx_ArrayFloats.sum(arr);
+		};
+	case 1:
+		return function(arr1) {
+			return Math.round(thx_ArrayFloats.average(arr1));
+		};
+	case 2:
+		return function(arr2) {
+			return thx_ArrayFloats.min(arr2);
+		};
+	case 3:
+		return function(arr3) {
+			return thx_ArrayFloats.max(arr3);
+		};
+	}
+};
 dr_Probabilities.prototype = {
 	roll: function(expr) {
 		switch(expr[1]) {
@@ -3337,8 +3509,8 @@ dr_Probabilities.prototype = {
 					var reducer = expr[3];
 					var filter = expr[2][3];
 					var dice = expr[2][2][2];
-					var f = dr_Roller.filterf(filter);
-					var agg = dr_Roller.reducef(reducer);
+					var f = dr_Probabilities.filterf(filter);
+					var agg = dr_Probabilities.reducef(reducer);
 					return dr_Discrete.apply(dice.map(function(_) {
 						return dr_DiceExpression.Die(_);
 					}).map($bind(this,this.roll)),function(values) {
@@ -3358,8 +3530,8 @@ dr_Probabilities.prototype = {
 					var reducer1 = expr[3];
 					var filter1 = expr[2][3];
 					var dice1 = expr[2][2][2];
-					var f3 = dr_Roller.filterf(filter1);
-					var agg1 = dr_Roller.reducef(reducer1);
+					var f3 = dr_Probabilities.filterf(filter1);
+					var agg1 = dr_Probabilities.reducef(reducer1);
 					return dr_Discrete.apply(dice1.map($bind(this,this.roll)),function(values1) {
 						var f4 = f3;
 						var a22 = values1.length;
@@ -3533,19 +3705,19 @@ dr_Roller.reducef = function(reducer) {
 	switch(reducer[1]) {
 	case 0:
 		return function(arr) {
-			return thx_ArrayFloats.sum(arr);
+			return thx_ArrayInts.sum(arr);
 		};
 	case 1:
 		return function(arr1) {
-			return Math.round(thx_ArrayFloats.average(arr1));
+			return Math.round(thx_ArrayInts.average(arr1));
 		};
 	case 2:
 		return function(arr2) {
-			return thx_ArrayFloats.min(arr2);
+			return thx_ArrayInts.min(arr2);
 		};
 	case 3:
 		return function(arr3) {
-			return thx_ArrayFloats.max(arr3);
+			return thx_ArrayInts.max(arr3);
 		};
 	}
 };
@@ -14639,6 +14811,9 @@ dr_DiceParser.expression = parsihax_Parser["as"](parsihax_Parser.lazy(function()
 	return parsihax_Parser.alt([dr_DiceParser.binop,dr_DiceParser.termExpression]);
 }),"expression");
 dr_DiceParser.grammar = parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.skip(parsihax_Parser.skip(dr_DiceParser.expression,dr_DiceParser.OWS),parsihax_Parser.eof()));
+dr_Sample.empty = new dr_Sample([]);
+dr_Sample.zero = new dr_Sample([0]);
+dr_Sample.one = new dr_Sample([1]);
 dr_Discrete.zero = dr_Discrete.literal(0);
 haxe__$Int32_Int32_$Impl_$._mul = Math.imul != null ? Math.imul : function(a,b) {
 	return a * (b & 65535) + (a * (b >>> 16) << 16 | 0) | 0;
@@ -14709,3 +14884,5 @@ utest_TestHandler.POLLING_TIME = 10;
 utest_ui_text_HtmlReport.platform = "javascript";
 TestAll.main();
 })(typeof window != "undefined" ? window : typeof global != "undefined" ? global : typeof self != "undefined" ? self : this);
+
+//# sourceMappingURL=test.js.map

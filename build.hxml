@@ -4,6 +4,7 @@
 -lib parsihax
 -cp src
 -cp test
+-debug
 -main TestAll
 -js bin/test.js
 
@@ -11,6 +12,7 @@ dr.DiceExpression
 dr.DiceExpressionExtensions
 dr.DiceParser
 dr.Discrete
+dr.DiceProbabilities
 dr.Probabilities
 dr.Roller
 dr.Sides
