@@ -3,18 +3,30 @@ package dr;
 import dr.BoxLattice;
 import thx.format.NumberFormat;
 using thx.Strings;
-import thx.Tuple;
 using thx.Arrays;
 using thx.Floats;
 
+class WeightedValue {
+  // Comparison function for sorting. Used in compact
+  public static function compare(x: WeightedValue, y: WeightedValue): Int
+    return if(x.weight == y.weight) 0 else if(x.weight < y.weight) -1 else 1;
+
+  public var value: Float;
+  public var weight: Int;
+  public function new(value: Float, weight: Int) {
+    this.value = value;
+    this.weight = weight;
+  }
+}
+
 // We model discrete distributions as pairs of (integer) weights and values
 class Discrete {
-  public var weightedValues(default, null): Array<Tuple2<Int, Float>> = [];
+  public var weightedValues(default, null): Array<WeightedValue> = [];
 
   // Standard constructor
   function new(weights: Array<Int>, values: Array<Float>) {
     for(i in 0...weights.length)
-      weightedValues[i] = new Tuple2(weights[i], values[i]);
+      weightedValues[i] = new WeightedValue(values[i], weights[i]);
     compact();
   }
 
@@ -32,23 +44,23 @@ class Discrete {
     return weightedValues.length;
 
   public function weights(): Array<Int>
-    return [for (i in 0...length()) weightedValues[i]._0];
+    return [for (i in 0...length()) weightedValues[i].weight];
 
   public function values(): Array<Float>
-    return [for (i in 0...length()) weightedValues[i]._1];
+    return [for (i in 0...length()) weightedValues[i].value];
 
   public function probabilities(): Array<Float> {
     var sum: Int = 0;
     for(i in 0...length())
-      sum += weightedValues[i]._0;
-    return [for (i in 0...length()) weightedValues[i]._0 / sum];
+      sum += weightedValues[i].weight;
+    return [for (i in 0...length()) weightedValues[i].weight / sum];
   }
 
   // Internal utility function. Call this before any returns of Discrete
   // After calling, weightedValues will have no repeated tuples, no zero
   // or negative weights and will be sorted by value
   function compact() {
-    weightedValues.sort(compare);
+    weightedValues.sort(WeightedValue.compare);
     var maybezero_weights = weights();
     var maybezero_values = values();
     var old_weights = [];
@@ -67,22 +79,23 @@ class Discrete {
     // Consolidate weights with the same values
     var k: Int = 0;
     weightedValues = [];
-    weightedValues[0] = new Tuple2(old_weights[0], old_values[0]);
+    weightedValues[0] = new WeightedValue(old_values[0], old_weights[0]);
 
     for(i in 1...old_weights.length)
-      if(weightedValues[k]._1 == old_values[i])
-        weightedValues[k] = new Tuple2(weightedValues[k]._0 + old_weights[i], weightedValues[k]._1);
+      if(weightedValues[k].value == old_values[i])
+        weightedValues[k] = new WeightedValue(weightedValues[k].value, weightedValues[k].weight + old_weights[i]);
       else {
         k++;
-        weightedValues[k] = new Tuple2(old_weights[i], old_values[i]);
+        weightedValues[k] = new WeightedValue(old_values[i], old_weights[i]);
       }
   }
 
   // Algebriac functions
-  public function unary(f: Float -> Float): Discrete
+  public function map(f: Float -> Float): Discrete
     return new Discrete(weights(), values().map(f));
+
   public function negate(): Discrete
-    return unary(function(v) return -v);
+    return map(function(v) return -v);
 
   public function binary(other: Discrete, f: Float -> Float -> Float): Discrete
     return apply([this, other], function (a: Array<Float>):Float { return f(a[0], a[1]);} );
@@ -114,7 +127,7 @@ class Discrete {
     var weights: Array<Int> = this.weights();
     for(i in 0...this.length())
       for(j in 0...x.length)
-        if(weightedValues[i]._1 == x[j])
+        if(weightedValues[i].value == x[j])
           weights[i] = 0;
     return new Discrete(weights, this.values());
   }
@@ -122,18 +135,18 @@ class Discrete {
   public static function apply(operands: Array<Discrete>, operator: Array<Float> -> Float): Discrete {
     var weightedValues = operands.map(function (discrete: Discrete) { return discrete.weightedValues; });
     var bl = new BoxLattice(weightedValues, Left(0));
-    var f = function(headers: Array<Tuple2<Int, Float>>): Tuple2<Int, Float> {
+    var f = function(headers: Array<WeightedValue>): WeightedValue {
       var headervalues: Array<Float> = [];
       var product = 1;
       for (d in 0...headers.length) {
-        product *= headers[d]._0;
-        headervalues[d] = headers[d]._1;
+        product *= headers[d].weight;
+        headervalues[d] = headers[d].value;
       }
-      return new Tuple2(product, operator(headervalues));
+      return new WeightedValue(operator(headervalues), product);
     }
     var x = bl.mapheaderstocells(f);
-    var weights = x.flatten().map(function (pair: Tuple2<Int, Float>) { return pair._0; } );
-    var values = x.flatten().map(function (pair: Tuple2<Int, Float>) { return pair._1; } );
+    var weights = x.flatten().map(function (wv: WeightedValue) { return wv.weight; } );
+    var values = x.flatten().map(function (wv: WeightedValue) { return wv.value; } );
     return new Discrete(weights, values);
   }
 
@@ -147,8 +160,4 @@ class Discrete {
       return format(vp._0).lpad(" ", pad) + ": " + NumberFormat.percent(vp._1, 2);
     }).join("\n");
   }
-
-  // Comparison function for sorting. Used in compact
-  static function compare(x: Tuple2<Int, Float>, y: Tuple2<Int, Float>): Int
-    return if(x._1 == y._1) 0 else if(x._1 < y._1) -1 else 1;
 }

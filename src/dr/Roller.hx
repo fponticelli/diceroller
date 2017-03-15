@@ -90,7 +90,7 @@ class Roller {
     return acc;
   }
 
-  function matchRange(r: Int, range: Range): Bool {
+  public static function matchRange(r: Int, range: Range): Bool {
     return switch range {
       case Exact(value):
         Ints.compare(r, value) == 0;
