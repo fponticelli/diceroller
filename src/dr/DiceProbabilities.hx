@@ -46,6 +46,59 @@ class Sample {
     return m.rotate().map(Sample.new);
   }
 
+  public static function rerolls(arr: Array<Sample>, f: Array<{ roll: Int, sides: Sides }> -> Array<Int>): Array<Sample> {
+    var a = arr.map(function(s) return s.values.map(function(v) return { roll:v, sides: s.length }));
+    // var c = a.crossMulti().map(Arrays.order.bind(_, function(a: { roll: Int, sides: Sides }, b: { roll: Int, sides: Sides }) return Ints.compare(a.roll, b.roll)));
+    // var m = c.map(f);
+    // trace(m.rotate());
+    // return m.rotate().map(Sample.new);
+    return a.map(f).map(Sample.new);
+/*
+  1d3r3
+  [1,2,3]
+
+  [1]
+  [2]
+  [3] -> [1,2,3]
+
+  2d3d1
+  [1,2,3]
+  [1,2,3]
+
+  [1,1] [1]
+  [1,2] [2]
+  [1,3] [3]
+  [2,1] [2]
+  [2,2] [2]
+  [2,3] [3]
+  [3,1] [3]
+  [3,2] [3]
+  [3,3] [3]
+
+  [1,2,2,2,3,3,3,3,3]
+
+  2d3r3
+  [1,2,3]
+  [1,2,3]
+
+  [1,1]
+  [1,2]
+  [1,3] -> [1,2,3]
+  [2,1]
+  [2,2]
+  [2,3] -> [1,2,3]
+  [3,1] -> [1,2,3]
+  [3,2] -> [1,2,3]
+  [3,3] -> [1,2,3],[1,2,3]
+
+  2d3
+  [1,2,3]
+  [1,2,3]
+
+  [2,3,3,4,4,4,5,5,6]
+*/
+  }
+
   public static function minSeries(samples: Array<Sample>): Sample
     return fold(samples, function(a, b) return a.min(b));
 
@@ -53,6 +106,7 @@ class Sample {
     return fold(samples, function(a, b) return a.max(b));
 
   public var values(get, never): ReadonlyArray<Int>;
+  public var length(get, never): Int;
   var _values: ReadonlyArray<Int>;
   public function new(values: ReadonlyArray<Int>) {
     this._values = values;
@@ -109,15 +163,147 @@ class Sample {
   public function min(other: Sample): Sample
     return apply(this, other, Ints.min);
 
+  public function merge(other: Sample): Sample
+    return new Sample(_values.concat(other._values));
+
+  public static function explosive(sides: Sides, range: Range, times: Int): Sample {
+    // var arr = [];
+    function explode(v: Int, n: Int, sum: Int, acc: Array<Int>) {
+      if(n == 0) return acc.concat([v]);
+      if(Roller.matchRange(v, range)) {
+        return explode(v, n-1, sum + v, []).flatMap(function(x) return acc.concat([x + sum + v]));
+      } else {
+        return acc.concat([v]);
+      }
+    }
+    // var acc = [];
+    return new Sample(
+      [for(i in 1...sides+1) i].reduce(function(acc, side) {
+        return explode(side, times, 0, acc);
+      }, [])
+    );
+  // }
+      // Arrays.flatten([for(i in 1...sides+1) explode(i, times, acc)])
+    // );
+    // var arr = [];
+    // for(n in 1...sides+1) {
+    //   // 1 to 6
+    //   if(Roller.matchRange(n, range)) {
+    //     var acc = n;
+    //     // is explosive
+    //     for(t in 0...times) {
+    //       arr = arr.concat([for(i in 1...sides+1) i + acc]);
+    //       // arr.push(t);
+    //     }
+    //   } else {
+    //     // not explosive
+    //     for(t in 0...times) {
+    //       arr.push(n);
+    //     }
+    //   }
+    // }
+    // return new Sample(arr);
+    // var roll = Sample.die(sides);
+    // var explosives = [for(v in 1...sides+1) v].filter(Roller.matchRange.bind(_, range));
+    // var normal = [for(v in 1...sides+1) v].filter(function(v) return !explosives.contains(v));
+    // // trace("m", explosives, normal);
+    // var l = Sample.zero;
+    // var b = new Sample(normal);
+    // var res = Sample.empty; // new Sample(normal);
+    // trace(explosives);
+    // trace(normal);
+    // for(m in explosives) {
+    //   l = Sample.zero;
+    //   while(times-- > 0) {
+    //     // res = res.merge(b);
+    //     l = Sample.literal(m).add(l);
+    //     res = res.merge(b);
+    //     res = res.merge(roll.add(l));
+    //     // if(Roller.matchRange(v, range)) {
+    //     //   roll = roll.add(roll);
+    //     //   break;
+    //     // }
+    //   }
+    // }
+
+
+/*
+
+    1    |    2
+         1    |    2
+              1    |    2
+
+    1: 1/2
+    ~2: 1/2
+      2+1: 1/4
+      ~2+2: 1/4
+        2+2+1: 1/8
+        2+2+2: 1/8
+
+    1,3,5,6
+
+    1,1,1,1,3,3,5,6
+
+*/
+
+    // return res;
+    // while(times-- > 0) {
+    //   for(v in 1...sides+1) {
+    //     if(Roller.matchRange(v, range)) {
+    //       roll = roll.add(roll);
+    //       break;
+    //     }
+    //   }
+    // }
+
+    // function d() return [for(i in 1...sides+1) i];
+    // function f(values: Array<Sides>) {
+    //   var buff = [];
+    //   for(v in values) {
+    //     if(Roller.matchRange(v, range))
+    //       buff = buff.concat(d());
+    //   }
+    //   return buff;
+    // }
+    // var c = d(),
+    //     b = c;
+    // trace(times, range);
+    // while(times-- > 0) {
+    //   c = f(c);
+    //   b = b.concat(c);
+    //   trace("loop", c, b);
+    // }
+    // return roll;
+  }
+
   public function negate(): Sample
     return map(function(v) return -v);
 
   function get_values(): ReadonlyArray<Int>
     return _values.order(Ints.compare);
+
+  function get_length(): Int
+    return _values.length;
 }
 
 class DiceProbabilities {
   public function new() {}
+
+  static function resultReducer(dr: DiceReducer)
+    return switch dr {
+      case Sum: Sample.sum;
+      case Average: Sample.average;
+      case Min: Sample.minSeries;
+      case Max: Sample.maxSeries;
+    };
+
+  static function resultFilter(df: DiceFilter)
+    return switch df {
+      case Drop(Low, value):  function(a) return a.slice(value, a.length);
+      case Drop(High, value): function(a) return a.slice(0, a.length - value);
+      case Keep(Low, value):  function(a) return a.slice(0, value);
+      case Keep(High, value): function(a) return a.slice(a.length - value, a.length);
+    };
 
   public function roll(expr: DiceExpression): Sample {
     trace(expr);
@@ -126,21 +312,46 @@ class DiceProbabilities {
         Sample.die(sides);
       case Literal(value):
         Sample.literal(value);
-    case DiceReduce(DiceExpressions(exprs), Sum):
-      Sample.sum(exprs.map(roll));
-    case DiceReduce(DiceExpressions(exprs), Average):
-      Sample.average(exprs.map(roll));
-    case DiceReduce(DiceExpressions(exprs), Min):
-      Sample.minSeries(exprs.map(roll));
-    case DiceReduce(DiceExpressions(exprs), Max):
-      Sample.maxSeries(exprs.map(roll));
-    case DiceReduce(DiceListWithFilter(DiceArray(dice), Drop(Low, value)), Sum):
-      trace("HERE");
-      var s = dice.map.fn(Die(_)).map(roll);
-      var f = Sample.filterRolls(s, function(a) {
-        return a.slice(value, a.length);
-      });
-      Sample.sum(f);
+    case DiceReduce(DiceExpressions(exprs), dr):
+      resultReducer(dr)(exprs.map(roll));
+    case DiceReduce(DiceListWithFilter(DiceArray(dice), filter), dr):
+      var ls = dice.map.fn(Die(_)).map(roll);
+      resultReducer(dr)(Sample.filterRolls(ls, resultFilter(filter)));
+    case DiceReduce(DiceListWithFilter(DiceExpressions(exprs), filter), dr):
+      var ls = exprs.map(roll);
+      resultReducer(dr)(Sample.filterRolls(ls, resultFilter(filter)));
+    case DiceReduce(DiceListWithMap(dice, Explode(times, range)), dr):
+      // var ls = dice.map.fn(Die(_)).map(roll);
+      var t = switch times {
+        case Always: 100;
+        case UpTo(v): Ints.min(v, 100);
+      }
+      // var samples = [for(i in 0...1) new Sample([i])];
+      trace([for(d in dice) d].map(Sample.explosive.bind(_, range, t)));
+      resultReducer(dr)([for(d in dice) d].map(Sample.explosive.bind(_, range, t)));
+      // Sample.rerolls(dice, function(sides) {
+      //   var buf = a;
+      //   var arr = [];
+      //   var times = t;
+      //   var count;
+      //   // trace(times, a);
+      //   while(times-- > 0) {
+      //     count = 0;
+      //     for(s in a) {
+      //       // trace(s, Roller.matchRange(s.roll, range));
+      //       // buf.push(s.roll);
+      //       if(Roller.matchRange(s.roll, range)) {
+      //         count++;
+      //       }
+      //     }
+      //     for(i in 0...count)
+      //       buf = buf.concat([]);
+      //     a = arr;
+      //     arr = [];
+      //   }
+      //   trace(buf);
+      //   return buf;
+      // }));
     case BinaryOp(Sum, a, b):
       roll(a).add(roll(b));
     case BinaryOp(Difference, a, b):
@@ -156,19 +367,6 @@ case _: // TODO
     }
   }
 
-  //     case DiceReduce(DiceListWithFilter(DiceArray(dice), filter), reducer):
-  //       var f = Roller.filterf(filter);
-  //       var agg = Roller.reducef(reducer);
-  //       return Sample.apply(dice.map.fn(Die(_)).map(roll), function(values) {
-  //         trace(values.filter(f.bind(_, values.length)));
-  //         return agg(values.filter(f.bind(_, values.length))); // TODO
-  //       });
-  //     case DiceReduce(DiceListWithFilter(DiceExpressions(dice), filter), reducer):
-  //       var f = Roller.filterf(filter);
-  //       var agg = Roller.reducef(reducer);
-  //       return Sample.apply(dice.map(roll), function(values) {
-  //         return agg(values.filter(f.bind(_, values.length)));
-  //       });
   //     case DiceReduce(DiceListWithMap(dice, Explode(times, range)), Sum):
   //       Sample.apply(dice.map.fn(Die(_)).map(roll), function(arr) {
   //         return arr[0]; // TODO
