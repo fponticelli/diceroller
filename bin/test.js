@@ -3500,11 +3500,11 @@ dr_Discrete.prototype = {
 			}
 		}
 	}
-	,map: function(f) {
+	,unary: function(f) {
 		return new dr_Discrete(this.weights(),this.values().map(f));
 	}
 	,negate: function() {
-		return this.map(function(v) {
+		return this.unary(function(v) {
 			return -v;
 		});
 	}

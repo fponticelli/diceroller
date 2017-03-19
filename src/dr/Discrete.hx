@@ -90,12 +90,12 @@ class Discrete {
       }
   }
 
-  public function map(f: Float -> Float): Discrete
+  public function unary(f: Float -> Float): Discrete
     return new Discrete(weights(), values().map(f));
 
   // Algebriac functions
   public function negate(): Discrete
-    return map(function(v) return -v);
+    return unary(function(v) return -v);
   public function binary(other: Discrete, f: Float -> Float -> Float): Discrete
     return apply([this, other], function (a: Array<Float>):Float { return f(a[0], a[1]);} );
   public function add(b: Discrete)
