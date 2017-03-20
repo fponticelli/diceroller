@@ -25,6 +25,9 @@ class DiceParser {
     case Right(v): v;
   }
 
+  public static function normalize(s: String)
+    return DiceExpressionExtensions.toString(unsafeParse(s));
+
   static var PLUS = "+".string();
   static var MINUS = "-".string();
   static var positive = ~/[+]?([1-9][0-9]*)/.regexp(1).map(Std.parseInt);
@@ -36,7 +39,7 @@ class DiceParser {
   static var CLOSE_SET_BRACKET = "}".string();
   static var COMMA = ",".string();
   static var PERCENT = "%".string();
-  static var WS = ~/\s+/m.regexp();
+  static var WS = ~/[\s_]+/m.regexp();
   static var OWS = WS | "".string();
 
   static var MULTIPLICATION = ~/[*⋅×x]/.regexp() / "×";
