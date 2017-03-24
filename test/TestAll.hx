@@ -5,8 +5,6 @@ using dr.RollResult;
 using dr.DiceExpressionExtensions;
 import dr.DiceParser.*;
 import dr.Roller;
-import dr.DiceProbabilities;
-import dr.Probabilities;
 using dr.RollResultExtensions;
 
 class TestAll {
@@ -20,9 +18,6 @@ class TestAll {
 
   public function max()
     return new Roller(function(max: Int) return max);
-
-  public function discrete()
-    return new Probabilities();
 
   public function min()
     return new Roller(function(_: Int) return 1);
@@ -228,74 +223,6 @@ class TestAll {
         Assert.equals(expectedmax, maxr, 'expected high to be $expectedmax but it is $maxr for ${t.t} evaluated to ${v}', t.pos);
     }
   }
-
-  public function testDiscrete() {
-    var expr = unsafeParse("1d6"),
-        roller = discrete(),
-        discrete = roller.roll(expr);
-
-    for(v in discrete.probabilities())
-      Assert.floatEquals(0.16666666, v);
-    Assert.same([1, 2, 3, 4, 5, 6], discrete.values());
-
-    discrete = roller.roll(unsafeParse("1d6 + 2"));
-    for(v in discrete.probabilities())
-      Assert.floatEquals(0.16666666, v);
-    Assert.same([3, 4, 5, 6, 7, 8], discrete.values());
-  }
-
-  public function testSample() {
-    var literal = Sample.literal(3);
-    var die = Sample.die(3);
-
-    Assert.same([3], literal.values);
-    Assert.same([1,2,3], die.values);
-    Assert.same([1,2,3], die.add(Sample.zero).values);
-    Assert.same([4,5,6], die.add(literal).values);
-    Assert.same([2,3,3,4,4,4,5,5,6], die.add(die).values);
-    Assert.same([-3,-2,-1], die.negate().values);
-
-    Assert.same([1], Sample.explosive(1, Exact(2), 1).values);
-    trace([2], " -> ", Sample.explosive(1, Exact(1), 1).values);
-    Assert.same([2], Sample.explosive(1, Exact(1), 1).values);
-    trace([1,1,3,4], " -> ", Sample.explosive(2, Exact(2), 1).values);
-    Assert.same([1,1,3,4], Sample.explosive(2, Exact(2), 1).values);
-
-    // [1,2]
-    // [1,[2+1,2+2], [1]]
-
-    // [1,2]
-    // [1,[2+[1,2],2+2]]
-
-    trace([1,1,1,1,1,3,4,4,5,5,6], " -> ", Sample.explosive(3, ValueOrMore(2), 1).values);
-    Assert.same([1,1,1,1,1,3,4,4,5,5,6], Sample.explosive(3, ValueOrMore(2), 1).values);
-
-    // trace([1,1,1,1,1,3,4,4,5,5,6], " -> ", Sample.explosive(3, ValueOrMore(2), 2).values);
-    Assert.same([1,1,1,1,1,3,4,4,5,5,6], Sample.explosive(3, ValueOrMore(2), 2).values);
-
-/*
-1     2
-1   1    2
-1  1   1   2
-
-1 4 5 6
-*/
-
-/*
-    1    2      3
-    1  1 2 3  1 2 3
-
-    1  3 4 5  4 5 6
-*/
-  }
-
-  public function testDiceProbabilities() {
-    Assert.same([1,2,3], prob("d3"));
-    Assert.same([3,4,4,5,5,6], prob("1 + d2 + d3"));
-  }
-
-  function prob(e: String)
-    return new DiceProbabilities().roll(unsafeParse(e)).values;
 
   inline public function pos(?pos: haxe.PosInfos) return pos;
 }

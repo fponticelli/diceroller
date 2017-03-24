@@ -11,10 +11,10 @@
 dr.DiceExpression
 dr.DiceExpressionExtensions
 dr.DiceParser
-dr.Discrete
-dr.DiceProbabilities
-dr.Probabilities
+dr.Roll
 dr.Roller
+dr.RollResult
+dr.RollResultExtensions
 dr.Sides
 
 -cmd node bin/test.js
