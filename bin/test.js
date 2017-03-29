@@ -485,7 +485,7 @@ TestAll.prototype = {
 		switch(_g[1]) {
 		case 0:
 			var e = _g[2];
-			utest_Assert.fail(e,t.pos);
+			utest_Assert.fail(e.toString(),t.pos);
 			break;
 		case 1:
 			var v = _g[2];
@@ -2803,8 +2803,8 @@ dr_DiceParser.parse = function(s) {
 		return thx_Either.Right(value);
 	} else {
 		var v = _g;
-		var msg = parsihax_ParseUtil.formatError(v,s);
-		return thx_Either.Left(msg);
+		var err = dr_DiceParseError.fromResult(v,s);
+		return thx_Either.Left(err);
 	}
 };
 dr_DiceParser.unsafeParse = function(s) {
@@ -2852,6 +2852,45 @@ dr_DiceParser.diceReduce = function(reduceable) {
 };
 dr_DiceParser.commaSeparated = function(element) {
 	return parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OPEN_SET_BRACKET,dr_DiceParser.OWS),parsihax_Parser.skip(parsihax_Parser.or(parsihax_Parser.sepBy1(element,parsihax_Parser.then(parsihax_Parser.then(dr_DiceParser.OWS,dr_DiceParser.COMMA),dr_DiceParser.OWS)),parsihax_Parser.succeed([])),parsihax_Parser.then(dr_DiceParser.OWS,dr_DiceParser.CLOSE_SET_BRACKET)));
+};
+var dr_DiceParseError = function(expected,furthest,input) {
+	this.expected = expected;
+	this.furthest = furthest;
+	this.input = input;
+};
+dr_DiceParseError.__name__ = ["dr","DiceParseError"];
+dr_DiceParseError.fromResult = function(r,s) {
+	var expected = thx_Arrays.distinct(r.expected.map(dr_DiceParseError.expectedToString));
+	return new dr_DiceParseError(expected,r.furthest,s);
+};
+dr_DiceParseError.expectedToString = function(e) {
+	var s = Std.string(e);
+	if(StringTools.startsWith(s,"{\n\tr : ")) {
+		s = thx_Strings.trimCharsRight(thx_Strings.trimCharsLeft(s,"{ \n\tr:"),"\n\t }");
+	}
+	return s;
+};
+dr_DiceParseError.prototype = {
+	expected: null
+	,furthest: null
+	,input: null
+	,positionToString: function() {
+		if(this.furthest >= this.input.length) {
+			return haxe_ds_Option.None;
+		} else {
+			return haxe_ds_Option.Some(this.input.substring(this.furthest));
+		}
+	}
+	,toString: function() {
+		var _e = this.positionToString();
+		var got = thx_Options.getOrElse((function(callback) {
+			return thx_Options.map(_e,callback);
+		})(function(_) {
+			return "…" + thx_Strings.ellipsis(_,20);
+		}),"end of file");
+		return "expected " + this.expected.join(", ") + " but got " + got;
+	}
+	,__class__: dr_DiceParseError
 };
 var dr_RollResult = { __ename__ : ["dr","RollResult"], __constructs__ : ["OneResult","LiteralResult","DiceReduceResult","BinaryOpResult","UnaryOpResult"] };
 dr_RollResult.OneResult = function(die) { var $x = ["OneResult",0,die]; $x.__enum__ = dr_RollResult; return $x; };
@@ -5116,7 +5155,7 @@ thx_Eithers.orThrow = function(either,message) {
 	switch(either[1]) {
 	case 0:
 		var v = either[2];
-		throw new thx_Error("" + message + ": " + Std.string(v),null,{ fileName : "Eithers.hx", lineNumber : 103, className : "thx.Eithers", methodName : "orThrow"});
+		throw new thx_Error("" + message + ": " + Std.string(v),null,{ fileName : "Eithers.hx", lineNumber : 104, className : "thx.Eithers", methodName : "orThrow"});
 		break;
 	case 1:
 		var v1 = either[2];
@@ -5137,6 +5176,16 @@ thx_Eithers.cata = function(either,l,r) {
 	case 1:
 		var r0 = either[2];
 		return r(r0);
+	}
+};
+thx_Eithers.bimap = function(either,l,r) {
+	switch(either[1]) {
+	case 0:
+		var l0 = either[2];
+		return thx_Either.Left(l(l0));
+	case 1:
+		var r0 = either[2];
+		return thx_Either.Right(r(r0));
 	}
 };
 thx_Eithers.foldLeft = function(either,a,f) {
@@ -5200,6 +5249,63 @@ thx_Eithers.ensure = function(either,p,error) {
 	} else {
 		return either;
 	}
+};
+var thx__$Eithers_EitherK_$Impl_$ = {};
+thx__$Eithers_EitherK_$Impl_$.__name__ = ["thx","_Eithers","EitherK_Impl_"];
+thx__$Eithers_EitherK_$Impl_$.apply = function(this1,a) {
+	return this1(a);
+};
+thx__$Eithers_EitherK_$Impl_$.compose = function(this1,f) {
+	return function(a0) {
+		return thx_Eithers.flatMap(thx__$Eithers_EitherK_$Impl_$.apply(f,a0),this1);
+	};
+};
+thx__$Eithers_EitherK_$Impl_$.andThen = function(this1,f) {
+	return function(a) {
+		var tmp = this1(a);
+		var _e = f;
+		return thx_Eithers.flatMap(tmp,function(a1) {
+			return thx__$Eithers_EitherK_$Impl_$.apply(_e,a1);
+		});
+	};
+};
+thx__$Eithers_EitherK_$Impl_$.pure = function(r) {
+	return function(a) {
+		return thx_Either.Right(r);
+	};
+};
+thx__$Eithers_EitherK_$Impl_$.map = function(this1,f) {
+	var fb = f;
+	return thx__$Eithers_EitherK_$Impl_$.flatMap(this1,function(v) {
+		return thx__$Eithers_EitherK_$Impl_$.pure(fb(v));
+	});
+};
+thx__$Eithers_EitherK_$Impl_$.ap = function(this1,e) {
+	return thx__$Eithers_EitherK_$Impl_$.flatMap(this1,function(r) {
+		return thx__$Eithers_EitherK_$Impl_$.map(e,function(f) {
+			return f(r);
+		});
+	});
+};
+thx__$Eithers_EitherK_$Impl_$.flatMap = function(this1,f) {
+	return function(a) {
+		return thx_Eithers.flatMap(this1(a),function(r) {
+			return thx__$Eithers_EitherK_$Impl_$.apply(f(r),a);
+		});
+	};
+};
+thx__$Eithers_EitherK_$Impl_$.monoid = function() {
+	return { zero : function(r) {
+		return thx_Either.Right(r);
+	}, append : function(f0,f1) {
+		return function(r1) {
+			var tmp = thx__$Eithers_EitherK_$Impl_$.apply(f0,r1);
+			var _e = f1;
+			return thx_Eithers.flatMap(tmp,function(a) {
+				return thx__$Eithers_EitherK_$Impl_$.apply(_e,a);
+			});
+		};
+	}};
 };
 var thx_Enums = function() { };
 thx_Enums.__name__ = ["thx","Enums"];
@@ -5770,6 +5876,69 @@ thx_Functions13.curry = function(f) {
 	return function(a,b,c,d,e,f0,g,h,i,j,k,l) {
 		return function(m) {
 			return f(a,b,c,d,e,f0,g,h,i,j,k,l,m);
+		};
+	};
+};
+var thx_Functions14 = function() { };
+thx_Functions14.__name__ = ["thx","Functions14"];
+thx_Functions14.curry = function(f) {
+	return function(a,b,c,d,e,f0,g,h,i,j,k,l,m) {
+		return function(n) {
+			return f(a,b,c,d,e,f0,g,h,i,j,k,l,m,n);
+		};
+	};
+};
+var thx_Functions15 = function() { };
+thx_Functions15.__name__ = ["thx","Functions15"];
+thx_Functions15.curry = function(f) {
+	return function(a,b,c,d,e,f0,g,h,i,j,k,l,m,n) {
+		return function(o) {
+			return f(a,b,c,d,e,f0,g,h,i,j,k,l,m,n,o);
+		};
+	};
+};
+var thx_Functions16 = function() { };
+thx_Functions16.__name__ = ["thx","Functions16"];
+thx_Functions16.curry = function(f) {
+	return function(a,b,c,d,e,f0,g,h,i,j,k,l,m,n,o) {
+		return function(p) {
+			return f(a,b,c,d,e,f0,g,h,i,j,k,l,m,n,o,p);
+		};
+	};
+};
+var thx_Functions17 = function() { };
+thx_Functions17.__name__ = ["thx","Functions17"];
+thx_Functions17.curry = function(f) {
+	return function(a,b,c,d,e,f0,g,h,i,j,k,l,m,n,o,p) {
+		return function(q) {
+			return f(a,b,c,d,e,f0,g,h,i,j,k,l,m,n,o,p,q);
+		};
+	};
+};
+var thx_Functions18 = function() { };
+thx_Functions18.__name__ = ["thx","Functions18"];
+thx_Functions18.curry = function(f) {
+	return function(a,b,c,d,e,f0,g,h,i,j,k,l,m,n,o,p,q) {
+		return function(r) {
+			return f(a,b,c,d,e,f0,g,h,i,j,k,l,m,n,o,p,q,r);
+		};
+	};
+};
+var thx_Functions19 = function() { };
+thx_Functions19.__name__ = ["thx","Functions19"];
+thx_Functions19.curry = function(f) {
+	return function(a,b,c,d,e,f0,g,h,i,j,k,l,m,n,o,p,q,r) {
+		return function(s) {
+			return f(a,b,c,d,e,f0,g,h,i,j,k,l,m,n,o,p,q,r,s);
+		};
+	};
+};
+var thx_Functions20 = function() { };
+thx_Functions20.__name__ = ["thx","Functions20"];
+thx_Functions20.curry = function(f) {
+	return function(a,b,c,d,e,f0,g,h,i,j,k,l,m,n,o,p,q,r,s) {
+		return function(t) {
+			return f(a,b,c,d,e,f0,g,h,i,j,k,l,m,n,o,p,q,r,s,t);
 		};
 	};
 };
@@ -9519,6 +9688,552 @@ thx__$Validation_Validation_$Impl_$.val13 = function(f,v1,v2,v3,v4,v5,v6,v7,v8,v
 			return f11(a10,b10,c10);
 		};
 	})),s),s),s),s),s),s),s),s),s),s),s),s);
+};
+thx__$Validation_Validation_$Impl_$.val14 = function(f,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,s) {
+	var f1 = f;
+	var f2 = function(a,b,c,d,e,f0,g,h,i,j,k,l,m) {
+		return function(n) {
+			return f1(a,b,c,d,e,f0,g,h,i,j,k,l,m,n);
+		};
+	};
+	var f3 = function(a1,b1,c1,d1,e1,f01,g1,h1,i1,j1,k1,l1) {
+		return function(m1) {
+			return f2(a1,b1,c1,d1,e1,f01,g1,h1,i1,j1,k1,l1,m1);
+		};
+	};
+	var f4 = function(a2,b2,c2,d2,e2,f02,g2,h2,i2,j2,k2) {
+		return function(l2) {
+			return f3(a2,b2,c2,d2,e2,f02,g2,h2,i2,j2,k2,l2);
+		};
+	};
+	var f5 = function(a3,b3,c3,d3,e3,f03,g3,h3,i3,j3) {
+		return function(k3) {
+			return f4(a3,b3,c3,d3,e3,f03,g3,h3,i3,j3,k3);
+		};
+	};
+	var f6 = function(a4,b4,c4,d4,e4,f04,g4,h4,i4) {
+		return function(j4) {
+			return f5(a4,b4,c4,d4,e4,f04,g4,h4,i4,j4);
+		};
+	};
+	var f7 = function(a5,b5,c5,d5,e5,f05,g5,h5) {
+		return function(i5) {
+			return f6(a5,b5,c5,d5,e5,f05,g5,h5,i5);
+		};
+	};
+	var f8 = function(a6,b6,c6,d6,e6,f06,g6) {
+		return function(h6) {
+			return f7(a6,b6,c6,d6,e6,f06,g6,h6);
+		};
+	};
+	var f9 = function(a7,b7,c7,d7,e7,f07) {
+		return function(g7) {
+			return f8(a7,b7,c7,d7,e7,f07,g7);
+		};
+	};
+	var f10 = function(a8,b8,c8,d8,e8) {
+		return function(f08) {
+			return f9(a8,b8,c8,d8,e8,f08);
+		};
+	};
+	var f11 = function(a9,b9,c9,d9) {
+		return function(e9) {
+			return f10(a9,b9,c9,d9,e9);
+		};
+	};
+	var f12 = function(a10,b10,c10) {
+		return function(d10) {
+			return f11(a10,b10,c10,d10);
+		};
+	};
+	return thx__$Validation_Validation_$Impl_$.ap(v14,thx__$Validation_Validation_$Impl_$.ap(v13,thx__$Validation_Validation_$Impl_$.ap(v12,thx__$Validation_Validation_$Impl_$.ap(v11,thx__$Validation_Validation_$Impl_$.ap(v10,thx__$Validation_Validation_$Impl_$.ap(v9,thx__$Validation_Validation_$Impl_$.ap(v8,thx__$Validation_Validation_$Impl_$.ap(v7,thx__$Validation_Validation_$Impl_$.ap(v6,thx__$Validation_Validation_$Impl_$.ap(v5,thx__$Validation_Validation_$Impl_$.ap(v4,thx__$Validation_Validation_$Impl_$.ap(v3,thx__$Validation_Validation_$Impl_$.ap(v2,thx__$Validation_Validation_$Impl_$.map(v1,thx_Functions2.curry(function(a11,b11) {
+		return function(c11) {
+			return f12(a11,b11,c11);
+		};
+	})),s),s),s),s),s),s),s),s),s),s),s),s),s);
+};
+thx__$Validation_Validation_$Impl_$.val15 = function(f,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,s) {
+	var f1 = f;
+	var f2 = function(a,b,c,d,e,f0,g,h,i,j,k,l,m,n) {
+		return function(o) {
+			return f1(a,b,c,d,e,f0,g,h,i,j,k,l,m,n,o);
+		};
+	};
+	var f3 = function(a1,b1,c1,d1,e1,f01,g1,h1,i1,j1,k1,l1,m1) {
+		return function(n1) {
+			return f2(a1,b1,c1,d1,e1,f01,g1,h1,i1,j1,k1,l1,m1,n1);
+		};
+	};
+	var f4 = function(a2,b2,c2,d2,e2,f02,g2,h2,i2,j2,k2,l2) {
+		return function(m2) {
+			return f3(a2,b2,c2,d2,e2,f02,g2,h2,i2,j2,k2,l2,m2);
+		};
+	};
+	var f5 = function(a3,b3,c3,d3,e3,f03,g3,h3,i3,j3,k3) {
+		return function(l3) {
+			return f4(a3,b3,c3,d3,e3,f03,g3,h3,i3,j3,k3,l3);
+		};
+	};
+	var f6 = function(a4,b4,c4,d4,e4,f04,g4,h4,i4,j4) {
+		return function(k4) {
+			return f5(a4,b4,c4,d4,e4,f04,g4,h4,i4,j4,k4);
+		};
+	};
+	var f7 = function(a5,b5,c5,d5,e5,f05,g5,h5,i5) {
+		return function(j5) {
+			return f6(a5,b5,c5,d5,e5,f05,g5,h5,i5,j5);
+		};
+	};
+	var f8 = function(a6,b6,c6,d6,e6,f06,g6,h6) {
+		return function(i6) {
+			return f7(a6,b6,c6,d6,e6,f06,g6,h6,i6);
+		};
+	};
+	var f9 = function(a7,b7,c7,d7,e7,f07,g7) {
+		return function(h7) {
+			return f8(a7,b7,c7,d7,e7,f07,g7,h7);
+		};
+	};
+	var f10 = function(a8,b8,c8,d8,e8,f08) {
+		return function(g8) {
+			return f9(a8,b8,c8,d8,e8,f08,g8);
+		};
+	};
+	var f11 = function(a9,b9,c9,d9,e9) {
+		return function(f09) {
+			return f10(a9,b9,c9,d9,e9,f09);
+		};
+	};
+	var f12 = function(a10,b10,c10,d10) {
+		return function(e10) {
+			return f11(a10,b10,c10,d10,e10);
+		};
+	};
+	var f13 = function(a11,b11,c11) {
+		return function(d11) {
+			return f12(a11,b11,c11,d11);
+		};
+	};
+	return thx__$Validation_Validation_$Impl_$.ap(v15,thx__$Validation_Validation_$Impl_$.ap(v14,thx__$Validation_Validation_$Impl_$.ap(v13,thx__$Validation_Validation_$Impl_$.ap(v12,thx__$Validation_Validation_$Impl_$.ap(v11,thx__$Validation_Validation_$Impl_$.ap(v10,thx__$Validation_Validation_$Impl_$.ap(v9,thx__$Validation_Validation_$Impl_$.ap(v8,thx__$Validation_Validation_$Impl_$.ap(v7,thx__$Validation_Validation_$Impl_$.ap(v6,thx__$Validation_Validation_$Impl_$.ap(v5,thx__$Validation_Validation_$Impl_$.ap(v4,thx__$Validation_Validation_$Impl_$.ap(v3,thx__$Validation_Validation_$Impl_$.ap(v2,thx__$Validation_Validation_$Impl_$.map(v1,thx_Functions2.curry(function(a12,b12) {
+		return function(c12) {
+			return f13(a12,b12,c12);
+		};
+	})),s),s),s),s),s),s),s),s),s),s),s),s),s),s);
+};
+thx__$Validation_Validation_$Impl_$.val16 = function(f,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,s) {
+	var f1 = f;
+	var f2 = function(a,b,c,d,e,f0,g,h,i,j,k,l,m,n,o) {
+		return function(p) {
+			return f1(a,b,c,d,e,f0,g,h,i,j,k,l,m,n,o,p);
+		};
+	};
+	var f3 = function(a1,b1,c1,d1,e1,f01,g1,h1,i1,j1,k1,l1,m1,n1) {
+		return function(o1) {
+			return f2(a1,b1,c1,d1,e1,f01,g1,h1,i1,j1,k1,l1,m1,n1,o1);
+		};
+	};
+	var f4 = function(a2,b2,c2,d2,e2,f02,g2,h2,i2,j2,k2,l2,m2) {
+		return function(n2) {
+			return f3(a2,b2,c2,d2,e2,f02,g2,h2,i2,j2,k2,l2,m2,n2);
+		};
+	};
+	var f5 = function(a3,b3,c3,d3,e3,f03,g3,h3,i3,j3,k3,l3) {
+		return function(m3) {
+			return f4(a3,b3,c3,d3,e3,f03,g3,h3,i3,j3,k3,l3,m3);
+		};
+	};
+	var f6 = function(a4,b4,c4,d4,e4,f04,g4,h4,i4,j4,k4) {
+		return function(l4) {
+			return f5(a4,b4,c4,d4,e4,f04,g4,h4,i4,j4,k4,l4);
+		};
+	};
+	var f7 = function(a5,b5,c5,d5,e5,f05,g5,h5,i5,j5) {
+		return function(k5) {
+			return f6(a5,b5,c5,d5,e5,f05,g5,h5,i5,j5,k5);
+		};
+	};
+	var f8 = function(a6,b6,c6,d6,e6,f06,g6,h6,i6) {
+		return function(j6) {
+			return f7(a6,b6,c6,d6,e6,f06,g6,h6,i6,j6);
+		};
+	};
+	var f9 = function(a7,b7,c7,d7,e7,f07,g7,h7) {
+		return function(i7) {
+			return f8(a7,b7,c7,d7,e7,f07,g7,h7,i7);
+		};
+	};
+	var f10 = function(a8,b8,c8,d8,e8,f08,g8) {
+		return function(h8) {
+			return f9(a8,b8,c8,d8,e8,f08,g8,h8);
+		};
+	};
+	var f11 = function(a9,b9,c9,d9,e9,f09) {
+		return function(g9) {
+			return f10(a9,b9,c9,d9,e9,f09,g9);
+		};
+	};
+	var f12 = function(a10,b10,c10,d10,e10) {
+		return function(f010) {
+			return f11(a10,b10,c10,d10,e10,f010);
+		};
+	};
+	var f13 = function(a11,b11,c11,d11) {
+		return function(e11) {
+			return f12(a11,b11,c11,d11,e11);
+		};
+	};
+	var f14 = function(a12,b12,c12) {
+		return function(d12) {
+			return f13(a12,b12,c12,d12);
+		};
+	};
+	return thx__$Validation_Validation_$Impl_$.ap(v16,thx__$Validation_Validation_$Impl_$.ap(v15,thx__$Validation_Validation_$Impl_$.ap(v14,thx__$Validation_Validation_$Impl_$.ap(v13,thx__$Validation_Validation_$Impl_$.ap(v12,thx__$Validation_Validation_$Impl_$.ap(v11,thx__$Validation_Validation_$Impl_$.ap(v10,thx__$Validation_Validation_$Impl_$.ap(v9,thx__$Validation_Validation_$Impl_$.ap(v8,thx__$Validation_Validation_$Impl_$.ap(v7,thx__$Validation_Validation_$Impl_$.ap(v6,thx__$Validation_Validation_$Impl_$.ap(v5,thx__$Validation_Validation_$Impl_$.ap(v4,thx__$Validation_Validation_$Impl_$.ap(v3,thx__$Validation_Validation_$Impl_$.ap(v2,thx__$Validation_Validation_$Impl_$.map(v1,thx_Functions2.curry(function(a13,b13) {
+		return function(c13) {
+			return f14(a13,b13,c13);
+		};
+	})),s),s),s),s),s),s),s),s),s),s),s),s),s),s),s);
+};
+thx__$Validation_Validation_$Impl_$.val17 = function(f,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,s) {
+	var f1 = f;
+	var f2 = function(a,b,c,d,e,f0,g,h,i,j,k,l,m,n,o,p) {
+		return function(q) {
+			return f1(a,b,c,d,e,f0,g,h,i,j,k,l,m,n,o,p,q);
+		};
+	};
+	var f3 = function(a1,b1,c1,d1,e1,f01,g1,h1,i1,j1,k1,l1,m1,n1,o1) {
+		return function(p1) {
+			return f2(a1,b1,c1,d1,e1,f01,g1,h1,i1,j1,k1,l1,m1,n1,o1,p1);
+		};
+	};
+	var f4 = function(a2,b2,c2,d2,e2,f02,g2,h2,i2,j2,k2,l2,m2,n2) {
+		return function(o2) {
+			return f3(a2,b2,c2,d2,e2,f02,g2,h2,i2,j2,k2,l2,m2,n2,o2);
+		};
+	};
+	var f5 = function(a3,b3,c3,d3,e3,f03,g3,h3,i3,j3,k3,l3,m3) {
+		return function(n3) {
+			return f4(a3,b3,c3,d3,e3,f03,g3,h3,i3,j3,k3,l3,m3,n3);
+		};
+	};
+	var f6 = function(a4,b4,c4,d4,e4,f04,g4,h4,i4,j4,k4,l4) {
+		return function(m4) {
+			return f5(a4,b4,c4,d4,e4,f04,g4,h4,i4,j4,k4,l4,m4);
+		};
+	};
+	var f7 = function(a5,b5,c5,d5,e5,f05,g5,h5,i5,j5,k5) {
+		return function(l5) {
+			return f6(a5,b5,c5,d5,e5,f05,g5,h5,i5,j5,k5,l5);
+		};
+	};
+	var f8 = function(a6,b6,c6,d6,e6,f06,g6,h6,i6,j6) {
+		return function(k6) {
+			return f7(a6,b6,c6,d6,e6,f06,g6,h6,i6,j6,k6);
+		};
+	};
+	var f9 = function(a7,b7,c7,d7,e7,f07,g7,h7,i7) {
+		return function(j7) {
+			return f8(a7,b7,c7,d7,e7,f07,g7,h7,i7,j7);
+		};
+	};
+	var f10 = function(a8,b8,c8,d8,e8,f08,g8,h8) {
+		return function(i8) {
+			return f9(a8,b8,c8,d8,e8,f08,g8,h8,i8);
+		};
+	};
+	var f11 = function(a9,b9,c9,d9,e9,f09,g9) {
+		return function(h9) {
+			return f10(a9,b9,c9,d9,e9,f09,g9,h9);
+		};
+	};
+	var f12 = function(a10,b10,c10,d10,e10,f010) {
+		return function(g10) {
+			return f11(a10,b10,c10,d10,e10,f010,g10);
+		};
+	};
+	var f13 = function(a11,b11,c11,d11,e11) {
+		return function(f011) {
+			return f12(a11,b11,c11,d11,e11,f011);
+		};
+	};
+	var f14 = function(a12,b12,c12,d12) {
+		return function(e12) {
+			return f13(a12,b12,c12,d12,e12);
+		};
+	};
+	var f15 = function(a13,b13,c13) {
+		return function(d13) {
+			return f14(a13,b13,c13,d13);
+		};
+	};
+	return thx__$Validation_Validation_$Impl_$.ap(v17,thx__$Validation_Validation_$Impl_$.ap(v16,thx__$Validation_Validation_$Impl_$.ap(v15,thx__$Validation_Validation_$Impl_$.ap(v14,thx__$Validation_Validation_$Impl_$.ap(v13,thx__$Validation_Validation_$Impl_$.ap(v12,thx__$Validation_Validation_$Impl_$.ap(v11,thx__$Validation_Validation_$Impl_$.ap(v10,thx__$Validation_Validation_$Impl_$.ap(v9,thx__$Validation_Validation_$Impl_$.ap(v8,thx__$Validation_Validation_$Impl_$.ap(v7,thx__$Validation_Validation_$Impl_$.ap(v6,thx__$Validation_Validation_$Impl_$.ap(v5,thx__$Validation_Validation_$Impl_$.ap(v4,thx__$Validation_Validation_$Impl_$.ap(v3,thx__$Validation_Validation_$Impl_$.ap(v2,thx__$Validation_Validation_$Impl_$.map(v1,thx_Functions2.curry(function(a14,b14) {
+		return function(c14) {
+			return f15(a14,b14,c14);
+		};
+	})),s),s),s),s),s),s),s),s),s),s),s),s),s),s),s),s);
+};
+thx__$Validation_Validation_$Impl_$.val18 = function(f,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,s) {
+	var f1 = f;
+	var f2 = function(a,b,c,d,e,f0,g,h,i,j,k,l,m,n,o,p,q) {
+		return function(r) {
+			return f1(a,b,c,d,e,f0,g,h,i,j,k,l,m,n,o,p,q,r);
+		};
+	};
+	var f3 = function(a1,b1,c1,d1,e1,f01,g1,h1,i1,j1,k1,l1,m1,n1,o1,p1) {
+		return function(q1) {
+			return f2(a1,b1,c1,d1,e1,f01,g1,h1,i1,j1,k1,l1,m1,n1,o1,p1,q1);
+		};
+	};
+	var f4 = function(a2,b2,c2,d2,e2,f02,g2,h2,i2,j2,k2,l2,m2,n2,o2) {
+		return function(p2) {
+			return f3(a2,b2,c2,d2,e2,f02,g2,h2,i2,j2,k2,l2,m2,n2,o2,p2);
+		};
+	};
+	var f5 = function(a3,b3,c3,d3,e3,f03,g3,h3,i3,j3,k3,l3,m3,n3) {
+		return function(o3) {
+			return f4(a3,b3,c3,d3,e3,f03,g3,h3,i3,j3,k3,l3,m3,n3,o3);
+		};
+	};
+	var f6 = function(a4,b4,c4,d4,e4,f04,g4,h4,i4,j4,k4,l4,m4) {
+		return function(n4) {
+			return f5(a4,b4,c4,d4,e4,f04,g4,h4,i4,j4,k4,l4,m4,n4);
+		};
+	};
+	var f7 = function(a5,b5,c5,d5,e5,f05,g5,h5,i5,j5,k5,l5) {
+		return function(m5) {
+			return f6(a5,b5,c5,d5,e5,f05,g5,h5,i5,j5,k5,l5,m5);
+		};
+	};
+	var f8 = function(a6,b6,c6,d6,e6,f06,g6,h6,i6,j6,k6) {
+		return function(l6) {
+			return f7(a6,b6,c6,d6,e6,f06,g6,h6,i6,j6,k6,l6);
+		};
+	};
+	var f9 = function(a7,b7,c7,d7,e7,f07,g7,h7,i7,j7) {
+		return function(k7) {
+			return f8(a7,b7,c7,d7,e7,f07,g7,h7,i7,j7,k7);
+		};
+	};
+	var f10 = function(a8,b8,c8,d8,e8,f08,g8,h8,i8) {
+		return function(j8) {
+			return f9(a8,b8,c8,d8,e8,f08,g8,h8,i8,j8);
+		};
+	};
+	var f11 = function(a9,b9,c9,d9,e9,f09,g9,h9) {
+		return function(i9) {
+			return f10(a9,b9,c9,d9,e9,f09,g9,h9,i9);
+		};
+	};
+	var f12 = function(a10,b10,c10,d10,e10,f010,g10) {
+		return function(h10) {
+			return f11(a10,b10,c10,d10,e10,f010,g10,h10);
+		};
+	};
+	var f13 = function(a11,b11,c11,d11,e11,f011) {
+		return function(g11) {
+			return f12(a11,b11,c11,d11,e11,f011,g11);
+		};
+	};
+	var f14 = function(a12,b12,c12,d12,e12) {
+		return function(f012) {
+			return f13(a12,b12,c12,d12,e12,f012);
+		};
+	};
+	var f15 = function(a13,b13,c13,d13) {
+		return function(e13) {
+			return f14(a13,b13,c13,d13,e13);
+		};
+	};
+	var f16 = function(a14,b14,c14) {
+		return function(d14) {
+			return f15(a14,b14,c14,d14);
+		};
+	};
+	return thx__$Validation_Validation_$Impl_$.ap(v18,thx__$Validation_Validation_$Impl_$.ap(v17,thx__$Validation_Validation_$Impl_$.ap(v16,thx__$Validation_Validation_$Impl_$.ap(v15,thx__$Validation_Validation_$Impl_$.ap(v14,thx__$Validation_Validation_$Impl_$.ap(v13,thx__$Validation_Validation_$Impl_$.ap(v12,thx__$Validation_Validation_$Impl_$.ap(v11,thx__$Validation_Validation_$Impl_$.ap(v10,thx__$Validation_Validation_$Impl_$.ap(v9,thx__$Validation_Validation_$Impl_$.ap(v8,thx__$Validation_Validation_$Impl_$.ap(v7,thx__$Validation_Validation_$Impl_$.ap(v6,thx__$Validation_Validation_$Impl_$.ap(v5,thx__$Validation_Validation_$Impl_$.ap(v4,thx__$Validation_Validation_$Impl_$.ap(v3,thx__$Validation_Validation_$Impl_$.ap(v2,thx__$Validation_Validation_$Impl_$.map(v1,thx_Functions2.curry(function(a15,b15) {
+		return function(c15) {
+			return f16(a15,b15,c15);
+		};
+	})),s),s),s),s),s),s),s),s),s),s),s),s),s),s),s),s),s);
+};
+thx__$Validation_Validation_$Impl_$.val19 = function(f,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,s) {
+	var f1 = f;
+	var f2 = function(a,b,c,d,e,f0,g,h,i,j,k,l,m,n,o,p,q,r) {
+		return function(s1) {
+			return f1(a,b,c,d,e,f0,g,h,i,j,k,l,m,n,o,p,q,r,s1);
+		};
+	};
+	var f3 = function(a1,b1,c1,d1,e1,f01,g1,h1,i1,j1,k1,l1,m1,n1,o1,p1,q1) {
+		return function(r1) {
+			return f2(a1,b1,c1,d1,e1,f01,g1,h1,i1,j1,k1,l1,m1,n1,o1,p1,q1,r1);
+		};
+	};
+	var f4 = function(a2,b2,c2,d2,e2,f02,g2,h2,i2,j2,k2,l2,m2,n2,o2,p2) {
+		return function(q2) {
+			return f3(a2,b2,c2,d2,e2,f02,g2,h2,i2,j2,k2,l2,m2,n2,o2,p2,q2);
+		};
+	};
+	var f5 = function(a3,b3,c3,d3,e3,f03,g3,h3,i3,j3,k3,l3,m3,n3,o3) {
+		return function(p3) {
+			return f4(a3,b3,c3,d3,e3,f03,g3,h3,i3,j3,k3,l3,m3,n3,o3,p3);
+		};
+	};
+	var f6 = function(a4,b4,c4,d4,e4,f04,g4,h4,i4,j4,k4,l4,m4,n4) {
+		return function(o4) {
+			return f5(a4,b4,c4,d4,e4,f04,g4,h4,i4,j4,k4,l4,m4,n4,o4);
+		};
+	};
+	var f7 = function(a5,b5,c5,d5,e5,f05,g5,h5,i5,j5,k5,l5,m5) {
+		return function(n5) {
+			return f6(a5,b5,c5,d5,e5,f05,g5,h5,i5,j5,k5,l5,m5,n5);
+		};
+	};
+	var f8 = function(a6,b6,c6,d6,e6,f06,g6,h6,i6,j6,k6,l6) {
+		return function(m6) {
+			return f7(a6,b6,c6,d6,e6,f06,g6,h6,i6,j6,k6,l6,m6);
+		};
+	};
+	var f9 = function(a7,b7,c7,d7,e7,f07,g7,h7,i7,j7,k7) {
+		return function(l7) {
+			return f8(a7,b7,c7,d7,e7,f07,g7,h7,i7,j7,k7,l7);
+		};
+	};
+	var f10 = function(a8,b8,c8,d8,e8,f08,g8,h8,i8,j8) {
+		return function(k8) {
+			return f9(a8,b8,c8,d8,e8,f08,g8,h8,i8,j8,k8);
+		};
+	};
+	var f11 = function(a9,b9,c9,d9,e9,f09,g9,h9,i9) {
+		return function(j9) {
+			return f10(a9,b9,c9,d9,e9,f09,g9,h9,i9,j9);
+		};
+	};
+	var f12 = function(a10,b10,c10,d10,e10,f010,g10,h10) {
+		return function(i10) {
+			return f11(a10,b10,c10,d10,e10,f010,g10,h10,i10);
+		};
+	};
+	var f13 = function(a11,b11,c11,d11,e11,f011,g11) {
+		return function(h11) {
+			return f12(a11,b11,c11,d11,e11,f011,g11,h11);
+		};
+	};
+	var f14 = function(a12,b12,c12,d12,e12,f012) {
+		return function(g12) {
+			return f13(a12,b12,c12,d12,e12,f012,g12);
+		};
+	};
+	var f15 = function(a13,b13,c13,d13,e13) {
+		return function(f013) {
+			return f14(a13,b13,c13,d13,e13,f013);
+		};
+	};
+	var f16 = function(a14,b14,c14,d14) {
+		return function(e14) {
+			return f15(a14,b14,c14,d14,e14);
+		};
+	};
+	var f17 = function(a15,b15,c15) {
+		return function(d15) {
+			return f16(a15,b15,c15,d15);
+		};
+	};
+	return thx__$Validation_Validation_$Impl_$.ap(v19,thx__$Validation_Validation_$Impl_$.ap(v18,thx__$Validation_Validation_$Impl_$.ap(v17,thx__$Validation_Validation_$Impl_$.ap(v16,thx__$Validation_Validation_$Impl_$.ap(v15,thx__$Validation_Validation_$Impl_$.ap(v14,thx__$Validation_Validation_$Impl_$.ap(v13,thx__$Validation_Validation_$Impl_$.ap(v12,thx__$Validation_Validation_$Impl_$.ap(v11,thx__$Validation_Validation_$Impl_$.ap(v10,thx__$Validation_Validation_$Impl_$.ap(v9,thx__$Validation_Validation_$Impl_$.ap(v8,thx__$Validation_Validation_$Impl_$.ap(v7,thx__$Validation_Validation_$Impl_$.ap(v6,thx__$Validation_Validation_$Impl_$.ap(v5,thx__$Validation_Validation_$Impl_$.ap(v4,thx__$Validation_Validation_$Impl_$.ap(v3,thx__$Validation_Validation_$Impl_$.ap(v2,thx__$Validation_Validation_$Impl_$.map(v1,thx_Functions2.curry(function(a16,b16) {
+		return function(c16) {
+			return f17(a16,b16,c16);
+		};
+	})),s),s),s),s),s),s),s),s),s),s),s),s),s),s),s),s),s),s);
+};
+thx__$Validation_Validation_$Impl_$.val20 = function(f,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15,v16,v17,v18,v19,v20,s) {
+	var f1 = f;
+	var f2 = function(a,b,c,d,e,f0,g,h,i,j,k,l,m,n,o,p,q,r,s1) {
+		return function(t) {
+			return f1(a,b,c,d,e,f0,g,h,i,j,k,l,m,n,o,p,q,r,s1,t);
+		};
+	};
+	var f3 = function(a1,b1,c1,d1,e1,f01,g1,h1,i1,j1,k1,l1,m1,n1,o1,p1,q1,r1) {
+		return function(s2) {
+			return f2(a1,b1,c1,d1,e1,f01,g1,h1,i1,j1,k1,l1,m1,n1,o1,p1,q1,r1,s2);
+		};
+	};
+	var f4 = function(a2,b2,c2,d2,e2,f02,g2,h2,i2,j2,k2,l2,m2,n2,o2,p2,q2) {
+		return function(r2) {
+			return f3(a2,b2,c2,d2,e2,f02,g2,h2,i2,j2,k2,l2,m2,n2,o2,p2,q2,r2);
+		};
+	};
+	var f5 = function(a3,b3,c3,d3,e3,f03,g3,h3,i3,j3,k3,l3,m3,n3,o3,p3) {
+		return function(q3) {
+			return f4(a3,b3,c3,d3,e3,f03,g3,h3,i3,j3,k3,l3,m3,n3,o3,p3,q3);
+		};
+	};
+	var f6 = function(a4,b4,c4,d4,e4,f04,g4,h4,i4,j4,k4,l4,m4,n4,o4) {
+		return function(p4) {
+			return f5(a4,b4,c4,d4,e4,f04,g4,h4,i4,j4,k4,l4,m4,n4,o4,p4);
+		};
+	};
+	var f7 = function(a5,b5,c5,d5,e5,f05,g5,h5,i5,j5,k5,l5,m5,n5) {
+		return function(o5) {
+			return f6(a5,b5,c5,d5,e5,f05,g5,h5,i5,j5,k5,l5,m5,n5,o5);
+		};
+	};
+	var f8 = function(a6,b6,c6,d6,e6,f06,g6,h6,i6,j6,k6,l6,m6) {
+		return function(n6) {
+			return f7(a6,b6,c6,d6,e6,f06,g6,h6,i6,j6,k6,l6,m6,n6);
+		};
+	};
+	var f9 = function(a7,b7,c7,d7,e7,f07,g7,h7,i7,j7,k7,l7) {
+		return function(m7) {
+			return f8(a7,b7,c7,d7,e7,f07,g7,h7,i7,j7,k7,l7,m7);
+		};
+	};
+	var f10 = function(a8,b8,c8,d8,e8,f08,g8,h8,i8,j8,k8) {
+		return function(l8) {
+			return f9(a8,b8,c8,d8,e8,f08,g8,h8,i8,j8,k8,l8);
+		};
+	};
+	var f11 = function(a9,b9,c9,d9,e9,f09,g9,h9,i9,j9) {
+		return function(k9) {
+			return f10(a9,b9,c9,d9,e9,f09,g9,h9,i9,j9,k9);
+		};
+	};
+	var f12 = function(a10,b10,c10,d10,e10,f010,g10,h10,i10) {
+		return function(j10) {
+			return f11(a10,b10,c10,d10,e10,f010,g10,h10,i10,j10);
+		};
+	};
+	var f13 = function(a11,b11,c11,d11,e11,f011,g11,h11) {
+		return function(i11) {
+			return f12(a11,b11,c11,d11,e11,f011,g11,h11,i11);
+		};
+	};
+	var f14 = function(a12,b12,c12,d12,e12,f012,g12) {
+		return function(h12) {
+			return f13(a12,b12,c12,d12,e12,f012,g12,h12);
+		};
+	};
+	var f15 = function(a13,b13,c13,d13,e13,f013) {
+		return function(g13) {
+			return f14(a13,b13,c13,d13,e13,f013,g13);
+		};
+	};
+	var f16 = function(a14,b14,c14,d14,e14) {
+		return function(f014) {
+			return f15(a14,b14,c14,d14,e14,f014);
+		};
+	};
+	var f17 = function(a15,b15,c15,d15) {
+		return function(e15) {
+			return f16(a15,b15,c15,d15,e15);
+		};
+	};
+	var f18 = function(a16,b16,c16) {
+		return function(d16) {
+			return f17(a16,b16,c16,d16);
+		};
+	};
+	return thx__$Validation_Validation_$Impl_$.ap(v20,thx__$Validation_Validation_$Impl_$.ap(v19,thx__$Validation_Validation_$Impl_$.ap(v18,thx__$Validation_Validation_$Impl_$.ap(v17,thx__$Validation_Validation_$Impl_$.ap(v16,thx__$Validation_Validation_$Impl_$.ap(v15,thx__$Validation_Validation_$Impl_$.ap(v14,thx__$Validation_Validation_$Impl_$.ap(v13,thx__$Validation_Validation_$Impl_$.ap(v12,thx__$Validation_Validation_$Impl_$.ap(v11,thx__$Validation_Validation_$Impl_$.ap(v10,thx__$Validation_Validation_$Impl_$.ap(v9,thx__$Validation_Validation_$Impl_$.ap(v8,thx__$Validation_Validation_$Impl_$.ap(v7,thx__$Validation_Validation_$Impl_$.ap(v6,thx__$Validation_Validation_$Impl_$.ap(v5,thx__$Validation_Validation_$Impl_$.ap(v4,thx__$Validation_Validation_$Impl_$.ap(v3,thx__$Validation_Validation_$Impl_$.ap(v2,thx__$Validation_Validation_$Impl_$.map(v1,thx_Functions2.curry(function(a17,b17) {
+		return function(c17) {
+			return f18(a17,b17,c17);
+		};
+	})),s),s),s),s),s),s),s),s),s),s),s),s),s),s),s),s),s),s),s);
 };
 var thx_ValidationExtensions = function() { };
 thx_ValidationExtensions.__name__ = ["thx","ValidationExtensions"];

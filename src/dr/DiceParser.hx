@@ -3,23 +3,26 @@ package dr;
 import dr.DiceExpression;
 import parsihax.Parser.*;
 import parsihax.ParseObject;
+import parsihax.ParseResult;
 using parsihax.Parser;
 using thx.Arrays;
 using thx.Functions;
+using thx.Strings;
 import thx.Validation;
+import haxe.ds.Option;
+using thx.Options;
 
 class DiceParser {
-  public static function parse(s: String): Validation<String, DiceExpression> {
+  public static function parse(s: String): Validation<DiceParseError, DiceExpression> {
     return switch grammar
       .apply(s) {
         case { status: true, value: value }:
           Validation.success(value);
         case v:
-          var msg = parsihax.ParseUtil.formatError(v, s);
-          Validation.failure(msg);
+          var err = DiceParseError.fromResult(v, s);
+          Validation.failure(err);
       };
   }
-
   public static function unsafeParse(s: String) return switch parse(s) {
     case Left(e): throw e;
     case Right(v): v;
@@ -254,6 +257,43 @@ class DiceParser {
 
   static var grammar =
     OWS + expression.skip(OWS).skip(eof());
+}
+
+class DiceParseError {
+  public var expected(default, null): Array<String>;
+  public var furthest(default, null): Int;
+  public var input(default, null): String;
+  public function new(expected: Array<String>, furthest: Int, input: String) {
+    this.expected = expected;
+    this.furthest = furthest;
+    this.input = input;
+  }
+
+  public static function fromResult<T>(r: ParseResult<T>, s: String) {
+    var expected = r.expected.map(expectedToString).distinct();
+    return new DiceParseError(expected, r.furthest, s);
+  }
+
+  static function expectedToString(e: Dynamic) {
+    var s = Std.string(e);
+    if(s.startsWith("{\n	r : ")) {
+      s = s.trimCharsLeft("{ \n\tr:").trimCharsRight("\n\t }");
+    }
+    return s;
+  }
+
+  public function positionToString(): Option<String> {
+    return if(furthest >= input.length) {
+      None;
+    } else {
+      Some(input.substring(furthest));
+    };
+  }
+
+  public function toString() {
+    var got = positionToString().map.fn("…" + _.ellipsis(20)).getOrElse("end of file");
+    return 'expected ${expected.join(", ")} but got $got';
+  }
 }
 
 enum MoreLess {

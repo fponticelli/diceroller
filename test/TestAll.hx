@@ -210,7 +210,7 @@ class TestAll {
     var parsed = parse(t.t);
     switch parsed.either {
       case Left(e):
-        Assert.fail(e, t.pos);
+        Assert.fail(e.toString(), t.pos);
       case Right(v):
         var serialized = v.toString();
         var expected = null == t.p ? t.t : t.p;
