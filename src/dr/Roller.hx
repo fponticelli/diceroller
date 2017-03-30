@@ -123,14 +123,6 @@ class Roller {
       case Keep(High, value): function(res: Int, length: Int) return res >= length - value;
     };
 
-  public static function reducef(reducer: DiceReducer)
-    return switch reducer {
-      case Sum: function(arr: Array<Int>) return arr.sum();
-      case Average: function(arr: Array<Int>) return Math.round(arr.average());
-      case Min: function(arr: Array<Int>) return arr.min();
-      case Max: function(arr: Array<Int>) return arr.max();
-    };
-
   function filterRolls(rolls: Array<RollResult>, filter: DiceFilter): Array<DieResultFilter> {
       var ranked = rolls.rank(function(a, b) {
         return Ints.compare(getResult(a), getResult(b));
@@ -157,13 +149,23 @@ class Roller {
   function reduceResults(results: Array<Int>, reducer: DiceReducer): Int
     return switch reducer {
       case Average:
-          Math.round(ArrayInts.average(results));
-        case Sum:
-          results.reduce(function(a, b) return a + b, 0);
-        case Min:
-          ArrayInts.min(results);
-        case Max:
-          ArrayInts.max(results);
+        Math.round(ArrayInts.average(results));
+      case Median:
+        var ordered = results.order(Ints.compare),
+            len = ordered.length;
+        if(len % 2 == 0) { // even
+          var a = ordered[Math.floor(len / 2)],
+              b = ordered[Math.floor(len / 2)];
+          return Math.round((a+b)/2);
+        } else {
+          ordered[Math.floor(len / 2)];
+        }
+      case Sum:
+        results.reduce(function(a, b) return a + b, 0);
+      case Min:
+        ArrayInts.min(results);
+      case Max:
+        ArrayInts.max(results);
     };
 
   function getRollResults(rolls: Array<RollResult>)

@@ -103,6 +103,7 @@ class DiceExpressionExtensions {
   public static function expressionExtractorToString(functor) return switch functor {
     case Sum: "";
     case Average: " average";
+    case Median: " median";
     case Min: " min";
     case Max: " max";
   };

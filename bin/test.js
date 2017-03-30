@@ -635,7 +635,7 @@ dr_DiceExpression.Literal = function(value) { var $x = ["Literal",1,value]; $x._
 dr_DiceExpression.DiceReduce = function(reduceable,reducer) { var $x = ["DiceReduce",2,reduceable,reducer]; $x.__enum__ = dr_DiceExpression; return $x; };
 dr_DiceExpression.BinaryOp = function(op,a,b) { var $x = ["BinaryOp",3,op,a,b]; $x.__enum__ = dr_DiceExpression; return $x; };
 dr_DiceExpression.UnaryOp = function(op,a) { var $x = ["UnaryOp",4,op,a]; $x.__enum__ = dr_DiceExpression; return $x; };
-var dr_DiceReducer = { __ename__ : ["dr","DiceReducer"], __constructs__ : ["Sum","Average","Min","Max"] };
+var dr_DiceReducer = { __ename__ : ["dr","DiceReducer"], __constructs__ : ["Sum","Average","Min","Max","Median"] };
 dr_DiceReducer.Sum = ["Sum",0];
 dr_DiceReducer.Sum.__enum__ = dr_DiceReducer;
 dr_DiceReducer.Average = ["Average",1];
@@ -644,6 +644,8 @@ dr_DiceReducer.Min = ["Min",2];
 dr_DiceReducer.Min.__enum__ = dr_DiceReducer;
 dr_DiceReducer.Max = ["Max",3];
 dr_DiceReducer.Max.__enum__ = dr_DiceReducer;
+dr_DiceReducer.Median = ["Median",4];
+dr_DiceReducer.Median.__enum__ = dr_DiceReducer;
 var dr_DiceReduceable = { __ename__ : ["dr","DiceReduceable"], __constructs__ : ["DiceExpressions","DiceListWithFilter","DiceListWithMap"] };
 dr_DiceReduceable.DiceExpressions = function(exprs) { var $x = ["DiceExpressions",0,exprs]; $x.__enum__ = dr_DiceReduceable; return $x; };
 dr_DiceReduceable.DiceListWithFilter = function(list,filter) { var $x = ["DiceListWithFilter",1,list,filter]; $x.__enum__ = dr_DiceReduceable; return $x; };
@@ -858,6 +860,8 @@ dr_DiceExpressionExtensions.expressionExtractorToString = function(functor) {
 		return " min";
 	case 3:
 		return " max";
+	case 4:
+		return " median";
 	}
 };
 dr_DiceExpressionExtensions.diceFilterToString = function(filter) {
@@ -2841,7 +2845,7 @@ dr_DiceParser.diceFunctorConst = function(p,f) {
 dr_DiceParser.diceReduce = function(reduceable) {
 	var _e = reduceable;
 	return parsihax_Parser.or(parsihax_Parser.flatMap(reduceable,function(red) {
-		return parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.map(parsihax_Parser.alt([parsihax_Parser.result(dr_DiceParser.SUM,dr_DiceReducer.Sum),parsihax_Parser.result(dr_DiceParser.AVERAGE,dr_DiceReducer.Average),parsihax_Parser.result(dr_DiceParser.MIN,dr_DiceReducer.Min),parsihax_Parser.result(dr_DiceParser.MAX,dr_DiceReducer.Max)]),function(reducer) {
+		return parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.map(parsihax_Parser.alt([parsihax_Parser.result(dr_DiceParser.SUM,dr_DiceReducer.Sum),parsihax_Parser.result(dr_DiceParser.AVERAGE,dr_DiceReducer.Average),parsihax_Parser.result(dr_DiceParser.MEDIAN,dr_DiceReducer.Median),parsihax_Parser.result(dr_DiceParser.MIN,dr_DiceReducer.Min),parsihax_Parser.result(dr_DiceParser.MAX,dr_DiceReducer.Max)]),function(reducer) {
 			return dr_DiceExpression.DiceReduce(red,reducer);
 		}));
 	}),(function(fun) {
@@ -2995,26 +2999,6 @@ dr_Roller.filterf = function(filter) {
 			};
 		}
 		break;
-	}
-};
-dr_Roller.reducef = function(reducer) {
-	switch(reducer[1]) {
-	case 0:
-		return function(arr) {
-			return thx_ArrayInts.sum(arr);
-		};
-	case 1:
-		return function(arr1) {
-			return Math.round(thx_ArrayInts.average(arr1));
-		};
-	case 2:
-		return function(arr2) {
-			return thx_ArrayInts.min(arr2);
-		};
-	case 3:
-		return function(arr3) {
-			return thx_ArrayInts.max(arr3);
-		};
 	}
 };
 dr_Roller.prototype = {
@@ -3224,6 +3208,17 @@ dr_Roller.prototype = {
 			return thx_ArrayInts.min(results);
 		case 3:
 			return thx_ArrayInts.max(results);
+		case 4:
+			var ordered = thx_Arrays.order(results,thx_Ints.compare);
+			var len = ordered.length;
+			if(len % 2 == 0) {
+				var a1 = ordered[Math.floor(len / 2)];
+				var b1 = ordered[Math.floor(len / 2)];
+				return Math.round((a1 + b1) / 2);
+			} else {
+				return ordered[Math.floor(len / 2)];
+			}
+			break;
 		}
 	}
 	,getRollResults: function(rolls) {
@@ -13253,6 +13248,7 @@ dr_DiceParser.diceFunctor = parsihax_Parser.lazy(function() {
 });
 dr_DiceParser.SUM = parsihax_Parser.string("sum");
 dr_DiceParser.AVERAGE = parsihax_Parser.or(parsihax_Parser.string("average"),parsihax_Parser.string("avg"));
+dr_DiceParser.MEDIAN = parsihax_Parser.or(parsihax_Parser.string("median"),parsihax_Parser.string("mdn"));
 dr_DiceParser.MIN = parsihax_Parser.or(parsihax_Parser.string("minimum"),parsihax_Parser.string("min"));
 dr_DiceParser.MAX = parsihax_Parser.or(parsihax_Parser.string("maximum"),parsihax_Parser.string("max"));
 dr_DiceParser.times = parsihax_Parser.alt([parsihax_Parser.result(parsihax_Parser.string("once"),1),parsihax_Parser.result(parsihax_Parser.string("twice"),2),parsihax_Parser.result(parsihax_Parser.string("thrice"),3),parsihax_Parser.skip(dr_DiceParser.positive,parsihax_Parser.then(dr_DiceParser.OWS,parsihax_Parser.string("times")))]);
