@@ -234,7 +234,9 @@ class DiceParser {
           return [for(i in 0...rolls) sides];
         });
       }),
-      commaSeparated(die)
+      commaSeparated(die),
+      "1".string() + die.map.fn([_]),
+      die.map.fn([_]),
     ].alt().flatMap(function(arr) {
       return OWS + diceFunctor.map(function(functor) {
         return DiceListWithMap(arr, functor);
@@ -244,10 +246,10 @@ class DiceParser {
 
   static var termExpression: ParseObject<DiceExpression> = function() {
     return [
-      dieExpression,
       diceReduce(diceMapeable),
       diceReduce(diceFilterable),
       diceReduce(diceExpressions),
+      dieExpression,
       literalExpression,
       unary
     ].alt();
