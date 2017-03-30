@@ -38,8 +38,8 @@ class DiceParser {
   static var whole = positive | negative;
   static var D = "d".string() | "D".string();
 
-  static var OPEN_SET_BRACKET = "{".string();
-  static var CLOSE_SET_BRACKET = "}".string();
+  static var OPEN_SET_BRACKET = "(".string();
+  static var CLOSE_SET_BRACKET = ")".string();
   static var COMMA = ",".string();
   static var PERCENT = "%".string();
   static var WS = ~/[\s_]+/m.regexp();

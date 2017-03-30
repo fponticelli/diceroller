@@ -53,7 +53,7 @@ class DiceExpressionExtensions {
       diceToString(dice.length, dice[0]);
     } else {
       var s = dice.map(diceToString.bind(1, _)).join(",");
-      '{' + s + '}';
+      '(' + s + ')';
     }
   }
 
@@ -83,7 +83,7 @@ class DiceExpressionExtensions {
       return
         (exprs.length == 1 && !needsBraces(exprs[0]) ?
           exprs.map(toString).join(",") :
-          '{' + exprs.map(toString).join(",") + '}');
+          '(' + exprs.map(toString).join(",") + ')');
     }
   }
 

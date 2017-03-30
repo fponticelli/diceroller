@@ -13,6 +13,8 @@ enum DiceReducer {
   Average;
   Min;
   Max;
+  // median
+  // distinct
 }
 
 enum DiceReduceable {
@@ -28,12 +30,20 @@ enum DiceFilterable {
 
 enum DiceFilter {
   Drop(dir: LowHigh, value: Int);
+  // d
   Keep(dir: LowHigh, value: Int);
+  // k/h
+  // Success(dir: LowHigh, value: Int);
+  // DropOutliers(qt: Int);
+  // KeepOutliers(qt: Int);
 }
 
 enum DiceFunctor {
   Explode(times: Times, range: Range);
+  // e
+  // ExplodeSuccess(times: Times, range: Range);
   Reroll(times: Times, range: Range);
+  // r
 }
 
 enum Times {
