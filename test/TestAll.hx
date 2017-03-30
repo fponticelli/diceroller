@@ -203,14 +203,13 @@ class TestAll {
       { min: 3, max: 18, t: "3d6 explode on 7", pos: pos() },
       { min: 1, max: 12, t: "d6 explode once on 6", pos: pos() },
       { min: 1, max: 12, t: "1d6 explode once on 6", pos: pos() },
-      { min: 3, max: 18, t: "3d6e7", pos: pos() },
+      { min: 3, max: 18, t: "3d6e7", p: "3d6 explode on 7 or more", pos: pos() },
 
       { min: 3, max: 9,  t: "(d2,d3,d4) reroll once on 1", pos: pos() },
       { min: 3, max: 18, t: "3d6 reroll twice on 6", pos: pos() },
       { min: 3, max: 18, t: "3d6 reroll 5 times on 6", pos: pos() },
       { min: 1, max: 6, t: "d6 reroll once on 6", pos: pos() },
-      { min: 1, max: 6, t: "1d6 reroll once on 6", pos: pos() },
-      { min: 3, max: 18, t: "3d6r7", pos: pos() },
+      { min: 1, max: 6, t: "1d6 reroll once on 6", pos: pos() }
     ];
 
     tests.map(assertParseAndBoundaries);

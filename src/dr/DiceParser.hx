@@ -92,6 +92,8 @@ class DiceParser {
 
   static var diceFunctor: ParseObject<DiceFunctor> = function() {
     return [
+      "e".string() + OWS + positive.map.fn(Explode(Always, ValueOrMore(_))),
+      "r".string() + OWS + positive.map.fn(Reroll(Always, ValueOrLess(_))),
       diceFunctorConst("explode", Explode),
       diceFunctorConst("reroll", Reroll)
     ].alt();
