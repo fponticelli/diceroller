@@ -180,6 +180,7 @@ class TestAll {
       { min: 3, t: "(1,2,3) drop lowest 2", p: "(1,2,3) drop 2", pos: pos() },
       { min: 3, t: "(1,2,3) drop low 2", p: "(1,2,3) drop 2", pos: pos() },
       { min: 5, t: "(1,2,3) drop 1", pos: pos() },
+      { min: 5, t: "(1,2,3)d1", p: "(1,2,3) drop 1", pos: pos() },
       { min: 3, t: "(1,2,3) drop highest 1", pos: pos() },
       { min: 1, t: "(1,2,3) drop highest 2", pos: pos() },
       { min: 1, t: "(1,2,3) drop high 2", p: "(1,2,3) drop highest 2", pos: pos() },
@@ -191,16 +192,25 @@ class TestAll {
       { min: 3, t: "(1,2,3) keep 1", pos: pos() },
       { min: 3, t: "(1,2,3) keep highest 1", p: "(1,2,3) keep 1", pos: pos() },
       { min: 5, t: "(1,2,3) keep highest 2", p: "(1,2,3) keep 2", pos: pos() },
+      { min: 5, t: "(1,2,3)k2", p: "(1,2,3) keep 2", pos: pos() },
       { min: 5, t: "(1,2,3) keep high 2", p: "(1,2,3) keep 2", pos: pos() },
       { min: 2, max: 12, t: "5d6 keep 2", pos: pos() },
 
       { min: 3, max: 12, t: "(d2,d3,d4) explode once on 3", pos: pos() },
       { min: 3, max: 54, t: "3d6 explode twice on 6", pos: pos() },
       { min: 3, max: 108, t: "3d6 explode 5 times on 6", pos: pos() },
+      { min: 3, max: 18, t: "3d6 explode always on 7", p: "3d6 explode on 7", pos: pos() },
+      { min: 3, max: 18, t: "3d6 explode on 7", pos: pos() },
+      { min: 1, max: 12, t: "d6 explode once on 6", pos: pos() },
+      { min: 1, max: 12, t: "1d6 explode once on 6", pos: pos() },
+      { min: 3, max: 18, t: "3d6e7", pos: pos() },
 
       { min: 3, max: 9,  t: "(d2,d3,d4) reroll once on 1", pos: pos() },
       { min: 3, max: 18, t: "3d6 reroll twice on 6", pos: pos() },
       { min: 3, max: 18, t: "3d6 reroll 5 times on 6", pos: pos() },
+      { min: 1, max: 6, t: "d6 reroll once on 6", pos: pos() },
+      { min: 1, max: 6, t: "1d6 reroll once on 6", pos: pos() },
+      { min: 3, max: 18, t: "3d6r7", pos: pos() },
     ];
 
     tests.map(assertParseAndBoundaries);

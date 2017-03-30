@@ -111,8 +111,9 @@ class DiceParser {
 
   static var functorTimes = [
     times.map(UpTo),
-    OWS + "always".string().result(Always)
-  ].alt() / "times";
+    OWS + "always".string().result(Always),
+    "".string().result(Always)
+  ].alt();
 
   static var DEFAULT_DIE_SIDES = 6;
   static var die = [
@@ -214,7 +215,9 @@ class DiceParser {
       commaSeparated(expression).map(DiceFilterable.DiceExpressions)
     ].alt().flatMap(function(filterable) {
       return OWS + [
+        "d".string() + OWS + positive.map.fn(Drop(Low, _)),
         dirValue("drop".string(), LowHigh.Low).map.fn(Drop(_.dir, _.value)),
+        "k".string() + OWS + positive.map.fn(Keep(High, _)),
         dirValue("keep".string(), LowHigh.High).map.fn(Keep(_.dir, _.value))
       ].alt().map(function(dk) {
         return DiceListWithFilter(filterable, dk);
