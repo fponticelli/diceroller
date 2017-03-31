@@ -126,11 +126,32 @@ class DiceExpressionExtensions {
     case UnaryOp(_): false;
   }
 
+  static function calculateBasicRollsReduceable(dr: DiceReduceable) {
+    return switch dr {
+      case DiceExpressions(exprs):
+        exprs.map(calculateBasicRolls).sum();
+      case DiceListWithFilter(DiceArray(arr), filter):
+        arr.length;
+      case DiceListWithFilter(DiceExpressions(exprs), filter):
+        exprs.map(calculateBasicRolls).sum();
+      case DiceListWithMap(dice, functor):
+        dice.length;
+    };
+  }
+
+  public static function calculateBasicRolls(expr) return switch expr {
+    case BinaryOp(_, a, b): calculateBasicRolls(a) + calculateBasicRolls(b);
+    case Literal(_): 1;
+    case Die(_): 1;
+    case DiceReduce(reduceable, _): calculateBasicRollsReduceable(reduceable);
+    case UnaryOp(_, a): calculateBasicRolls(a);
+  }
+
   static function validateExpr(expr: DiceExpression): Array<ValidationMessage> {
     return switch expr {
       case Die(sides) if(sides <= 0):
         [InsufficientSides(sides)];
-      case DiceReduce(reduceable, reducer):
+      case DiceReduce(reduceable, _):
         validateDiceReduceable(reduceable);
       case BinaryOp(op, a, b):
         validateExpr(a).concat(validateExpr(b));

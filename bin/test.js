@@ -902,6 +902,47 @@ dr_DiceExpressionExtensions.needsBraces = function(expr) {
 		return false;
 	}
 };
+dr_DiceExpressionExtensions.calculateBasicRollsReduceable = function(dr1) {
+	switch(dr1[1]) {
+	case 0:
+		var exprs = dr1[2];
+		return thx_ArrayInts.sum(exprs.map(dr_DiceExpressionExtensions.calculateBasicRolls));
+	case 1:
+		switch(dr1[2][1]) {
+		case 0:
+			var filter = dr1[3];
+			var arr = dr1[2][2];
+			return arr.length;
+		case 1:
+			var filter1 = dr1[3];
+			var exprs1 = dr1[2][2];
+			return thx_ArrayInts.sum(exprs1.map(dr_DiceExpressionExtensions.calculateBasicRolls));
+		}
+		break;
+	case 2:
+		var functor = dr1[3];
+		var dice = dr1[2];
+		return dice.length;
+	}
+};
+dr_DiceExpressionExtensions.calculateBasicRolls = function(expr) {
+	switch(expr[1]) {
+	case 0:
+		return 1;
+	case 1:
+		return 1;
+	case 2:
+		var reduceable = expr[2];
+		return dr_DiceExpressionExtensions.calculateBasicRollsReduceable(reduceable);
+	case 3:
+		var b = expr[4];
+		var a = expr[3];
+		return dr_DiceExpressionExtensions.calculateBasicRolls(a) + dr_DiceExpressionExtensions.calculateBasicRolls(b);
+	case 4:
+		var a1 = expr[3];
+		return dr_DiceExpressionExtensions.calculateBasicRolls(a1);
+	}
+};
 dr_DiceExpressionExtensions.validateExpr = function(expr) {
 	switch(expr[1]) {
 	case 0:
@@ -915,7 +956,6 @@ dr_DiceExpressionExtensions.validateExpr = function(expr) {
 	case 1:
 		return [];
 	case 2:
-		var reducer = expr[3];
 		var reduceable = expr[2];
 		return dr_DiceExpressionExtensions.validateDiceReduceable(reduceable);
 	case 3:
@@ -1013,7 +1053,7 @@ dr_DiceExpressionExtensions.checkFunctor = function(sides,df) {
 	case 0:
 		var range = df[3];
 		if(dr_DiceExpressionExtensions.alwaysInRange(sides,range)) {
-			return [dr_ValidationMessage.ExplodeOrRerollAlwaysInRange];
+			return [dr_ValidationMessage.InfiniteReroll(sides,range)];
 		} else {
 			return [];
 		}
@@ -1021,7 +1061,7 @@ dr_DiceExpressionExtensions.checkFunctor = function(sides,df) {
 	case 1:
 		var range1 = df[3];
 		if(dr_DiceExpressionExtensions.alwaysInRange(sides,range1)) {
-			return [dr_ValidationMessage.ExplodeOrRerollAlwaysInRange];
+			return [dr_ValidationMessage.InfiniteReroll(sides,range1)];
 		} else {
 			return [];
 		}
@@ -1033,16 +1073,14 @@ dr_DiceExpressionExtensions.checkFunctor = function(sides,df) {
 dr_DiceExpressionExtensions.validate = function(expr) {
 	return thx__$Nel_Nel_$Impl_$.fromArray(dr_DiceExpressionExtensions.validateExpr(expr));
 };
-var dr_ValidationMessage = { __ename__ : ["dr","ValidationMessage"], __constructs__ : ["InsufficientSides","EmptySet","InfiniteReroll","ExplodeOrRerollAlwaysInRange","TooManyDrops","TooManyKeeps","DropOrKeepShouldBePositive"] };
+var dr_ValidationMessage = { __ename__ : ["dr","ValidationMessage"], __constructs__ : ["InsufficientSides","EmptySet","InfiniteReroll","TooManyDrops","TooManyKeeps","DropOrKeepShouldBePositive"] };
 dr_ValidationMessage.InsufficientSides = function(sides) { var $x = ["InsufficientSides",0,sides]; $x.__enum__ = dr_ValidationMessage; return $x; };
 dr_ValidationMessage.EmptySet = ["EmptySet",1];
 dr_ValidationMessage.EmptySet.__enum__ = dr_ValidationMessage;
 dr_ValidationMessage.InfiniteReroll = function(sides,range) { var $x = ["InfiniteReroll",2,sides,range]; $x.__enum__ = dr_ValidationMessage; return $x; };
-dr_ValidationMessage.ExplodeOrRerollAlwaysInRange = ["ExplodeOrRerollAlwaysInRange",3];
-dr_ValidationMessage.ExplodeOrRerollAlwaysInRange.__enum__ = dr_ValidationMessage;
-dr_ValidationMessage.TooManyDrops = function(available,toDrop) { var $x = ["TooManyDrops",4,available,toDrop]; $x.__enum__ = dr_ValidationMessage; return $x; };
-dr_ValidationMessage.TooManyKeeps = function(available,toKeep) { var $x = ["TooManyKeeps",5,available,toKeep]; $x.__enum__ = dr_ValidationMessage; return $x; };
-dr_ValidationMessage.DropOrKeepShouldBePositive = ["DropOrKeepShouldBePositive",6];
+dr_ValidationMessage.TooManyDrops = function(available,toDrop) { var $x = ["TooManyDrops",3,available,toDrop]; $x.__enum__ = dr_ValidationMessage; return $x; };
+dr_ValidationMessage.TooManyKeeps = function(available,toKeep) { var $x = ["TooManyKeeps",4,available,toKeep]; $x.__enum__ = dr_ValidationMessage; return $x; };
+dr_ValidationMessage.DropOrKeepShouldBePositive = ["DropOrKeepShouldBePositive",5];
 dr_ValidationMessage.DropOrKeepShouldBePositive.__enum__ = dr_ValidationMessage;
 var parsihax_Parser = function() { };
 parsihax_Parser.__name__ = ["parsihax","Parser"];
