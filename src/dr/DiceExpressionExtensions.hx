@@ -3,6 +3,9 @@ package dr;
 import dr.DiceExpression;
 using thx.Arrays;
 using thx.Strings;
+using thx.Functions;
+using thx.Nel;
+import haxe.ds.Option;
 
 class DiceExpressionExtensions {
   public static function toString(expr: DiceExpression) return switch expr {
@@ -122,4 +125,76 @@ class DiceExpressionExtensions {
     case DiceReduce(_): false;
     case UnaryOp(_): false;
   }
+
+  static function validateExpr(expr: DiceExpression): Array<ValidationMessage> {
+    return switch expr {
+      case Die(sides) if(sides <= 0):
+        [InsufficientSides(sides)];
+      case DiceReduce(reduceable, reducer):
+        validateDiceReduceable(reduceable);
+      case BinaryOp(op, a, b):
+        validateExpr(a).concat(validateExpr(b));
+      case UnaryOp(op, a):
+        validateExpr(a);
+      case Literal(_) | Die(_):
+        [];
+    };
+  }
+
+  static function validateDiceReduceable(dr: DiceReduceable) {
+    return switch dr {
+      case DiceExpressions(exprs) if(exprs.length == 0):
+        [EmptySet];
+      case DiceExpressions(exprs):
+        exprs.map(validateExpr).flatten();
+      case DiceListWithFilter(list, filter):
+        var acc = [],
+            len = switch list {
+              case DiceArray(dice): dice.length;
+              case DiceExpressions(exprs): exprs.length;
+            };
+        switch filter {
+          case Drop(_, value) | Keep(_, value) if(value < 1):
+            acc.push(DropOrKeepShouldBePositive);
+          case Drop(_, value) if(value >= len):
+            acc.push(TooManyDrops(len, value));
+          case Keep(_, value) if(value > len):
+            acc.push(TooManyKeeps(len, value));
+          case _:
+        }
+        acc;
+      case DiceListWithMap(dice, functor):
+        var acc = dice.reduce(function(acc: Array<ValidationMessage>, sides: Int) {
+          if(sides > 0) return acc;
+          return acc.concat([InsufficientSides(sides)]);
+        }, []);
+        acc.concat(dice.map.fn(checkFunctor(_, functor)).flatten());
+    };
+  }
+
+  static function alwaysInRange(sides: Int, range: Range) {
+    for(i in 1...sides+1)
+      if(!Roller.matchRange(i, range)) return false;
+    return true;
+  }
+
+  static function checkFunctor(sides: Int, df: DiceFunctor)
+    return switch df {
+      case Explode(_, range) | Reroll(_, range) if(alwaysInRange(sides, range)):
+        [InfiniteReroll(sides, range)];
+      case _:
+        [];
+    };
+
+  public static function validate(expr: DiceExpression): Option<Nel<ValidationMessage>>
+    return Nel.fromArray(validateExpr(expr));
+}
+
+enum ValidationMessage {
+  InsufficientSides(sides: Int);
+  EmptySet;
+  InfiniteReroll(sides: Int, range: Range);
+  TooManyDrops(available: Int, toDrop: Int);
+  TooManyKeeps(available: Int, toKeep: Int);
+  DropOrKeepShouldBePositive;
 }
