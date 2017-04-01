@@ -102,8 +102,8 @@ class DiceParser {
   static var SUM = "sum".string();
   static var AVERAGE = "average".string().or("avg".string());
   static var MEDIAN = "median".string().or("mdn".string());
-  static var MIN = "minimum".string().or("min".string());
-  static var MAX = "maximum".string().or("max".string());
+  static var MIN = "minimum".string().or("min".string()).or("take least".string());
+  static var MAX = "maximum".string().or("max".string()).or("take best".string());
 
   static var times = [
     "once".string().result(1),
